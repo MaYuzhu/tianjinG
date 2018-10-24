@@ -1,0 +1,163 @@
+html,body{
+    width: 100%;
+    height: 100%;
+}
+.main{
+    background: url(../images/login/bg1.png) no-repeat;
+    background-size: 100% 100%;
+    width: 100%;
+    height: 100%;
+    min-width:1000px;
+    min-height: 600px;
+    position:relative;
+}
+.login_box{
+    background: url(../images/login/login.png) no-repeat center;
+    background-size: 100% 100%;
+    width:233px;
+    height: 276px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    padding:33px 23px 55px;
+}
+.login_box p{
+    color:#ccc;
+    padding-left: 10px;
+    font-size: 13px;
+    margin: 8px 0 4px 0;
+}
+
+/*input me*/
+.login_box .user,.login_box .psd{
+    width: 210px;
+    height: 26px;
+    margin: 0 auto;
+    border-radius: 4px;
+    border: 1px inset #1a2243;
+    background: #1c2444;
+    display: flex;
+    align-items: center;
+}
+.login_box .user input,.login_box .psd input{
+    border:0px solid;
+    color: #ccc;
+    width: 180px;
+    height: 22px;
+    background: rgba(255,255,255,0);
+}
+.login_box div>span{
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+}
+.login_box .user>span{
+    background: url("../images/css_sprites.png") -2px -71px;
+}
+.login_box .psd>span{
+    background: url("../images/css_sprites.png") -79px -5px;
+}
+
+/**/
+.login_box .kuang{
+    width: 216px;
+    margin: 0 auto;
+    overflow:hidden;
+}
+.login_box .kuang .auto_login{
+    float:left;
+}
+.login_box .kuang .forget{
+    float:right;
+}
+.login_box .kuang input{
+    margin:10px 4px 4px 2px;
+}
+.login_box .kuang label{
+    margin-left:3px;
+    color:#ccc;
+    font-size: 13px;
+    position:relative;
+    cursor: pointer;
+    font-weight: normal;
+}
+.login_box .kuang label input{
+    cursor: pointer;
+}
+
+
+.login_box .kuang label input:checked + .show-box:before{
+    content:'';
+    position: absolute;
+    top:1px;
+    left:4px;
+    width:5px;
+    height: 8px;
+    border:solid #ccc;
+    border-width:0px 2px 2px 0px;
+    transform:rotate(45deg);
+}
+
+.login_box .kuang label .show-box{
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:14px;
+    height: 14px;
+    border-radius:2px;
+    border:1px solid #576684;
+    background-color: #0e112c;
+}
+
+.login_box .kuang label input:checked + .show-box{
+    background-color:#0e112c;
+}
+
+
+.login_box .kuang .forget p{
+    color:#969696;
+    margin:9px 4px 0 0;
+    cursor: pointer;
+}
+
+
+/*.login_box .input1{
+    background: #1c2444  no-repeat -26px -112px;
+    margin-bottom:20px;
+    width:182px;
+    margin:3px auto 15px;
+    padding-left:30px;
+    height:28px;
+    display: block;
+}
+.login_box .input2{
+    background: #1c2444  no-repeat -26px -25px;
+    margin-bottom:20px;
+    width:182px;
+    margin:0 auto;
+    padding-left:30px;
+    height:28px;
+    display: block;
+}*/
+.login_box .button{
+    display: block;
+    width: 90px;
+    height: 32px;
+    border: 0;
+    line-height: 30px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    background: url(../images/button.png) center;
+    background-size: 100% 100%;
+    cursor: pointer;
+    color: #ccc;
+    position: absolute;
+    top:260px;
+    left:96px;
+}
+.login_box .u_message,.login_box .psd_message{
+    color: #c80000;
+    font-size: 12px;
+}

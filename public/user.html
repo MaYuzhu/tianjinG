@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/user.css">
+    <link rel="stylesheet" href="./css/index.css">
+
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <div class="menu">
+            <div class="menuHolder">
+                <div class="menuWindow">
+                    <ul class="p1">
+                        <li class="s1">
+                            <a href="javascript:;">
+                                <img src="./images/menu.png" alt="">
+                            </a>
+                            <ul class="p2">
+                                <li class="s2"><a href="./index.html"><span>实时监控 &gt;</span></a></li>
+                                <li class="s2"><a href="./alarm.html"><span>报警管理 &gt;</span></a>
+                                </li>
+                                <li class="s2"><a href="./trail.html"><span>行驶轨迹 &gt;</span></a>
+                                </li>
+                                <li class="s2"><a href="./fence.html"><span>电子围栏 &gt;</span></a>
+                                </li>
+                                <li class="s2"><a href="javascript:;"><span>报表分析 &gt;</span></a>
+                                </li>
+                                <li class="s2 "><a href="./trailer.html"><span>车辆管理 &gt;</span></a>
+                                </li>
+                                <li class="s2 "><a href="./user.html"><span>用户管理 &gt;</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="title1">
+            <img src="./images/titlebig.png" alt="">
+        </div>
+        <div class="avatar"></div>
+    </header>
+    <div class="content">
+        <div class="top">
+            <p>用户管理</p>
+        </div>
+        <div class="_line"></div>
+        <div class="content_footer">
+            <ul class="content_footer_left">
+                <li class="active1"><span></span>操作日志</li>
+                <li><span></span>资料重设</li>
+                <li><span></span>账户管理</li>
+                <li><span></span>角色管理</li>
+            </ul>
+            <div class="content_footer_right">
+                <div class="content_footer_right1">
+                    <table class="journal_table">
+                        <tr>
+                            <th>时间</th>
+                            <th>内容</th>
+                            <th>操作人</th>
+                        </tr>
+                        <tr>
+                            <td>2015-05-30  12:35</td>
+                            <td>修改 A区域 车辆设备  阈值：5.50 （前值为6.00）xxxxxxxxxxxxxxxxxxxx </td>
+                            <td>李XX</td>
+                        </tr>
+                        <tr>
+                            <td>2015-05-30  12:35</td>
+                            <td>修改 A区域 车辆设备  阈值：5.50 （前值为6.00）xxxxxxxxxxxxxxxxxxxx </td>
+                            <td>李XX</td>
+                        </tr>
+                        <tr>
+                            <td>2015-05-30  12:35</td>
+                            <td>修改 A区域 车辆设备  阈值：5.50 （前值为6.00）xxxxxxxxxxxxxxxxxxxx </td>
+                            <td>李XX</td>
+                        </tr>
+                        <tr>
+                            <td>2015-05-30  12:35</td>
+                            <td>修改 A区域 车辆设备  阈值：5.50 （前值为6.00）xxxxxxxxxxxxxxxxxxxx </td>
+                            <td>李XX</td>
+                        </tr>
+                        <tr>
+                            <td>2015-05-30  12:35</td>
+                            <td>修改 A区域 车辆设备  阈值：5.50 （前值为6.00）xxxxxxxxxxxxxxxxxxxx </td>
+                            <td>李XX</td>
+                        </tr>
+                    </table>
+                    <footer class="footer1">
+                        <div></div>
+                        <div class="on4"></div>
+                    </footer>
+                </div>
+                <div class="content_footer_right2" style="display: none">
+                    <div>
+                        <div><span>账号：</span><input type="text"></div>
+                        <div><span>姓名：</span><input type="text"></div>
+                        <div><span>手机：</span><input type="text"></div>
+                        <div><span>邮箱：</span><input type="text"></div>
+                    </div>
+                    <div class="update_psd">
+                        <p>修改密码</p>
+                        <div><span>旧密码：</span><input type="password"></div>
+                        <div><span>新密码：</span><input type="password"></div>
+                        <div><span>确认密码：</span><input type="password"></div>
+                        <div>
+                            <p class="psd_quxiao">取  消</p>
+                            <p>保  存</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="content_footer_right3" style="display: none">
+                    <div class="content_footer_right3_top">
+                        <div>启用中</div>
+                        <div>已停用</div>
+                        <div><span>+</span> 添加账户</div>
+                    </div>
+                    <table class="user_list">
+                        <tr>
+                           <th>序号</th>
+                            <th>用户名</th>
+                            <th>工作职位</th>
+                            <th>邮箱</th>
+                            <th>所属单位</th>
+                            <th>创建时间</th>
+                            <th>联系电话</th>
+                            <th>权限</th>
+                            <th>操作</th>
+                        </tr>
+
+                        <tr>
+                            <td>1</td>
+                            <td>张三</td>
+                            <td>xxx</td>
+                            <td>123654987@qq.com</td>
+                            <td>XXX</td>
+                            <td>2018.09.26</td>
+                            <td>12312341234</td>
+                            <td>中级管理员</td>
+                            <td><a href="javascript:;">编辑</a></td>
+                        </tr>
+
+                    </table>
+                    <footer class="footer2">
+                        <div></div>
+                        <div class="on5"></div>
+                    </footer>
+                    <!--添加子账户-->
+                    <div class="tip_add_user show">
+                        <p>新增用户</p>
+                        <div>
+                            <span>用户名</span>
+                            <input type="text" name="username">
+                        </div>
+                        <div>
+                            <span>密码</span>
+                            <input type="text" name="password">
+                        </div>
+                        <div>
+                            <span>电话</span>
+                            <input type="text" name="mobilePhone">
+                        </div>
+                        <div>
+                            <span>电子邮箱</span>
+                            <input type="text" name="email">
+                        </div>
+                        <div>
+                            <span>是否锁定</span>
+                            <select name="locked" id="add_user_select1">
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span>是否禁用</span>
+                            <select name="disable" id="add_user_select2">
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p class="adduser_quxiao">取  消</p>
+                            <p>保存</p>
+                        </div>
+                    </div>
+                    <!--编辑用户-->
+                    <div class="tip_update_user tip_add_truck show1" style="display:none">
+                        <p>编辑用户</p>
+                        <div>
+                            <span>用户名</span>
+                            <input type="text" name="username">
+                        </div>
+                        <div>
+                            <span>电话</span>
+                            <input type="text" name="mobilePhone">
+                        </div>
+                        <div>
+                            <span>电子邮箱</span>
+                            <input type="text" name="email">
+                        </div>
+                        <div>
+                            <span>是否锁定</span>
+                            <select name="locked" id="update_user_select1">
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span>是否禁用</span>
+                            <select name="disable" id="update_user_select2">
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p class="add_car_quxiao update_user_quxiao">取  消</p>
+                            <p class="add_car_tijiao update_user_tijiao" id="commit">提  交</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="content_footer_right4" style="display: none">
+                    <div class="content_footer_right4_top">
+                        <div><span>+</span> 添加角色</div>
+                    </div>
+                    <table class="juese_list">
+                        <tr>
+                            <th>序号</th>
+                            <th>角色名称</th>
+                            <th>状态</th>
+                            <th>描述</th>
+                            <th>操作</th>
+                        </tr>
+
+                        <tr>
+                            <td>张三</td>
+                            <td>xxx</td>
+                            <td>123654987@qq.com</td>
+                            <td>XXX</td>
+                            <td><a href="javascript:;">编辑</a></td>
+                        </tr>
+
+                    </table>
+                    <footer class="footer3">
+                        <div></div>
+                        <div class="on6"></div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script src="./js/jquery-1.11.3.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="./js/layDate-v5.0.9/laydate/laydate.js"></script>
+<script src="./js/index.js"></script>
+<script src="./js/user.js"></script>
+
+</html>

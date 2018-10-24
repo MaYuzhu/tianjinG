@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>报警管理</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/alarm_3.css">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <div class="menu">
+                <div class="menuHolder">
+                    <div class="menuWindow">
+                        <ul class="p1">
+                            <li class="s1">
+                                <a href="javascript:;">
+                                    <img src="./images/menu.png" alt="">
+                                </a>
+                                <ul class="p2">
+                                    <li class="s2"><a href="./index.html"><span>实时监控 &gt;</span></a></li>
+                                    <li class="s2"><a href="./alarm.html"><span>报警管理 &gt;</span></a>
+                                    </li>
+                                    <li class="s2"><a href="./trail.html"><span>行驶轨迹 &gt;</span></a>
+                                    </li>
+                                    <li class="s2"><a href="./fence.html"><span>电子围栏 &gt;</span></a>
+                                    </li>
+                                    <li class="s2"><a href="javascript:;"><span>报表分析 &gt;</span></a>
+                                    </li>
+                                    <li class="s2 "><a href="./trailer.html"><span>车辆管理 &gt;</span></a>
+                                    </li>
+                                    <li class="s2 "><a href="./user.html"><span>用户管理 &gt;</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="title1">
+                <img src="./images/titlebig.png" alt="">
+            </div>
+            <div class="avatar"></div>
+        </header>
+        <div class="content">
+            <div class="top">
+                <p>报警管理</p>
+                <div>
+                    <div class="weilan_add_wrap">
+                        <input type="text" placeholder="车辆编号/部门/原因/类别">
+                    </div>
+                    <select name="">
+                        <option value="0">已处置</option>
+                        <option value="1">处置中</option>
+                        <option value="2">未处置</option>
+                    </select>
+                    <div class="cha">查  询</div>
+                </div>
+            </div>
+            <div class="_line"></div>
+            <table class="table1" style="display: table">
+                <tr>
+                    <th>序号</th>
+                    <th>车辆编号</th>
+                    <th>部门</th>
+                    <th>报警时间</th>
+                    <th>报警原因</th>
+                    <th>处置情况</th>
+                    <th>处置时间</th>
+                    <th>操作</th>
+                </tr>
+                <!--<tr>
+                    <td>1</td>
+                    <td>苏E367287</td>
+                    <td>XXX</td>
+                    <td>2018-9-9</td>
+                    <td>偏离轨道报警</td>
+                    <td>未处置</td>
+                    <td>2018-9-9</td>
+                    <td>
+                        <a href="javascript:;">编辑</a>
+                    </td>
+                </tr>-->
+            </table>
+        </div>
+        <footer>
+            <div></div>
+            <div class="alarm_on"></div>
+        </footer>
+        <!--添加车辆弹窗-->
+        <div class="tip_add_truck show" style="display: none">
+            <p>报警编辑</p>
+            <div>
+                <span>报警车辆</span>
+                <input type="text" class="alarm_car">
+            </div>
+            <div>
+                <span>报警时间</span>
+                <input type="text" id="alarm_time">
+            </div>
+            <div>
+                <span>报警原因</span>
+                <input type="text" class="alarm_reason">
+            </div>
+            <div>
+                <span>处置时间</span>
+                <input type="text" id="chuli_time">
+            </div>
+            <div>
+                <span>部门</span>
+                <select name="" class="alarm_bumen">
+                    <option value="0">请选择</option>
+                    <option value="1">A部门</option>
+                    <option value="2">B部门</option>
+                    <option value="3">C部门</option>
+                </select>
+            </div>
+            <div>
+                <span>处置情况</span>
+                <select name="" class="alarm_chuzhi">
+                    <option value="1">处置中</option>
+                    <option value="2">已处理</option>
+                    <option value="3">未处理</option>
+                </select>
+            </div>
+            <div class="beizhu">
+                <span>备注</span>
+                <textarea class="alarm_beizhu" name="" id="" cols="30" rows="10"></textarea>
+            </div>
+            <div>
+                <p class="alarm_quxiao">取  消</p>
+                <p class="add_car_tijiao">提  交</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./js/layDate-v5.0.9/laydate/laydate.js"></script>
+    <script src="./js/alarm.js"></script>
+    <script src="./js/index.js"></script>
+</body>
+
+</html>
