@@ -1,4 +1,6 @@
 (function (w) {
+    let url = 'http://192.168.20.18:8080'
+    //let url = 'http://36.110.66.318:8080'
     //table切换
     let $tab = $('.content_footer_left>li')
     $tab.on('click',(function() {
@@ -48,10 +50,19 @@
             dom.animate({left:_x+"px",top:_y+"px"},5);
         });
     }
+    $('.show').mousedown(function (e) {
+        _move($('.show'),e)
+    })
+    $('.show1').mousedown(function (e) {
+        _move($('.show1'),e)
+    })
     $('.show2').mousedown(function (e) {
         _move($('.show2'),e)
     })
-    $(".show").mousedown(function(e){ //e鼠标事件
+    $('.show3').mousedown(function (e) {
+        _move($('.show3'),e)
+    })
+    /*$(".show").mousedown(function(e){ //e鼠标事件
         $(this).css("cursor","move");//改变鼠标指针的形状
 
         var offset = $(this).offset();//DIV在页面的位置
@@ -74,45 +85,20 @@
             }
             $(".show").animate({left:_x+"px",top:_y+"px"},5);
         });
-    });
+    });*/
     $(document).mouseup(function(){
         //$(".show").css("cursor","default");
         $(".show").css("cursor","move");
-        $(this).unbind("mousemove");
-    });
-    //编辑用户拖动
-    $(".show1").mousedown(function(e){ //e鼠标事件
-        $(this).css("cursor","move");//改变鼠标指针的形状
-
-        var offset = $(this).offset();//DIV在页面的位置
-        var x = e.pageX - offset.left;//获得鼠标指针离DIV元素左边界的距离
-        var y = e.pageY - offset.top;//获得鼠标指针离DIV元素上边界的距离
-        $(document).bind("mousemove",function(ev){ //绑定鼠标的移动事件，因为光标在DIV元素外面也要有效果，所以要用doucment的事件，而不用DIV元素的事件
-            $(".show1").stop();//加上这个之后
-
-            var _x = ev.pageX - x;//获得X轴方向移动的值
-            var _y = ev.pageY - y;//获得Y轴方向移动的值
-            if(_x<0){
-                _x = 0
-            }else if(_x > $(document).width() - ($('.show1').width() + 4)){
-                _x = $(document).width() - ($('.show1').width() + 4)
-            }
-            if(_y<0){
-                _y = 0
-            }else if(_y > $(document).height() - ($('.show1').height() + 4)){
-                _y = $(document).height() - ($('.show1').height() + 4)
-            }
-            $(".show1").animate({left:_x+"px",top:_y+"px"},5);
-        });
-    });
-    $(document).mouseup(function(){
         $(".show1").css("cursor","move");
+        $(".show2").css("cursor","move");
+        $(".show3").css("cursor","move");
         $(this).unbind("mousemove");
     });
+
     $(".show1 input,.show1 select,.show1 textarea").mousedown(function(event){
         event.stopPropagation();
     });
-    //添加子账户按钮
+    //添加账户按钮
     var $_addUser = $('.content_footer_right3_top>:nth-child(3)')
     $_addUser.on('click',function () {
         $(".show").css('display','block')
@@ -124,8 +110,14 @@
     $('.psd_quxiao').on('click',function () {
         $('.update_psd input').val('')
     })
-    //
-    $('.tip_add_juese')
+    //增加角色按钮
+    $('.content_footer_right4_top div').on('click',function () {
+        $('.tip_add_juese').css('display','block')
+    })
+    $('.add_juese_quxiao').on('click',function () {
+        $('.tip_add_juese').css('display','none')
+    })
+
     //角色权限树结构
     $(function() {
         $("#lv1M").click(function() {
@@ -202,7 +194,7 @@
             type:"GET",
             async: true,
             cache:true,
-            url: 'http://192.168.20.18:8080/user/search',
+            url: url + '/user/search',
             //?page.number=1&page.size=10&username=root
             data:{'page.number':pageNumber,
                   'page.size':10,
@@ -213,7 +205,7 @@
             },
             crossDomain: true,
             success:function (json) {
-                console.log(json)
+                //console.log(json)
                 $('.user_list').html(`<tr>
                            <th>序号</th>
                             <th>用户名</th>
@@ -263,7 +255,7 @@
                             type:"POST",
                             async: true,
                             cache:true,
-                            url: 'http://192.168.20.18:8080/user/edit',
+                            url: url + '/user/edit',
                             //id=1&mobilePhone=13830305894
                             data:{id:user_id,
                                   username:username,
@@ -300,4 +292,85 @@
             }
         })
     }
+    //获取角色列表
+    let juese_pageNumber = 1
+    $.ajax({
+        type:"GET",
+        async: true,
+        cache:true,
+        url: url + '/role/search',
+        data:{'page.number':juese_pageNumber,
+            'page.size':10,
+            },
+        dataType: 'json',
+        xhrFields:{
+            withCredentials:true
+        },
+        crossDomain: true,
+        success:function (json) {
+            console.log(json)
+            $('.juese_list').html(`<tr>
+                            <th>序号</th>
+                            <th>角色名称</th>
+                            <th>状态</th>
+                            <th>描述</th>
+                            <th>操作</th>
+                        </tr>`)
+            for(let i=0;i<json.body.list.length;i++){
+                $('.juese_list').append(`<tr>
+                            <td>${json.body.list[i].role_id}</td>
+                            <td>${json.body.list[i].identity_name}</td>
+                            <td>${json.body.list[i].disable}</td>
+                            <td>XXX</td>
+                            <td><a class="bianji" href="javascript:;">编辑</a>
+                            <a class="del" href="javascript:;">删除</a></td>
+                        </tr>`)
+            }
+            //编辑角色
+            $('.bianji').on('click',function () {
+                $('.show3').css('display','block')
+            })
+            $('.update_juese_quxiao').on('click',function () {
+                $('.show3').css('display','none')
+            })
+
+        },
+        error:function () {
+            console.log('fail');
+        }
+    })
+    //新增角色
+    $('.add_juese_commit').on('click',function () {
+        let addIdentityName = $("input[name='addIdentityName']").val()
+        console.log(addIdentityName)
+        $.ajax({
+            type:"POST",
+            async: true,
+            cache:true,
+            url: url + '/role/add',
+            data:{
+                identityName:addIdentityName,
+                resourceId:1
+            },
+            dataType: 'json',
+            xhrFields:{
+                withCredentials:true
+            },
+            crossDomain: true,
+            success:function (json) {
+                console.log(json)
+                if(json.head.status.code == 200){
+                    alert('新增成功！')
+                    $('.show3').css('display','none')
+                }else {
+                    alert(`提交失败！${json.head.status.code}错误`)
+                }
+            },
+            error:function () {
+                alert('提交失败！')
+            }
+
+        })
+    })
+
 })(window)

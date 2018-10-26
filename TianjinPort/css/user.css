@@ -171,6 +171,7 @@ footer div:last-child{
 .content_footer_right3_top,.content_footer_right4_top{
     height: 42px;
     line-height: 42px;
+    background: rgba(25, 32, 65, 0.9);
 }
 .content_footer_right3_top>:nth-child(1),.content_footer_right3_top>:nth-child(2){
     float: left;
@@ -482,9 +483,34 @@ footer div:last-child{
     cursor: pointer;
 }
 #tree input[type='checkbox']{
-    margin-top: 3px;
+    display: none;
 }
-
 .lv3Checks{
     display: block; float: left; clear: left; width: 15px; height: 15px;
+}
+#lv1U label::before{
+    content: '';
+    background-color: #181e3c;
+    border-radius: 1px;
+    border: 1px inset #313453;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 14px;
+    margin: 0 6px 0 0;
+}
+#lv3U1 input[type='checkbox']:checked + label::before,
+#lv3U2 input[type='checkbox']:checked + label::before,
+#lv3U3 input[type='checkbox']:checked + label::before,
+#allCheck:checked + #lv1L1>label::before,
+#secondCheck1:checked + #lv2L1>label::before,
+#secondCheck2:checked + #lv2L2>label::before,
+#secondCheck3:checked + #lv2L3>label::before{
+    content: "\2714";
+}
+#lv3U1>label,#lv3U2>label,#lv3U3>label{
+    display: flex;
+    align-items: center;
 }

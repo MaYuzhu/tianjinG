@@ -243,8 +243,8 @@
                             </select>
                         </div>
                         <div>
-                            <p class="add_car_quxiao update_user_quxiao">取  消</p>
-                            <p class="add_car_tijiao update_user_tijiao" id="commit">提  交</p>
+                            <p class="update_user_quxiao">取  消</p>
+                            <p class="update_user_tijiao" id="update_user_commit">提  交</p>
                         </div>
                     </div>
                 </div>
@@ -260,13 +260,12 @@
                             <th>描述</th>
                             <th>操作</th>
                         </tr>
-
                         <tr>
                             <td>张三</td>
                             <td>xxx</td>
                             <td>123654987@qq.com</td>
                             <td>XXX</td>
-                            <td><a href="javascript:;">编辑</a></td>
+                            <td><a class="bianji" href="javascript:;">编辑</a></td>
                         </tr>
 
                     </table>
@@ -274,18 +273,18 @@
                         <div></div>
                         <div class="on6"></div>
                     </footer>
-                    <!--添加角色-->
+                    <!--添加角色窗口-->
                     <div class="tip_add_juese show2">
                         <p>新增角色</p>
                         <div class="tip_add_juese_content">
                             <div class="tip_add_juese_left">
                                 <div>
-                                    <span>用户名</span>
-                                    <input type="text" name="username">
+                                    <span>角色名称</span>
+                                    <input type="text" name="addIdentityName">
                                 </div>
                                 <div>
-                                    <span>密码</span>
-                                    <input type="text" name="password">
+                                    <span>备注</span>
+                                    <input type="text" name="addMemo">
                                 </div>
                                 <div>
                                     <span>电话</span>
@@ -294,13 +293,6 @@
                                 <div>
                                     <span>电子邮箱</span>
                                     <input type="text" name="email">
-                                </div>
-                                <div>
-                                    <span>是否锁定</span>
-                                    <select name="locked" id="add_juese_select1">
-                                        <option value="0">否</option>
-                                        <option value="1">是</option>
-                                    </select>
                                 </div>
                                 <div>
                                     <span>是否禁用</span>
@@ -316,51 +308,80 @@
 
                                     <ul id="lv1U">
                                         <img src="./images/user/plus_alt.png" id="lv1M" />
-                                        <input type="checkbox" id="allCheck" style="display: block; float: left; width: 15px; height: 15px;margin-top: 3px"/>
-                                        <li id="lv1L1">一级菜单
+                                        <input type="checkbox" id="allCheck" style="display: none;"/>
+                                        <li id="lv1L1">
+                                            <label for="allCheck">一级菜单</label>
                                             <ul id="lv2U" style="clear: left;">
                                                 <img src="./images/user/plus_alt.png" id="lv2M1" style="clear: left;"/>
-                                                <input type="checkbox" id="secondCheck1" style="display: block; float: left; width: 15px; height: 15px;margin-top: 3px"/>
-                                                <li id="lv2L1">二级菜单1
+                                                <input type="checkbox" id="secondCheck1" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
+                                                <li id="lv2L1">
+                                                    <label for="secondCheck1">二级菜单1</label>
                                                     <ul id="lv3U1" style="clear: left;">
-                                                        <input type="checkbox" name="lv3_1Check" class="lv3Checks"/>
-                                                        <li>三级菜单1_1</li>
-                                                        <input type="checkbox" name="lv3_1Check" class="lv3Checks"/>
-                                                        <li>三级菜单1_2</li>
-                                                        <input type="checkbox" name="lv3_1Check" class="lv3Checks"/>
-                                                        <li>三级菜单1_3</li>
+                                                        <input id="thirdCheck1" type="checkbox" name="lv3_1Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck1">
+                                                            <li>三级菜单1_1</li>
+                                                        </label>
+                                                        <input id="thirdCheck2" type="checkbox" name="lv3_1Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck2">
+                                                            <li>三级菜单1_2</li>
+                                                        </label>
+                                                        <input id="thirdCheck3" type="checkbox" name="lv3_1Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck3">
+                                                            <li>三级菜单1_3</li>
+                                                        </label>
                                                     </ul>
                                                 </li>
 
                                                 <img src="./images/user/plus_alt.png" id="lv2M2" style="clear: left;"/>
-                                                <input type="checkbox" id="secondCheck2" style="display: block; float: left; width: 15px; height: 15px;margin-top: 3px""/>
-                                                <li id="lv2L2"><span style="float: left;">二级菜单2</span>
+                                                <input type="checkbox" id="secondCheck2" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px""/>
+                                                <li id="lv2L2">
+                                                    <label for="secondCheck2"><span>二级菜单2</span></label>
                                                     <ul id="lv3U2" style="clear: left;">
-                                                        <input type="checkbox" name="lv3_2Check" class="lv3Checks"/>
-                                                        <li>三级菜单2_1</li>
-                                                        <input type="checkbox" name="lv3_2Check" class="lv3Checks"/>
-                                                        <li>三级菜单2_2</li>
-                                                        <input type="checkbox" name="lv3_2Check" class="lv3Checks"/>
-                                                        <li>三级菜单2_3</li>
-                                                        <input type="checkbox" name="lv3_2Check" class="lv3Checks"/>
-                                                        <li>三级菜单2_4</li>
-                                                        <input type="checkbox" name="lv3_2Check" class="lv3Checks"/>
-                                                        <li>三级菜单2_5</li>
+                                                        <input id="thirdCheck2_1" type="checkbox" name="lv3_2Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck2_1">
+                                                            <li>三级菜单2_1</li>
+                                                        </label>
+                                                        <input id="thirdCheck2_2" type="checkbox" name="lv3_2Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck2_2">
+                                                            <li>三级菜单2_2</li>
+                                                        </label>
+                                                        <input id="thirdCheck2_3" type="checkbox" name="lv3_2Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck2_3">
+                                                            <li>三级菜单2_3</li>
+                                                        </label>
+                                                        <input id="thirdCheck2_4" type="checkbox" name="lv3_2Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck2_4">
+                                                            <li>三级菜单2_4</li>
+                                                        </label>
+                                                        <input id="thirdCheck2_5" type="checkbox" name="lv3_2Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck2_5">
+                                                            <li>三级菜单2_5</li>
+                                                        </label>
+
                                                     </ul>
                                                 </li>
                                                 <img src="./images/user/plus_alt.png" id="lv2M3" style="clear: left;"/>
-                                                <input type="checkbox" id="secondCheck3" style="display: block; float: left; width: 15px; height: 15px;margin-top: 3px""/>
+                                                <input type="checkbox" id="secondCheck3" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px""/>
                                                 <li id="lv2L3">
-                                                    <span style="float: left;">二级菜单3</span>
+                                                    <label for="secondCheck3"><span>二级菜单3</span></label>
                                                     <ul id="lv3U3" style="clear: left;">
-                                                        <input type="checkbox" name="lv3_3Check" class="lv3Checks"/>
-                                                        <li>三级菜单3_1</li>
-                                                        <input type="checkbox" name="lv3_3Check" class="lv3Checks"/>
-                                                        <li>三级菜单3_2</li>
-                                                        <input type="checkbox" name="lv3_3Check" class="lv3Checks"/>
-                                                        <li>三级菜单3_3</li>
-                                                        <input type="checkbox" name="lv3_3Check" class="lv3Checks"/>
-                                                        <li>三级菜单3_4</li>
+                                                        <input id="thirdCheck3_1" type="checkbox" name="lv3_3Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck3_1">
+                                                            <li>三级菜单3_1</li>
+                                                        </label>
+                                                        <input id="thirdCheck3_2" type="checkbox" name="lv3_3Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck3_2">
+                                                            <li>三级菜单3_2</li>
+                                                        </label>
+                                                        <input id="thirdCheck3_3" type="checkbox" name="lv3_3Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck3_3">
+                                                            <li>三级菜单3_3</li>
+                                                        </label>
+                                                        <input id="thirdCheck3_4" type="checkbox" name="lv3_3Check" class="lv3Checks"/>
+                                                        <label for="thirdCheck3_4">
+                                                            <li>三级菜单3_4</li>
+                                                        </label>
+
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -373,41 +394,35 @@
                         </div>
                         <div class="add_juese_button">
                             <p class="add_juese_quxiao">取  消</p>
-                            <p>保  存</p>
+                            <p class="add_juese_commit">保  存</p>
                         </div>
                     </div>
-                    <!--编辑用户-->
-                    <div class="tip_update_user tip_add_truck show1" style="display:none">
-                        <p>编辑用户</p>
+                    <!--编辑角色-->
+                    <div class="tip_update_juese tip_add_truck show3" style="display:none">
+                        <p>编辑角色</p>
                         <div>
-                            <span>用户名</span>
-                            <input type="text" name="username">
+                            <span>角色名称</span>
+                            <input type="text" name="identityName">
                         </div>
                         <div>
-                            <span>电话</span>
-                            <input type="text" name="mobilePhone">
+                            <span>描述</span>
+                            <input type="text" name="memo">
                         </div>
                         <div>
-                            <span>电子邮箱</span>
+                            <span>xxx</span>
                             <input type="text" name="email">
                         </div>
-                        <div>
-                            <span>是否锁定</span>
-                            <select name="locked" id="update_user_select1">
-                                <option value="0">否</option>
-                                <option value="1">是</option>
-                            </select>
-                        </div>
+
                         <div>
                             <span>是否禁用</span>
-                            <select name="disable" id="update_user_select2">
+                            <select name="disable" id="update_juese_select2">
                                 <option value="0">否</option>
                                 <option value="1">是</option>
                             </select>
                         </div>
                         <div>
-                            <p class="add_car_quxiao update_user_quxiao">取  消</p>
-                            <p class="add_car_tijiao update_user_tijiao" id="commit">提  交</p>
+                            <p class="update_juese_quxiao">取  消</p>
+                            <p class="update_juese_tijiao" id="update_juese_commit">提  交</p>
                         </div>
                     </div>
                 </div>
