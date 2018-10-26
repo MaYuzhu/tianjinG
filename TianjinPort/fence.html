@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>电子围栏</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/fence.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" type="text/css" href="./js/OpenLayers/css/ol.css" />
+    <script src="./js/OpenLayers/build/ol.js" type="text/javascript"></script>
+    <style>
+        #map{
+            width: 720px;
+            height: 450px;
+        }
+        #map_res {
+            width: 545px;
+            height: 352px;
+        }
+
+        /* #map canvas {
+            width: 545px;
+            height: 352px;
+        } */
+    </style>
+
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div class="menu">
+                <div class="menuHolder">
+                    <div class="menuWindow">
+                        <ul class="p1">
+                            <li class="s1">
+                                <a href="javascript:;">
+                                    <img src="./images/menu.png" alt="">
+                                </a>
+                                <ul class="p2">
+                                    <li class="s2"><a href="./index.html"><span>实时监控 &gt;</span></a></li>
+                                    <li class="s2"><a href="./alarm.html"><span>报警管理 &gt;</span></a>
+                                    </li>
+                                    <li class="s2"><a href="./trail.html"><span>行驶轨迹 &gt;</span></a>
+                                    </li>
+                                    <li class="s2"><a href="./fence.html"><span>电子围栏 &gt;</span></a>
+                                    </li>
+                                    <li class="s2"><a href="javascript:;"><span>报表分析 &gt;</span></a>
+                                    </li>
+                                    <li class="s2 "><a href="./trailer.html"><span>车辆管理 &gt;</span></a>
+                                    </li>
+                                    <li class="s2 "><a href="./user.html"><span>用户管理 &gt;</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="title1">
+                <img src="./images/titlebig.png" alt="">
+            </div>
+            <div class="avatar"></div>
+        </header>
+        <div class="content">
+            <div class="top">
+                <p>电子围栏</p>
+                <div>
+                    <div class="weilan_add_wrap">
+                        <input type="text" id="weilan_add" placeholder="请选择时间范围">
+                        <label for="weilan_add"></label>
+                    </div>
+                    <div class="cha">查 询</div>
+                    <div class="add_wei">添加围栏</div>
+                </div>
+            </div>
+            <div class="_line"></div>
+            <table class="table1" style="display: table">
+                <tr>
+                    <th>序号</th>
+                    <th>围栏编号</th>
+                    <th>围栏名称</th>
+                    <th>有效性</th>
+                    <th>起始时间</th>
+                    <th>结束时间</th>
+                    <th>使用车辆</th>
+                    <th>编辑</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A112222222</td>
+                    <td>A112222222</td>
+                    <td>有</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>2018-3-5 12：00</td>
+                    <td>津A12233，津B11222...</td>
+                    <td>
+                        <a href="javascript:;">修改</a>
+                        <a href="javascript:;">禁用</a>
+                        <a href="javascript:;">删除</a>
+                    </td>
+                </tr>
+            </table>
+            <div class="add_1" style="display: none">
+                <div class="add_left">
+                    <div class="step">
+                        <div>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>
+                            <p>添加围栏</p>
+                            <p>填写围栏的时间</p>
+                        </li>
+                        <li>
+                            <p>绘制围栏</p>
+                            <p>绘制围栏区域</p>
+                        </li>
+                        <li>
+                            <p>添加车辆</p>
+                            <p>选择可分配任务的车辆</p>
+                        </li>
+                        <li>
+                            <p>完成</p>
+                            <p>完成任务下达</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="add_right" style="display: none">
+                    <div>
+                        <span>围栏编号</span>
+                        <input type="text">
+                    </div>
+                    <div>
+                        <span>围栏名称</span>
+                        <input type="text">
+                    </div>
+                    <div>
+                        <span>起始时间</span>
+                        <input type="text" id="add_right_start">
+                    </div>
+                    <div>
+                        <span>结束时间</span>
+                        <input type="text" id="add_right_end">
+                    </div>
+                    <div>
+                        <span>有效性</span>
+                        <input type="text">
+                    </div>
+                    <div>
+                        <span>备注</span>
+                        <textarea name="" id="add_right_beizhu" cols="30" rows="10"></textarea>
+                    </div>
+                    <div>
+                        <p class="add_right1_quxiao">取 消</p>
+                        <p class="add_right1_next">保存并继续</p>
+                    </div>
+                </div>
+                <div class="add_right_2" style="display: none">
+                    <div>
+                        <!--<div class="add_right_2_left">
+                            <p>手动绘制</p>
+                            <input id="duo" type="radio" name="huizhi" checked value="Polygon">
+                            <label for="duo" style="margin-right: 20px">多边形</label>
+                            <input id="yuan" type="radio" name="huizhi" value="Circle">
+                            <label for="yuan">圆形</label>
+
+                            <p>操作</p>
+                            <a href="" style="color:#fff" class="clearImg">清除</a>
+
+                        </div>-->
+                        <div class="add_right_2_right" id="map">
+                            <div class="add_right_2_left">
+                                <input id="duo" type="radio" name="huizhi" checked value="Polygon">
+                                <label id="myTip" for="duo">
+                                    <img src="./images/fence/san.png" alt="">
+                                </label>
+                                <input id="yuan" type="radio" name="huizhi" value="Circle">
+                                <label id="myTip2" for="yuan">
+                                    <img src="./images/fence/yuan.png" alt="">
+                                </label>
+                                <a id="myTip3" href="" style="color:#fff" class="clearImg">
+                                    <img src="./images/fence/shan.png" alt="">
+                                </a>
+
+                            </div>
+                            <!-- <img src="./images/fence/图层1.png" alt=""> -->
+                        </div>
+                        <div id="popup" class="ol-popup">
+                            <a href="" id="popup-closer" class="ol-popup-closer"></a>
+                            <div id="popup-conten"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="add_right_2_quxiao">取 消</p>
+                        <p class="add_right_2_prev">上 一 步</p>
+                        <p class="add_right_2_next">保存并继续</p>
+                    </div>
+                </div>
+                <div class="add_right_3" style="display: none">
+                    <div>
+                        <span>车辆列表</span>
+                        <select name="">
+                            <option value="">空闲</option>
+                            <option value="">忙碌</option>
+                            <option value="">其他</option>
+                        </select>
+                    </div>
+                    <table class="table2">
+                        <tr>
+                            <th>选择</th>
+                            <th>序号</th>
+                            <th>车辆列表</th>
+                            <th>车辆状态</th>
+                            <th>单位部门</th>
+                            <th>联系人</th>
+                            <th>联系方式</th>
+                        </tr>
+                        <!--<tr>
+                            <td><input id="table2_1" type="checkbox"><label for="table2_1"></label></td>
+                            <td>1</td>
+                            <td>拖车A13451</td>
+                            <td>空闲</td>
+                            <td>XXX</td>
+                            <td>李XX</td>
+                            <td>13145613214</td>
+                        </tr>-->
+                    </table>
+                    <div class="add3_next">
+                        <div></div>
+                        <div class="on5"></div>
+                    </div>
+                    <div>
+                        <p class="add_right_3_quxiao">取 消</p>
+                        <p class="add_right_3_prev">上 一 步</p>
+                        <p class="add_right_3_next">保存并继续</p>
+                    </div>
+                </div>
+                <div class="add_right_4" style="display: none">
+                    <div>
+                        <div class="add_right_4_left">
+                            <p>手动绘制</p>
+                            <div>
+                                <p>您好！</p>
+                                <p>您已成功添加围栏12131，经纬度为：</p>
+                                <p>经度：117 </p>
+                                <p>纬度：36 </p>
+                            </div>
+                            <div>
+                                <p>此次任务您共分配车辆4台</p>
+                                <p>1.苏E345565</p>
+                                <p>2.苏E345565</p>
+                                <p>3.苏E345565</p>
+                                <p>4.苏E345565</p>
+                            </div>
+                            <div>
+                                <p>按保存将回到围栏列表</p>
+                                <p>按取消此前操作无效</p>
+                            </div>
+                        </div>
+                        <div class="add_right_4_right" id="map_res">
+                            <!-- <img src="./images/fence/图层1.png" alt=""> -->
+                        </div>
+                    </div>
+                    <div>
+                        <p class="add_right_4_quxiao">取 消</p>
+                        <p class="add_right_4_prev">上 一 步</p>
+                        <p class="add_right_4_next">保 存</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <footer>
+            <div></div>
+            <div class="on4"></div>
+        </footer>
+
+    </div>
+</body>
+<script src="./js/jquery-1.11.3.min.js"></script>
+<script src="http://lib.sinaapp.com/js/jquery.cookie/jquery.cookie.js"></script>
+
+<script src="./js/layDate-v5.0.9/laydate/laydate.js"></script>
+
+</html>
+<script src="./js/browser.js"></script>
+<script type="text/javascript" src="./js/map.js"></script>
+<script type="text/babel" src="./js/fence.js"></script>
+<script type="text/babel" src="./js/index.js"></script>
