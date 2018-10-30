@@ -270,7 +270,7 @@ footer div:last-child{
     color: #eee;
     display: none;
 }
-.tip_add_user>p,.tip_add_juese>p{
+.tip_add_user>p,.tip_add_juese>p,.tip_update_juese>p{
     text-align: center;
     font-size: 16px;
     font-weight: 600;
@@ -278,7 +278,7 @@ footer div:last-child{
     line-height: 36px;
     margin-top: 10px;
 }
-.tip_add_user_content,.tip_add_juese_content{
+.tip_add_user_content{
     display: flex;
     justify-content: space-around;
 }
@@ -441,10 +441,10 @@ footer div:last-child{
     cursor: pointer;
     color: #ccc;
 }
-/*添加角色弹窗*/
-.tip_add_juese{
-    width: 800px;
-    height: 600px;
+/*添加角色弹窗*/ /*编辑角色同*/
+.tip_add_juese,.tip_update_juese{
+    width: 300px;
+    height: 540px;
     background: #2e3854;
     border: 2px solid #687289;
     background-size: 100%,100%;
@@ -458,23 +458,31 @@ footer div:last-child{
     display: none;
 }
 .tip_add_juese_right{
-    width: 400px;
+    width: 300px;
+    height: 310px;
+    overflow: auto;
+    margin-top: 10px;
+}
+.tip_add_juese_right>p{
+    margin: 0px 0 6px 22px;
+    font-size: 12px;
+    font-weight: 600;
 }
 /*树结构*/
 #lv2U,#lv3U1,#lv3U2,#lv3U3 {
     display: none;
 }
-#tree ul{
+#tree ul,#update_role_tree ul{
     padding-left: 30px;
     line-height: 16px;
 }
-#tree li{
+#tree li,#update_role_tree li{
     line-height: 18px;
 }
-#tree ul li ul li ul{
+#tree ul li ul li ul,#update_role_tree ul li ul li ul{
     padding-left: 48px;
 }
-#tree img {
+#tree img,#update_role_tree img{
     display: block;
     float: left;
     width: 16px;
@@ -482,13 +490,13 @@ footer div:last-child{
     margin: 2px 6px;
     cursor: pointer;
 }
-#tree input[type='checkbox']{
+#tree input[type='checkbox'],#update_role_tree input[type='checkbox']{
     display: none;
 }
 .lv3Checks{
     display: block; float: left; clear: left; width: 15px; height: 15px;
 }
-#lv1U label::before{
+#lv1U label::before,#update_role_lv1U label::before{
     content: '';
     background-color: #181e3c;
     border-radius: 1px;
@@ -500,6 +508,15 @@ footer div:last-child{
     vertical-align: middle;
     line-height: 14px;
     margin: 0 6px 0 0;
+}
+#update_role_lv3U1 input[type='checkbox']:checked + label::before,
+#update_role_lv3U2 input[type='checkbox']:checked + label::before,
+#update_role_lv3U3 input[type='checkbox']:checked + label::before,
+#update_role_all_check:checked + #update_role_lv1L1>label::before,
+#update_role_secondCheck1:checked + #update_role_lv2L1>label::before,
+#update_role_secondCheck2:checked + #update_role_lv2L2>label::before,
+#update_role_secondCheck3:checked + #update_role_lv2L3>label::before{
+    content: "\2714";
 }
 #lv3U1 input[type='checkbox']:checked + label::before,
 #lv3U2 input[type='checkbox']:checked + label::before,
@@ -513,4 +530,10 @@ footer div:last-child{
 #lv3U1>label,#lv3U2>label,#lv3U3>label{
     display: flex;
     align-items: center;
+    width: 76px;
+}
+#update_role_lv3U1>label,#update_role_lv3U2>label,#update_role_lv3U3>label{
+    display: flex;
+    align-items: center;
+    width: 76px;
 }

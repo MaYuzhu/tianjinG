@@ -188,7 +188,7 @@
                             <div class="tip_add_user_right">
                                 <p>选择用户角色:</p>
                                 <ul>
-                                    <li>
+                                    <!--<li>
                                         <label>
                                             <input class="check_juese" type="checkbox">
                                             <span>中级管理员</span>
@@ -199,10 +199,10 @@
                                             <input class="check_juese" type="checkbox">
                                             <span>一般管理员</span>
                                         </label>
-                                    </li>
+                                    </li>-->
 
                                 </ul>
-                                <footer class="footer4">
+                                <footer class="footer4 tip_add_user_paging">
                                     <div></div>
                                     <div class="on7"></div>
                                 </footer>
@@ -253,7 +253,7 @@
                         <div><span>+</span> 添加角色</div>
                     </div>
                     <table class="juese_list">
-                        <tr>
+                        <!--<tr>
                             <th>序号</th>
                             <th>角色名称</th>
                             <th>状态</th>
@@ -266,10 +266,10 @@
                             <td>123654987@qq.com</td>
                             <td>XXX</td>
                             <td><a class="bianji" href="javascript:;">编辑</a></td>
-                        </tr>
+                        </tr>-->
 
                     </table>
-                    <footer class="footer3">
+                    <footer class="footer3 juese_list_paging">
                         <div></div>
                         <div class="on6"></div>
                     </footer>
@@ -284,15 +284,7 @@
                                 </div>
                                 <div>
                                     <span>备注</span>
-                                    <input type="text" name="addMemo">
-                                </div>
-                                <div>
-                                    <span>电话</span>
-                                    <input type="text" name="mobilePhone">
-                                </div>
-                                <div>
-                                    <span>电子邮箱</span>
-                                    <input type="text" name="email">
+                                    <input type="text" name="remarks">
                                 </div>
                                 <div>
                                     <span>是否禁用</span>
@@ -310,7 +302,7 @@
                                         <img src="./images/user/plus_alt.png" id="lv1M" />
                                         <input type="checkbox" id="allCheck" style="display: none;"/>
                                         <li id="lv1L1">
-                                            <label for="allCheck">一级菜单</label>
+                                            <label for="allCheck">所有权限</label>
                                             <ul id="lv2U" style="clear: left;">
                                                 <img src="./images/user/plus_alt.png" id="lv2M1" style="clear: left;"/>
                                                 <input type="checkbox" id="secondCheck1" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
@@ -398,9 +390,50 @@
                         </div>
                     </div>
                     <!--编辑角色-->
-                    <div class="tip_update_juese tip_add_truck show3" style="display:none">
+                    <div class="tip_update_juese show3" style="display:none">
                         <p>编辑角色</p>
-                        <div>
+                        <div class="tip_add_juese_content">
+                            <div class="tip_add_juese_left">
+                                <div>
+                                    <span>角色名称</span>
+                                    <input type="text" name="updateIdentityName">
+                                </div>
+                                <div>
+                                    <span>备注</span>
+                                    <input type="text" name="updateRemarks">
+                                </div>
+                                <div>
+                                    <span>是否禁用</span>
+                                    <select name="disable" id="update_juese_select2">
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="tip_add_juese_right">
+                                <p>更改角色权限:</p>
+                                <div id="update_role_tree">
+
+                                    <ul id="update_role_lv1U">
+                                        <img src="./images/user/plus_alt.png" id="update_role_lv1M" />
+                                        <input type="checkbox" id="update_role_all_check" style="display: none;"/>
+                                        <li id="update_role_lv1L1">
+                                            <label for="update_role_all_check">所有权限</label>
+                                            <ul id="update_role_lv2U" style="clear: left;">
+
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="add_juese_button">
+                            <p class="update_juese_quxiao">取  消</p>
+                            <p class="update_juese_commit">提  交</p>
+                        </div>
+                        <!--<div>
                             <span>角色名称</span>
                             <input type="text" name="identityName">
                         </div>
@@ -419,11 +452,8 @@
                                 <option value="0">否</option>
                                 <option value="1">是</option>
                             </select>
-                        </div>
-                        <div>
-                            <p class="update_juese_quxiao">取  消</p>
-                            <p class="update_juese_tijiao" id="update_juese_commit">提  交</p>
-                        </div>
+                        </div>-->
+
                     </div>
                 </div>
             </div>
