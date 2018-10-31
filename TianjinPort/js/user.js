@@ -1,6 +1,6 @@
 (function (w) {
     let url = 'http://192.168.20.18:8080'
-    //let url = 'http://36.110.66.318:8080'
+    //let url = 'http://36.110.66.218:8080'
     //table切换
     let $tab = $('.content_footer_left>li')
     $tab.on('click',(function() {
@@ -108,21 +108,52 @@
     $(".show3 input,.show3 select,.show3 textarea").mousedown(function(event){
         event.stopPropagation();
     });
+    //修改密码的取消按钮
+    $('.psd_quxiao').on('click',function () {
+        $('.update_psd input').val('')
+    })
     //添加账户按钮
-    var $_addUser = $('.content_footer_right3_top>:nth-child(3)')
+    const $_addUser = $('.content_footer_right3_top>:nth-child(3)')
     $_addUser.on('click',function () {
         $(".show").css('display','block')
+    })
+    //保存新添加的账户
+    $('.adduser_commit').on('click',function () {
+        let adduserData = {}
+        adduserData.username = $("input[name='add_username']").val()
+        adduserData.password = $("input[name='add_password']").val()
+        adduserData.mobilePhone = $("input[name='add_mobilePhone']").val()
+        adduserData.add_email = $("input[name='add_email']").val()
+        adduserData.locked = $("#add_user_select1").val()
+        adduserData.disable = $("#add_user_select2").val()
+        $.each($('.check_juese:checked'),function (index) {
+            adduserData[`roleId[${[index]}]`] = $(this).val()
+        })
+
+        $.ajax({
+            type:"POST",
+            async: true,
+            cache:true,
+            url: url + '/user/add',
+            data:adduserData,
+            dataType: 'json',
+            xhrFields:{
+                withCredentials:true
+            },
+            crossDomain: true,
+            success:function (json) {
+                console.log(json)
+            }
+        })
     })
     $('.adduser_quxiao').on('click',function () {
         $(".show").css('display','none')
     })
-    
-    $('.psd_quxiao').on('click',function () {
-        $('.update_psd input').val('')
-    })
+
     //增加角色按钮
     $('.content_footer_right4_top div').on('click',function () {
         $('.tip_add_juese').css('display','block')
+        $('.show2 input[type="checkbox"]').attr("checked", false)
     })
     $('.add_juese_quxiao').on('click',function () {
         $('.tip_add_juese').css('display','none')
@@ -130,7 +161,7 @@
 
     //角色权限树结构
     $(function() {
-        //新增角色
+        //新增角色的树
         $("#lv1M").click(function() {
             if($("#lv2U").is(":visible")) {
                 //                      alert("隐藏内容");
@@ -141,7 +172,7 @@
             }
             $("#lv2U").slideToggle(300);
         });
-        //编辑角色
+        //编辑角色的树
         $("#update_role_lv1M").click(function() {
             if($("#update_role_lv2U").is(":visible")) {
                 //                      alert("隐藏内容");
@@ -219,6 +250,7 @@
             crossDomain: true,
             success:function (json) {
                 //console.log(json)
+                let userId
                 $('.user_list').html(`<tr>
                            <th>序号</th>
                             <th>用户名</th>
@@ -240,59 +272,88 @@
                             <td>2018.09.26</td>
                             <td>${json.body.list[i].mobile_phone}</td>
                             <td>中级管理员</td>
-                            <td><a class="${json.body.list[i].user_id} a" href="javascript:;">编辑</a>
-                            <a class="del" href="javascript:;">删除</a></td>
+                            <td>
+                                <a class="update_user" value=${json.body.list[i].user_id} href="javascript:;">编辑</a>
+                                <a class="del_user" href="javascript:;">删除</a>
+                            </td>
                         </tr>`)
                 }
-                //编辑按钮
-                $(`.a`).on('click',function () {
+                //用户列表的编辑按钮
+                $('.update_user').on('click',function () {
                     $('.show1').css('display','block')
-                    $('.show1 input[name="username"]').val($(this).parent().siblings()[1].innerHTML)
-                    $('.show1 input[name="mobilePhone"]').val($(this).parent().siblings()[6].innerHTML)
-                    $('.show1 input[name="email"]').val($(this).parent().siblings()[3].innerHTML)
-                    let commit_id = $(this)[0].className.substr(0,2).trim()
-                    //console.log(commit_id)//.substr(0,2)
-                    $('.update_user_tijiao').attr('id',commit_id)
-                    //提交按钮
-                    $(`#${commit_id}`).unbind()
-                    $(`#${commit_id}`).on('click',function () {
-                        alert($(this).attr('id'))
-                        let user_id = $(this).attr('id')
-                        let username = $('.show1 input[name="username"]').val()
-                        let mobilePhone = $('.show1 input[name="mobilePhone"]').val()
-                        let email = $('.show1 input[name="email"]').val()
-                        let locked = Number($('#update_user_select1').val())
-                        let disable = Number($('#update_user_select2').val())
-                        console.log(email)
-                        $.ajax({
-                            type:"POST",
-                            async: true,
-                            cache:true,
-                            url: url + '/user/edit',
-                            //id=1&mobilePhone=13830305894
-                            data:{id:user_id,
-                                  username:username,
-                                  mobilePhone:mobilePhone,
-                                  email:email,
-                                  locked:locked,
-                                  disable:disable,
-                            },
-                            dataType: 'json',
-                            xhrFields:{
-                                withCredentials:true
-                            },
-                            crossDomain: true,
-                            success:function (json) {
-                                if(json.head.status.code==200){
-                                    console.log(json)
-                                    alert('提交成功')
+                    userId = $(this).attr('value')
+                    $('.show1 input[type="checkbox"]').attr("checked", false)
+                    $.ajax({
+                        type:"GET",
+                        async: true,
+                        cache:true,
+                        url: url + '/user/get',
+                        data:{userId:userId},
+                        dataType: 'json',
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        crossDomain: true,
+                        success:function (json) {
+                            console.log(json)
+                            $('.show1 input[name="update_username"]').val(json.body.username)
+                            $('.show1 input[name="update_mobilePhone"]').val(json.body.mobile_phone)
+                            $('.show1 input[name="update_email"]').val(json.body.email)
+                            $('#update_user_select1').val(json.body.locked)
+                            $('#update_user_select2').val(json.body.disable)
+                            let arr_roles = json.body.roles
+                            if(arr_roles.length>0){
+                                for(let i=0;i<arr_roles.length;i++){
+                                    let id = arr_roles[i].role_id
+                                    $(`.show1 input[value=${id}]`).prop("checked", true)
                                 }
-
-                            },
-                            error:function () {
-                                alert('编辑失败')
                             }
-                        })
+
+                        }
+                    })
+
+
+                })
+                //编辑用户提交按钮
+                $('.update_user_commit').on('click',function () {
+                    let updateUserData = {}
+                    updateUserData.userId = userId
+                    updateUserData.username = $("input[name='update_username']").val()
+                    updateUserData.mobilePhone = $("input[name='update_mobilePhone']").val()
+                    updateUserData.email = $("input[name='update_email']").val()
+
+                    updateUserData.locked = $('#update_user_select1').val()
+                    updateUserData.disable = $('#update_user_select2').val()
+
+                    $.each($('.check_juese:checked'),function (index) {
+                        updateUserData[`roleId[${[index]}]`] = $(this).val()
+                    })
+
+                    $.ajax({
+                        type:"POST",
+                        async: true,
+                        cache:true,
+                        url: url + '/user/edit',
+                        data:updateUserData,
+                        dataType: 'json',
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        crossDomain: true,
+                        success:function (json) {
+                            console.log(json)
+                            if(json.head.status.code == 200){
+                                alert('修改成功！')
+                                $('.show3').css('display','none')
+                                //window.location.reload()
+                            }else {
+                                alert(`修改失败！${json.head.status.code}错误`)
+                            }
+                        },
+                        error:function () {
+                            alert('修改失败！')
+                        }
+
                     })
                 })
                 $('.update_user_quxiao').on('click',function () {
@@ -340,7 +401,7 @@
             cache:true,
             url: url + '/role/search',
             data:{'page.number':userRolePage,
-                'page.size':2,
+                'page.size':10,
             },
             dataType: 'json',
             xhrFields:{
@@ -353,7 +414,7 @@
                 for(let i=0;i<json.body.list.length;i++){
                     $(`.tip_add_user_right ul`).append(`<li>
                                         <label>
-                                            <input class="check_juese" type="checkbox">
+                                            <input value=${json.body.list[i].role_id} class="check_juese" type="checkbox">
                                             <span>${json.body.list[i].identity_name}</span>
                                         </label>
                                     </li>`)
@@ -401,7 +462,7 @@
             cache:true,
             url: url + '/role/search',
             data:{'page.number':role_pageNumber,
-                'page.size':2,
+                'page.size':10,
             },
             dataType: 'json',
             xhrFields:{
@@ -410,6 +471,7 @@
             crossDomain: true,
             success:function (json) {
                 //console.log(json)
+                let roleId
                 $('.juese_list').html(`<tr>
                             <th>角色ID</th>
                             <th>角色名称</th>
@@ -424,17 +486,87 @@
                             <td>${json.body.list[i].disable}</td>
                             <td>XXX</td>
                             <td>
-                            <a class="bianji" href="javascript:;" value=${json.body.list[i].role_id}>编辑</a>
-                            <a class="del" href="javascript:;">删除</a>
+                            <a class="update_role" href="javascript:;" value=${json.body.list[i].role_id}>编辑</a>
+                            <a class="del_role" href="javascript:;">删除</a>
                             </td>
                         </tr>`)
                 }
-                //编辑角色
-                $('.bianji').on('click',function () {
+                //编辑角色回显
+                $('.update_role').on('click',function () {
                     $('.show3').css('display','block')
-                    $('.show3 input[name="updateIdentityName"]').val($(this).parent().siblings()[1].innerHTML)
-                    $('.show3 input[name="updateRemarks"]').val($(this).parent().siblings()[3].innerHTML)
+                    roleId = $(this).attr('value')
+                    $('.show3 input[type="checkbox"]').attr("checked", false)
+                    $.ajax({
+                        type:"GET",
+                        async: true,
+                        cache:true,
+                        url: url + '/role/get',
+                        data:{roleId:roleId},
+                        dataType: 'json',
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        crossDomain: true,
+                        success:function (json) {
+                            console.log(json)
+                            $('.show3 input[name="updateIdentityName"]').val(json.body.identity_name)
+                            $('.show3 input[name="updateRemarks"]').val(json.body.memo)
+                            $('#update_juese_select2').val(json.body.disable)
+                            let arr_resources = json.body.resources
+                            if(arr_resources.length>0){
+                                for(let i=0;i<arr_resources.length;i++){
+                                    let id = arr_resources[i].resource_id
+                                    $(`.show3 input[value=${id}]`).prop("checked", true)
+                                }
+                            }
 
+                        }
+                    })
+
+                })
+                //编辑角色后提交结果
+                $('.update_juese_commit').on('click',function () {
+                        let updateRoleData = {}
+                        updateRoleData.roleId = roleId
+                        updateRoleData.identityName = $("input[name='updateIdentityName']").val()
+                        updateRoleData.disable = $('#update_juese_select2').val()
+                        updateRoleData.memo = $('input[name="updateRemarks"]').val()
+
+                        $.each($('.update_role_lv3Checks:checked'),function (index) {
+                            //console.log(index + '个' + $(this).val())
+                            updateRoleData[`resourceId[${[index]}]`] = $(this).val()
+                        })
+                        //console.log(addRoleData)
+                        if(!updateRoleData.identityName){
+                            alert('请输入角色名称')
+                            return
+                        }
+                        $.ajax({
+                            type:"POST",
+                            async: true,
+                            cache:true,
+                            url: url + '/role/edit',
+                            data:updateRoleData,
+                            dataType: 'json',
+                            xhrFields:{
+                                withCredentials:true
+                            },
+                            crossDomain: true,
+                            success:function (json) {
+                                console.log(json)
+                                if(json.head.status.code == 200){
+                                    alert('修改成功！')
+                                    $('.show3').css('display','none')
+                                    window.location.reload()
+                                }else {
+                                    alert(`修改失败！${json.head.status.code}错误`)
+                                }
+                            },
+                            error:function () {
+                                alert('修改失败！')
+                            }
+
+                        })
                 })
                 $('.update_juese_quxiao').on('click',function () {
                     $('.show3').css('display','none')
@@ -531,6 +663,7 @@
                         if(json.head.status.code == 200){
                             alert('新增成功！')
                             $('.show2').css('display','none')
+                            window.location.reload()
                         }else {
                             alert(`提交失败！${json.head.status.code}错误`)
                         }
@@ -581,6 +714,7 @@
                     $(`#update_role_lv2M${i+1}`).css("visibility", "hidden");
                 }
             }
+
         },
         error:function () {
             console.log('fail')

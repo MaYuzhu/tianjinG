@@ -156,19 +156,19 @@
                             <div class="tip_add_user_left">
                                 <div>
                                     <span>用户名</span>
-                                    <input type="text" name="username">
+                                    <input type="text" name="add_username">
                                 </div>
                                 <div>
                                     <span>密码</span>
-                                    <input type="text" name="password">
+                                    <input type="password" name="add_password">
                                 </div>
                                 <div>
                                     <span>电话</span>
-                                    <input type="text" name="mobilePhone">
+                                    <input type="text" name="add_mobilePhone">
                                 </div>
                                 <div>
                                     <span>电子邮箱</span>
-                                    <input type="text" name="email">
+                                    <input type="text" name="add_email">
                                 </div>
                                 <div>
                                     <span>是否锁定</span>
@@ -200,7 +200,6 @@
                                             <span>一般管理员</span>
                                         </label>
                                     </li>-->
-
                                 </ul>
                                 <footer class="footer4 tip_add_user_paging">
                                     <div></div>
@@ -209,42 +208,71 @@
                             </div>
                         </div>
                         <div>
-                            <p class="adduser_quxiao">取  消</p>
-                            <p>保存</p>
+                            <p class="adduser_quxiao">取 消</p>
+                            <p class="adduser_commit">保 存</p>
                         </div>
                     </div>
                     <!--编辑用户-->
-                    <div class="tip_update_user tip_add_truck show1" style="display:none">
+                    <div class="tip_update_user show1" style="display:none">
                         <p>编辑用户</p>
-                        <div>
-                            <span>用户名</span>
-                            <input type="text" name="username">
-                        </div>
-                        <div>
-                            <span>电话</span>
-                            <input type="text" name="mobilePhone">
-                        </div>
-                        <div>
-                            <span>电子邮箱</span>
-                            <input type="text" name="email">
-                        </div>
-                        <div>
-                            <span>是否锁定</span>
-                            <select name="locked" id="update_user_select1">
-                                <option value="0">否</option>
-                                <option value="1">是</option>
-                            </select>
-                        </div>
-                        <div>
-                            <span>是否禁用</span>
-                            <select name="disable" id="update_user_select2">
-                                <option value="0">否</option>
-                                <option value="1">是</option>
-                            </select>
+                        <div class="tip_add_user_content">
+                            <div class="tip_add_user_left">
+                                <div>
+                                    <span>用户名</span>
+                                    <input type="text" name="update_username">
+                                </div>
+                                <!--<div>
+                                    <span>密码</span>
+                                    <input type="password" name="update_password">
+                                </div>-->
+                                <div>
+                                    <span>电话</span>
+                                    <input type="text" name="update_mobilePhone">
+                                </div>
+                                <div>
+                                    <span>电子邮箱</span>
+                                    <input type="text" name="update_email">
+                                </div>
+                                <div>
+                                    <span>是否锁定</span>
+                                    <select name="locked" id="update_user_select1">
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span>是否禁用</span>
+                                    <select name="disable" id="update_user_select2">
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="tip_add_user_right">
+                                <p>选择用户角色:</p>
+                                <ul>
+                                    <!--<li>
+                                        <label>
+                                            <input class="check_juese" type="checkbox">
+                                            <span>中级管理员</span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label>
+                                            <input class="check_juese" type="checkbox">
+                                            <span>一般管理员</span>
+                                        </label>
+                                    </li>-->
+                                </ul>
+                                <footer class="footer4 tip_add_user_paging">
+                                    <div></div>
+                                    <div class="on7"></div>
+                                </footer>
+                            </div>
                         </div>
                         <div>
                             <p class="update_user_quxiao">取  消</p>
-                            <p class="update_user_tijiao" id="update_user_commit">提  交</p>
+                            <p class="update_user_commit">提  交</p>
                         </div>
                     </div>
                 </div>
