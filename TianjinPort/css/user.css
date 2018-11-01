@@ -472,7 +472,7 @@ footer div:last-child{
     font-weight: 600;
 }
 /*树结构*/
-#lv2U,#lv3U1,#lv3U2,#lv3U3 {
+#lv2U,.lv3U,#update_role_lv2U,.update_role_lv3U  {
     display: none;
 }
 #tree ul,#update_role_tree ul{
@@ -488,8 +488,8 @@ footer div:last-child{
 #tree img,#update_role_tree img{
     display: block;
     float: left;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     margin: 2px 6px;
     cursor: pointer;
 }
@@ -499,7 +499,7 @@ footer div:last-child{
 /*.lv3Checks{
     display: block; float: left; clear: left; width: 15px; height: 15px;
 }*/
-#lv1U label::before,#update_role_lv1U label::before{
+.lv1U label::before,.update_role_lv1U label::before{
     content: '';
     background-color: #181e3c;
     border-radius: 1px;
@@ -510,32 +510,21 @@ footer div:last-child{
     text-align: center;
     vertical-align: middle;
     line-height: 14px;
-    margin: 0 6px 0 0;
+    margin: 0px 6px 0 0;
 }
-#update_role_lv3U1 input[type='checkbox']:checked + label::before,
-#update_role_lv3U2 input[type='checkbox']:checked + label::before,
-#update_role_lv3U3 input[type='checkbox']:checked + label::before,
-#update_role_all_check:checked + #update_role_lv1L1>label::before,
-#update_role_secondCheck1:checked + #update_role_lv2L1>label::before,
-#update_role_secondCheck2:checked + #update_role_lv2L2>label::before,
-#update_role_secondCheck3:checked + #update_role_lv2L3>label::before{
-    content: "\2714";
-}
-#lv3U1 input[type='checkbox']:checked + label::before,
-#lv3U2 input[type='checkbox']:checked + label::before,
-#lv3U3 input[type='checkbox']:checked + label::before,
+
 #allCheck:checked + #lv1L1>label::before,
-#secondCheck1:checked + #lv2L1>label::before,
-#secondCheck2:checked + #lv2L2>label::before,
-#secondCheck3:checked + #lv2L3>label::before{
+#update_role_all_check:checked + #update_role_lv1L1>label::before{
     content: "\2714";
 }
-#lv3U1>label,#lv3U2>label,#lv3U3>label{
-    display: flex;
-    align-items: center;
-    width: 76px;
+.lv3U input[type='checkbox']:checked + label::before,
+.secondCheck:checked + .lv2L>label::before,
+.update_role_lv3U input[type='checkbox']:checked + label::before,
+.update_role_secondCheck:checked + .update_role_lv2L>label::before{
+    content: "\2714";
 }
-#update_role_lv3U1>label,#update_role_lv3U2>label,#update_role_lv3U3>label{
+
+.lv3U>label,.update_role_lv3U>label{
     display: flex;
     align-items: center;
     width: 76px;

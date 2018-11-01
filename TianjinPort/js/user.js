@@ -274,7 +274,7 @@
                             <td>中级管理员</td>
                             <td>
                                 <a class="update_user" value=${json.body.list[i].user_id} href="javascript:;">编辑</a>
-                                <a class="del_user" href="javascript:;">删除</a>
+                                <a class="del_user" value=${json.body.list[i].user_id} href="javascript:;">删除</a>
                             </td>
                         </tr>`)
                 }
@@ -295,7 +295,7 @@
                         },
                         crossDomain: true,
                         success:function (json) {
-                            console.log(json)
+                            //console.log(json)
                             $('.show1 input[name="update_username"]').val(json.body.username)
                             $('.show1 input[name="update_mobilePhone"]').val(json.body.mobile_phone)
                             $('.show1 input[name="update_email"]').val(json.body.email)
@@ -313,6 +313,25 @@
                     })
 
 
+                })
+                //用户列表的删除按钮
+                $('.del_user').on('click',function () {
+                    userId = $(this).attr('value')
+                    $.ajax({
+                        type:"POST",
+                        async: true,
+                        cache:true,
+                        url: url + '/user/disable',
+                        data:{userId:userId},
+                        dataType: 'json',
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        crossDomain: true,
+                        success:function (json) {
+                            console.log(json)
+                        }
+                    })
                 })
                 //编辑用户提交按钮
                 $('.update_user_commit').on('click',function () {
@@ -487,7 +506,7 @@
                             <td>XXX</td>
                             <td>
                             <a class="update_role" href="javascript:;" value=${json.body.list[i].role_id}>编辑</a>
-                            <a class="del_role" href="javascript:;">删除</a>
+                            <a class="del_role" href="javascript:;" value=${json.body.list[i].role_id}>删除</a>
                             </td>
                         </tr>`)
                 }
@@ -522,7 +541,6 @@
 
                         }
                     })
-
                 })
                 //编辑角色后提交结果
                 $('.update_juese_commit').on('click',function () {
@@ -571,6 +589,25 @@
                 $('.update_juese_quxiao').on('click',function () {
                     $('.show3').css('display','none')
                 })
+                //角色列表删除按钮
+                $('.del_role').on('click',function () {
+                    roleId = $(this).attr('value')
+                    $.ajax({
+                        type:"POST",
+                        async: true,
+                        cache:true,
+                        url: url + '/role/disable',
+                        data:{roleId:roleId},
+                        dataType: 'json',
+                        xhrFields:{
+                            withCredentials:true
+                        },
+                        crossDomain: true,
+                        success:function (json) {
+                            console.log(json)
+                        }
+                    })
+                })
 
             },
             error:function () {
@@ -596,15 +633,14 @@
             $("#lv2U").html('')
             for(let i=0;i<json.body.length;i++){
                 $("#lv2U").append(`<img src="./images/user/plus_alt.png" id="lv2M${i+1}" style="clear: left;"/>
-                                    <input type="checkbox" id="secondCheck${i+1}" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
-                                    <li id="lv2L${i+1}">
+                                    <input type="checkbox" class="secondCheck" id="secondCheck${i+1}" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
+                                    <li id="lv2L${i+1}" class="lv2L">
                                         <label for="secondCheck${i+1}">${json.body[i].identity_name}</label>
-                                        <ul id="lv3U${i+1}" style="clear: left;">
+                                        <ul id="lv3U${i+1}" class="lv3U" style="clear: left;">
                                             
                                         </ul>
                                     </li>
                                 `)
-
                 $(`#lv2M${i+1}`).click(function() {
                     if($(`#lv3U${i+1}`).is(":visible")) {
                         //                     alert("隐藏内容");
@@ -679,10 +715,10 @@
             $("#update_role_lv2U").html('')
             for(let i=0;i<json.body.length;i++){
                 $("#update_role_lv2U").append(`<img src="./images/user/plus_alt.png" id="update_role_lv2M${i+1}" style="clear: left;"/>
-                                    <input type="checkbox" id="update_role_secondCheck${i+1}" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
-                                    <li id="update_role_lv2L${i+1}">
+                                    <input type="checkbox" class="update_role_secondCheck" id="update_role_secondCheck${i+1}" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
+                                    <li id="update_role_lv2L${i+1}" class="update_role_lv2L">
                                         <label for="update_role_secondCheck${i+1}">${json.body[i].identity_name}</label>
-                                        <ul id="update_role_lv3U${i+1}" style="clear: left;">
+                                        <ul id="update_role_lv3U${i+1}" class="update_role_lv3U" style="clear: left;">
                                             
                                         </ul>
                                     </li>

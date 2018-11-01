@@ -1,24 +1,21 @@
 var url = 'http://192.168.1.150:6080/arcgis/services/port_jt/port_tianj/MapServer/WMSServer';
 var pos = [13110795.607205058,4719031.500290665];
 const container = document.getElementById('popup');
-const content = document.getElementById('popup-conten');
+const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
+
 var drawType = "Polygon";
 
+//点击兴趣点弹出框使用
 const overlay = new ol.Overlay({
-    element: container,
-    autoPan: true,
+    element: container,//设置弹出框的容器
+    autoPan: true, //是否自动平移，即假如标记在屏幕边缘，弹出时自动平移地图使弹出框完全可见
     autoPanAnimation: {
         duration: 250
     }
 });
-// 关闭
-closer.onclick = function () {
-    overlay.setPosition(undefined);
-    closer.blur();
-    return false;
-};
 
+//地图layer配置， 可以多个layer
 var layers = [
     new ol.layer.Image({
         source: new ol.source.ImageWMS({
@@ -34,6 +31,7 @@ var layers = [
     })
 ];
 
+//实例化 map
 var map = new ol.Map({
     layers: layers,
     target: 'map',
@@ -48,6 +46,20 @@ var map = new ol.Map({
         doubleClickZoom: false,
     })
 });
+
+//var mousePositionControl = new ol.control.MousePosition({
+//    //样式类名称
+//    className: 'mosuePosition',
+//    //投影坐标格式，显示小数点后边多少位
+//    coordinateFormat: ol.coordinate.createStringXY(8),
+//    //指定投影
+//    projection: 'EPSG:4326',
+//    //目标容器
+//    target:document.getElementById('myposition')
+//});
+//map.addControl(mousePositionControl);
+
+// map 比例尺
 var scaleLineControl = new ol.control.ScaleLine({
     //设置度量单位为米
     units: 'metric',
@@ -56,10 +68,12 @@ var scaleLineControl = new ol.control.ScaleLine({
 });
 map.addControl(scaleLineControl);
 
+//定义保存动态GIS数据 矢量容器
 var source = new ol.source.Vector({
     features: features
 });
 
+//动态生成矢量层
 var vector = new ol.layer.Vector({
     source: source,
     style: new ol.style.Style({
@@ -80,6 +94,53 @@ var vector = new ol.layer.Vector({
 });
 map.addLayer(vector);
 // source.clear();
+
+//矢量图层鼠标点击事件
+map.on('click', function(e) {
+    //在点击时获取像素区域
+    var pixel = map.getEventPixel(e.originalEvent);
+    var msg ;
+    map.forEachFeatureAtPixel(pixel, function(feature) {
+    	var data = {'vehicleId': feature.getId()} ;
+    	getAjaxRequest("GET", interface_url+"vehicle/get", data, function(json){
+    		if(json.head.status.code == 200){
+    			var info = json.body;
+    			console.log(info.vehicle_id)
+    			console.log(info.plate_number)
+    			console.log(info.department.identity_name)
+    			msg = info.vehicle_id +"\n"+ info.plate_number +"\n"+ info.department.identity_name; 
+    			console.log(msg)
+    		}else{
+    			alert(json.head.status.message);
+    		}
+    	}, null);
+        //coodinate存放了点击时的坐标信息
+        var coodinate = e.coordinate;
+        //设置弹出框内容，可以HTML自定义
+        content.innerHTML = msg;
+        //设置overlay的显示位置
+        overlay.setPosition(coodinate);
+        //显示overlay
+        map.addOverlay(overlay);
+    });
+});
+
+//popup关闭事件
+closer.addEventListener('click', function() {
+    overlay.setPosition(undefined);
+    closer.blur();
+    return false;
+});
+
+////为map添加鼠标移动事件监听，当指向标注时改变鼠标光标状态
+//map.on('pointermove', function (e) {
+//    var pixel = map.getEventPixel(e.originalEvent);
+//    var hit = map.hasFeatureAtPixel(pixel);
+//    map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+//})
+
+
+
 var draw, snap;
 var temp;
 function addInteractions() {

@@ -1,23 +1,32 @@
 //version=1.0.0所有请求公用参数
+
+let pageNumber = 1 ; //当前页数
+let pageSize = 2; //每页显示条数
+let pages = 0; //总页数
+
+var features = [];
+var feature;
+
 (function (w) {
     //在线监测与轨迹切换
     let $tab = $('.right_content>:nth-child(1)>p')
     $tab.on('click', (function () {
-        var i = $(this).index();
-        $(this).addClass('on').siblings().removeClass('on');
-        $('.on img').css('display', 'block')
-        $('.box_right>div').eq(i).show().siblings().hide();
-    })
+	        var i = $(this).index();
+	        $(this).addClass('on').siblings().removeClass('on');
+	        $('.on img').css('display', 'block')
+	        $('.box_right>div').eq(i).show().siblings().hide();
+	    })
     );
-    //js添加拖车li
-    for (var i = 0; i < 12; i++) {
-        $('.list_che').append(`<li>
-                                <input type="checkbox" value="" id="myCheck+${i}" class="myCheck">
-                                <label for="myCheck+${i}"></label>
-                                <p>拖车A1233451</p>
-                                <div></div>
-                            </li>`)
-    }
+    
+    // 获取车辆实时状态
+    var data = {'state': 1, 'page.number':pageNumber, 'page.size':pageSize} ;
+    getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+    
+    // 获取车辆实时位置信息
+    var data = {'vehicleId':[7,8,9,10]};
+    getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
+   
+
     for (let i = 0; i < 5; i++) {
         $('.list_che2').append(`<li>
                                 <input type="checkbox" value="" id="myCheck2+${i}" class="myCheck">
@@ -91,59 +100,101 @@
             $('#dianziweilan').prop('checked', false);
         }
     })
-    //退出登录
-    $('.avatar').on('click',function () {
-        $.ajax({
-            type: 'GET',
-            async: true,
-            cache:true,
-            // url:'http://192.168.20.18:8080/user/get?userId=1',
-            url:'http://192.168.20.18:8080/user/get',
-            dataType: 'json',
-            //jsonp: "callback",
-            data:{userId:1},
-            xhrFields:{
-                withCredentials:true
-            },
-            crossDomain: true,
-            success: function(json){
-                console.log(json);
-            },
-            error: function(){
-                // alert('fail');
-            }
-        });
-        var r = confirm("确定退出此次登陆吗？");
-        if (r == true){
-
-            //http://192.168.20.18:8080/authc/logout
-            $.ajax({
-                type: 'POST',
-                async: false,
-                cache:true,
-                url:'http://192.168.20.18:8080/authc/logout',
-                dataType: 'json',
-                //jsonp: "callback",
-                xhrFields:{
-                    withCredentials:true
-                },
-                crossDomain: true,
-                success: function(json){
-                    console.log(json);
-                    location.href="./login.html";
-                },
-                error: function(){
-                    // alert('fail');
-                }
-            });
-        }
-
-    })
-
 })(window)
 
-var features = [];
-var feature;
+
+//车辆状态-下拉选择事件
+$("#state_car").change(function () {
+	var data = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
+	getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+});
+
+//车辆列表展示， 成功回调函数
+function rltCarState(json){
+	console.log(json);
+	if(json.head.status.code == 200){
+		$('.list_che').empty();
+		var cars = json.body.list;
+		pages = json.body.pages;
+		for (var i = 0; i < cars.length; i++) {
+			 $('.list_che').append(`<li>
+                     <input type="checkbox" value="" id="myCheck2+${i}" class="myCheck">
+                     <label for="myCheck2+${i}"></label>
+                     <p>` + cars[i].plate_number + `</p>
+                     <div></div>
+                 </li>`)   
+	    }
+	}else{
+		alert(json.head.status.message);
+	}
+}
+
+//上一页事件处理
+$('.fst').click(function () {
+	if(pageNumber > 1){
+		pageNumber--;
+		var data = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
+		getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+	}
+});
+
+//下一页事件处理
+$('.lst').click(function () {
+	if(pageNumber < pages){
+		pageNumber++;
+		var data = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
+		getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+	}
+});
+
+//跟踪按钮-事件处理
+var bool = true;
+var tmp ;
+$('.button_gen').click(btnFlush);
+function btnFlush() {
+	if(bool){
+		bool = false;
+		tmp = setInterval(getCurData, 1000);
+	}else{
+		bool = true;
+		clearInterval(tmp);
+	}
+}
+function getCurData(){
+	var data = {'vehicleId':[7,8,9,10]};
+	getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
+}
+
+
+var carFeatures = [];
+var carSource;
+var carLayer;
+
+//获取车辆实时-回调函数
+function realTimeCarData(json){
+	if(json.head.status.code == 200){
+		var curDatas = json.body;
+		carFeatures = [];
+		if(carLayer){
+			map.removeLayer(carLayer);
+		}
+		for (var i = 0; i < curDatas.length; i++) {
+			var vid = curDatas[i].vehicle_id;
+			var vdata = curDatas[i].packet_data[0].data;
+			var vtime = curDatas[i].packet_data[0].time;
+			//insertMapPoint(carFeatures,vdata.longitude, vdata.latitude);
+			insertMapPoint(carFeatures,117.779, 38.982, vid);	
+	    }
+		carSource = new ol.source.Vector({features: carFeatures});
+        carLayer = new ol.layer.Vector({ source: carSource });
+        map.addLayer(carLayer);
+	}else{
+		alert(json.head.status.message);
+	}
+}
+
+
+
 
 $(".dianzi").click(function () {
     
