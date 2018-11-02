@@ -7,6 +7,7 @@
  * @param errFunc  失败回调
  * @returns
  */
+
 function getAjaxRequest(type, url, data, succFunc, errFunc){
 	$.ajax({
 	    type: type,
@@ -25,6 +26,27 @@ function getAjaxRequest(type, url, data, succFunc, errFunc){
 	    },
 	    error: errFunc
 	})
+}
+
+//有时候需要同步请求
+function getAsyncAjaxRequest(type, url, data, async, succFunc, errFunc){
+    $.ajax({
+        type: type,
+        url: url,
+        data: data,
+        dataType: 'json',
+        xhrFields:{
+            withCredentials:true
+        },
+        traditional: true,
+        crossDomain: true,
+        cache:true,
+        async: async,
+        success: function (json) {
+            succFunc(json);
+        },
+        error: errFunc
+    })
 }
 
 /**

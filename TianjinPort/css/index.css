@@ -303,20 +303,20 @@ html,body{
 .menuHolder .a3 li:hover > a {background:#b00; color:#fff;}*/
 
 .menuWindow {
-    width:110px;
-    height:110px;
+    width:60px;
+    height:60px;
     overflow:hidden;
     position:absolute;
     left:0;
     top:0;
     z-index:100;
-    -webkit-transition:0s 1s;
-    -moz-transition:0s 1s;
-    -ms-transition:0s 1s;
-    -o-transition:0s 1s;
-    transition:0s 1s;
+    -webkit-transition:0s .5s;
+    -moz-transition:0s .5s;
+    -ms-transition:0s .5s;
+    -o-transition:0s .5s;
+    transition:0s .5s;
 }
-.menuHolder:hover .menuWindow {
+.menuHolder:hover .menuWindow{
     width:204px;
     height:204px;
     border-radius: 0 0 100% 0;
@@ -325,6 +325,7 @@ html,body{
     -ms-transition:0s 0s;
     -o-transition:0s 0s;
     transition:0s 0s;
+    /*background: red;*/
 }
 .menuHolder span {
     display:block;

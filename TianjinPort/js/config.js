@@ -1,4 +1,4 @@
-interface_url = 'http://192.168.20.18:8080/';
+const interface_url = 'http://192.168.20.18:8080/';
 
 
 //退出登录

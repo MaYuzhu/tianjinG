@@ -165,9 +165,16 @@ footer div:last-child{
     background-image: url("../images/css_sprites.png");
     background-position: -23px -42px;
 }
-.footer1 .on4,.footer2 .on5,.footer3 .on6,.footer4 .on7{
+.footer1 .on4,.footer3 .on6,.footer4 .on7{
     background-color: #0d0d30;
 }
+.page_on{
+    background-color: #0d0d30;
+}
+.page_on_not{
+    cursor: not-allowed;
+}
+
 .content_footer_right3_top,.content_footer_right4_top{
     height: 42px;
     line-height: 42px;
@@ -256,8 +263,8 @@ footer div:last-child{
 
 /*添加账户*/
 .tip_add_user,.tip_update_user{
-    width: 600px;
-    height: 500px;
+    width: 300px;
+    height: 580px;
     background: #2e3854;
     border: 2px solid #687289;
     background-size: 100%,100%;
@@ -278,12 +285,15 @@ footer div:last-child{
     line-height: 36px;
     margin-top: 10px;
 }
-.tip_add_user_content{
-    display: flex;
-    justify-content: space-around;
+.tip_add_user_right ul{
+    margin-left: 55px;
+    width: 180px;
+    height: 200px;
+    overflow: auto;
 }
 .tip_add_user_right{
-    width: 240px;
+    width: 180px;
+    margin: 10px auto 20px 22px;
 }
 .tip_add_user_right>p{
     margin: 5px 0;
