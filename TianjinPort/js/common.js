@@ -52,23 +52,37 @@ function getAsyncAjaxRequest(type, url, data, async, succFunc, errFunc){
 /**
  * 
  * @param features 几何数据集
- * @param lon 经度
- * @param lat 纬度
+ * @param vdata 传感器数据
  * @param fid feature编号
  * @returns
  */
-function insertMapPoint(features, lon, lat, fid){
+function insertMapPoint(features, vdata, fid){
 	var feature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.fromLonLat([lon,lat]))
+        geometry: new ol.geom.Point(ol.proj.fromLonLat([Number(vdata.longitude),Number(vdata.latitude)]))
     });
 	feature.setId(fid);
 	feature.setStyle(
 		new ol.style.Style({
 	       image:new ol.style.Icon({
+	    	   rotation: Number(vdata.direction),
 	    	   color: "white",
 	    	   src:'/img/icon/1.png'
 	       })
 		})
 	)
     features.push(feature);
+}
+
+/**
+ * map定位
+ * @param lon 经度
+ * @param lat 纬度
+ * @returns
+ */
+function setMapView(lon, lat){
+	var ctPoint = new ol.View({
+        center: [lon, lat],
+        zoom: 15
+    });
+    map.setView(ctPoint);
 }

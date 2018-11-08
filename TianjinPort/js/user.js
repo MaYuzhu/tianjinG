@@ -430,7 +430,7 @@
     function getRoleList(json) {
         rolePageCount = Math.ceil(json.body.total/getRoleListData["page.size"])
         $('.juese_list').html(`<tr>
-                    <th>角色ID</th>
+                    <th>序号</th>
                     <th>角色名称</th>
                     <th>状态</th>
                     <th>描述</th>
@@ -438,7 +438,7 @@
                 </tr>`)
         for(let i=0;i<json.body.list.length;i++){
             $('.juese_list').append(`<tr>
-                    <td>${json.body.list[i].role_id}</td>
+                    <td>${i+1+getRoleListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].identity_name}</td>
                     <td>${json.body.list[i].disable}</td>
                     <td>XXX</td>

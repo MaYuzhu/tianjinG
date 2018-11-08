@@ -4,9 +4,6 @@ let pageNumber = 1 ; //当前页数
 let pageSize = 2; //每页显示条数
 let pages = 0; //总页数
 
-var features = [];
-var feature;
-
 (function (w) {
     //在线监测与轨迹切换
     let $tab = $('.right_content>:nth-child(1)>p')
@@ -23,7 +20,7 @@ var feature;
     getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
     
     // 获取车辆实时位置信息
-    var data = {'vehicleId':[7,8,9,10]};
+    var data = {'vehicleId':[21,22]};
     getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
    
 
@@ -161,87 +158,90 @@ function btnFlush() {
 	}
 }
 function getCurData(){
-	var data = {'vehicleId':[7,8,9,10]};
+	var data = {'vehicleId':[21,22]};
 	getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
 }
 
 
-var carFeatures = [];
-var carSource;
-var carLayer;
-
+var features = [];
 //获取车辆实时-回调函数
 function realTimeCarData(json){
 	if(json.head.status.code == 200){
-		var curDatas = json.body;
-		carFeatures = [];
-		if(carLayer){
-			map.removeLayer(carLayer);
+		//移除原来的坐标点
+		if(features.length>0){
+			source.clear();
+			features = []
 		}
+		var curDatas = json.body;
 		for (var i = 0; i < curDatas.length; i++) {
 			var vid = curDatas[i].vehicle_id;
 			var vdata = curDatas[i].packet_data[0].data;
 			var vtime = curDatas[i].packet_data[0].time;
-			//insertMapPoint(carFeatures,vdata.longitude, vdata.latitude);
-			insertMapPoint(carFeatures,117.779, 38.982, vid);	
+			insertMapPoint(features, vdata, vid);
 	    }
-		carSource = new ol.source.Vector({features: carFeatures});
-        carLayer = new ol.layer.Vector({ source: carSource });
-        map.addLayer(carLayer);
+		//增加新的坐标点，并更新地图
+		source.addFeatures(features)
+	    map.updateSize();
+		//map.getView().fit(source.getExtent(), map.getSize());
+	}else{
+		alert(json.head.status.message);
+	}
+}
+
+var fenceFeature;
+var fenceFeatures = [];
+var fenceSource;
+var fenceLayer;
+$(".dianzi").click(function () {
+    if($(".myCheck").is(':checked')){
+        if(fenceLayer){
+        	map.removeLayer(fenceLayer);
+        }
+        return true;
+    }
+    var data = {'page.size':100};
+	getAjaxRequest("GET", interface_url+"electronic-fence/search", data, eleFenceData, null);   
+});
+
+//地图上加载电子围栏数据
+function eleFenceData(json){
+	if(json.head.status.code == 200){
+		var wkt = 'POLYGON((';
+	    var db = json.body.list;
+	    for(let i=0; i<db.length; i++){
+	    	var lonlat = db.range.split(";");
+	    	if(db[i].type == "0" ){ //Circle
+	    		fenceFeature = new ol.Feature({
+	                geometry: new ol.geom.Circle(lonlat[0].split(","), lonlat[1])
+	            });
+	    		fenceFeatures.push(fenceFeature);
+	    	}
+	    	if(db[i].type == "1"){ //Polygon
+	    		 var wkt = 'POLYGON((';
+	    		 for(let j=0; j<lonlat.length; j++){
+	    			 wkt += lonlat[j].split(",")[0] + " " + lonlat[j].split(",")[1];
+	    			 if (lonlat.length != j + 1) {
+		                 wkt += ", ";
+		             }
+	    		 }
+	    		 wkt += '))';
+	    		 var format = new ol.format.WKT();
+		         fenceFeature = format.readFeature(wkt);
+		         fenceFeatures.push(fenceFeature);
+	    	}
+	    }
+	    fenceSource = new ol.source.Vector({features: fenceFeatures});
+	    fenceLayer = new ol.layer.Vector({ source: fenceSource });
+	    map.addLayer(fenceLayer);
 	}else{
 		alert(json.head.status.message);
 	}
 }
 
 
-
-
-$(".dianzi").click(function () {
-    
-    if($(".myCheck").is(':checked')){
-        features.forEach((v,k) => {
-            source.removeFeature(features[k]);
-        });
-        features = [];
-        return true;
-    }
-
-    var wkt = 'POLYGON((';
-    var db = $.cookie('db');
-    db = JSON.parse(db);
-    dbCoordinate = db.coordinate;
-    dbCoordinate.forEach(t => {
-        var getCoordinate = t.coordinate;
-        if (getCoordinate.name == 'Circle') {
-            feature = new ol.Feature({
-                geometry: new ol.geom.Circle(getCoordinate.data[0], getCoordinate.data[1])
-            });
-            features.push(feature);
-        } else if (getCoordinate.name == 'Polygon') {
-            var wkt = 'POLYGON((';
-            getCoordinate.data[0].forEach((v, k) => {
-                wkt += v[0] + " " + v[1];
-                if (getCoordinate.data[0].length != k + 1) {
-                    wkt += ", ";
-                }
-            });
-            wkt += '))';
-
-            var format = new ol.format.WKT();
-            feature = format.readFeature(wkt);
-            features.push(feature);
-        }
-    });
-    source.addFeatures(features)
-    map.updateSize();
-});
-// source.removeFeature(feature);
-
-
 $(function () {
-    // $.cookie('db', null);
     $(".button_cha").click(function () {
-        carTrack();
+    	selectVehTrack();
         setTimeout(function () {
             $(".play").css({ display: 'block' });
         }, 3000);

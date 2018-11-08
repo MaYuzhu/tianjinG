@@ -47,16 +47,16 @@ var map = new ol.Map({
     })
 });
 
-//var mousePositionControl = new ol.control.MousePosition({
-//    //样式类名称
-//    className: 'mosuePosition',
-//    //投影坐标格式，显示小数点后边多少位
-//    coordinateFormat: ol.coordinate.createStringXY(8),
-//    //指定投影
-//    projection: 'EPSG:4326',
-//    //目标容器
-//    target:document.getElementById('myposition')
-//});
+var mousePositionControl = new ol.control.MousePosition({
+    //样式类名称
+    className: 'mosuePosition',
+    //投影坐标格式，显示小数点后边多少位
+    coordinateFormat: ol.coordinate.createStringXY(8),
+    //指定投影
+    projection: 'EPSG:4326',
+    //目标容器
+    target:document.getElementById('myposition')
+});
 //map.addControl(mousePositionControl);
 
 // map 比例尺
@@ -188,6 +188,7 @@ function addInteractions() {
                 data: e.feature.getGeometry().getCoordinates()
             }
         }
+        console.log(JSON.stringify(graphical));
         $.cookie('coordinate', JSON.stringify(graphical));
     })
 }
@@ -201,101 +202,76 @@ $(".outrail").click(function () {
 });
 
 
-var temp = {};
-temp["start"] = { x: 117.77073383331297, y: 38.980696043880016 };
-temp["start_difference"] = {};
-
 //轨迹
-var line = null;
+var lineSources = null;
 var trackData = [];
-// $(function () {
-var carTrack = function () {
-    $.ajax({
-        type: "get",
-        url: "http://192.168.20.23:8282/vehperpos/lbs/gettrack.shtml",
-        data: {
-            starttime: "2017-10-28 12:41:00",
-            endtime: "2017-10-28 18:24:52",
-            uuid: "MA200001164"
-        },
-        cache: true,
-        dataType: "json"
-    }).done(function (result, textStatus, jqXHR) {
-        trackData = result;
+//车辆轨迹查询事件
+function selectVehTrack(){
+	var data = {'vehicleId':22, 'startTime':'2018-11-06 14:30:01' , 'endTime':'2018-11-06 14:40:01'};
+	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
+		if(json.head.status.code == 200){
+			trackData = json.body[0].packet_data;
+			// 折线
+	        var lineArray = [];
+	        for(var i=0; i<trackData.length; i++){
+	            lineArray.push(ol.proj.fromLonLat([trackData[i].data.longitude * 1, trackData[i].data.latitude * 1]));
+	        }
+	        if (lineSources){
+	        	lineSources.clear()//清除
+	        } 
 
-        //- 折线
-        var lineArray = [];
-        trackData.forEach(function (element, k) {
-            if (k == 0) {
-                temp["start_difference"] = { x: temp["start"].x - element.x, y: temp["start"].y - element.y };
-                // console.log(element);
-                // console.log(temp);
-                // return false;
-            }
-            element.x += temp["start_difference"].x;
-            element.y += temp["start_difference"].y;
-
-            lineArray.push(ol.proj.fromLonLat([element.x, element.y]));
-        });
-        if (line)
-            line.clear()//清除
-
-        line = new ol.source.Vector();
-        line.addFeature(new ol.Feature({
-            name: "折线",
-            geometry: new ol.geom.LineString(lineArray)
-        }));
-
-        map.addLayer(new ol.layer.Vector({
-            source: line,
-            style: [new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: '#0014ff',
-                    width: 1
-                })
-            })]
-        }));
-
-        // run_carMove = false;
-        n = 0;
-
-        // run_carMove = true;
-        if (run_carMove)
-            carMove();
-    });
+	        lineSources = new ol.source.Vector();
+	        lineSources.addFeature(new ol.Feature({
+	            name: "line",
+	            geometry: new ol.geom.LineString(lineArray)
+	        }));
+	        
+	        map.addLayer(new ol.layer.Vector({
+	            source: lineSources,
+	            style: [new ol.style.Style({
+	                stroke: new ol.style.Stroke({
+	                    color: '#0014ff',
+	                    width: 2
+	                })
+	            })]
+	        }));
+		}else{
+			alert(json.head.status.message);
+		}
+	}, null); 
 }
 
-var car1 = new ol.source.Vector();
 //模拟轨迹
-var saoguan = null;
-var n = 0;
-var run_carMove = false;
-//- 速度
-var speed = 60;
-
-// 图标样式
-var icon_1 = new ol.style.Style({
+var carLayer = null;
+var carSource = new ol.source.Vector();
+//图标样式
+var carStyle = new ol.style.Style({
     image: new ol.style.Icon({
         color: "white",
         src: "/img/icon/1.png",
         rotation: 0
     })
 });
-var icon_Vector = null;
+
+var pos = null;
+var run_carMove = false;
+//- 速度
+var speed = 60;
+var index = 0;
 
 var carMove = function () {
     if (trackData.length < 1) {
         alert("没有检测轨迹，请重试")
         return;
     }
-    //- 计算角度
-    if (n > 0) {
+	//- 计算角度
+    if (index > 0) {
         var ab = "A";
         var a90 = 0;
-        var v = getAngle(trackData[n - 1], trackData[n])
-        if (trackData[n - 1].x > trackData[n].x) {
+        var v = getAngle(trackData[index-1].data, trackData[index].data)
+        if (trackData[index-1].data.longitude > trackData[index].data.longitude) {
             ab = "A";
-            if (trackData[n - 1].y > trackData[n].y) {
+            if (trackData[index-1].data.latitude > trackData[index].data.latitude) {
                 a90 = 90 * 2;
             } else {
                 ab = "B";
@@ -303,7 +279,7 @@ var carMove = function () {
             }
         } else {
             ab = "B";
-            if (trackData[n - 1].y > trackData[n].y) {
+            if (trackData[index-1].data.latitude > trackData[index].data.latitude) {
                 a90 = 90 * 1;
             } else {
                 ab = "A";
@@ -312,7 +288,7 @@ var carMove = function () {
         }
         var Av = a90 + v[ab];
         if (v.A != 0 && v.B != 0) {
-            icon_1 = new ol.style.Style({
+        	carStyle = new ol.style.Style({
                 image: new ol.style.Icon({
                     color: "white",
                     src: "/img/icon/1.png",
@@ -320,50 +296,40 @@ var carMove = function () {
                 })
             });
         }
-
-        map.removeLayer(icon_Vector);
-        icon_Vector = new ol.layer.Vector({
+        map.removeLayer(carLayer);
+        carLayer = new ol.layer.Vector({
             name: "图标",
-            source: car1,
-            style: [icon_1]
+            source: carSource,
+            style: [carStyle]
         });
-        map.addLayer(icon_Vector);
+        map.addLayer(carLayer);
 
-        if (saoguan)
-            car1.removeFeature(saoguan);
+        if (pos)
+        	carSource.removeFeature(pos);
 
-        saoguan = new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[n].x, trackData[n].y]))
+        pos = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[index].data.longitude * 1, trackData[index].data.latitude * 1]))
         });
-        saoguan.on('click', function (event) {
-            // alert("头像");
-        });
-        car1.addFeature(saoguan);
+        carSource.addFeature(pos);
     }
-
-
-    n += 1;
-    if (!trackData[n]) {
-        n = 0;
+    index += 1;
+    if (!trackData[index]) {
+    	index = 0;
     }
-
     if (run_carMove) {
         setTimeout(carMove, speed);
     }
 }
-// });
-
 
 //func.js 亮点坐标计算
 var getAngle = function (A, B) {
-    var x1 = A.x;
-    var y1 = A.y;
-    var x2 = B.x;
-    var y2 = B.y;
+    var x1 = A.longitude;
+    var y1 = A.latitude;
+    var x2 = B.longitude;
+    var y2 = B.latitude;
 
     var a = Math.abs(x1 - x2);
     var b = Math.abs(y1 - y2);
-
     if (a === 0 || b === 0) {
         return {
             A: 0,
@@ -372,20 +338,14 @@ var getAngle = function (A, B) {
             ab: { A, B }
         }
     }
-
     var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-
     var randianToAngle = function (scale) {
         var radian = Math.acos(scale);
-
         var angle = 180 / Math.PI * radian;
-
         return Math.round(angle);
     }
-
     var angleA = randianToAngle(b / c);
     var angleB = randianToAngle(a / c);
-
     return {
         A: angleA,
         B: angleB,
