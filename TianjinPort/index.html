@@ -84,9 +84,9 @@
                                 <label for="dianziweilan" class="dianzi"></label>电子围栏</p>
                         </div>
                         <select name="" id="state_car">
-                            <option value="1">忙碌</option>
-                            <option value="0">空闲</option>
-                            <option value="-1">离线</option>
+                            <option value="2">忙碌</option>
+                            <option value="1">空闲</option>
+                            <option value="0">离线</option>
                         </select>
                         <ul class="list_che">
                             <!--<li>
@@ -98,7 +98,7 @@
                         </ul>
                         <div class="next_wrap">
                             <li class="fst"></li>
-                            <li class="lst on2"></li>
+                            <li class="lst page_on"></li>
                         </div>
                         <div class="button_gen">跟&nbsp;&nbsp;&nbsp;&nbsp;踪</div>
                     </div>
@@ -108,7 +108,7 @@
                             <p><input id="dianziweilan1" type="checkbox" value="1" class="myCheck_dian myCheck">
                                 <label for="dianziweilan1" class="dianzi"></label>电子围栏</p>
                         </div>
-                        <select name="" id="a2">
+                        <select name="index_department" id="a2">
                             <option value="">XXX部门</option>
                             <option value="">123</option>
                             <option value="">456</option>
@@ -123,7 +123,7 @@
                         </ul>
                         <div class="next_wrap3">
                             <li></li>
-                            <li class="on3"></li>
+                            <li></li>
                         </div>
                         <p class="time_select">时间选择</p>
                         <div class="one_guiji">
@@ -131,12 +131,12 @@
                             <label for="one_guiji"></label>
                         </div>
                         <div class="button_gui">
-                            <div class="button_dao">导&nbsp;&nbsp;&nbsp;&nbsp;出</div>
+                            <div class="button_dao" style="visibility: hidden">导&nbsp;&nbsp;&nbsp;&nbsp;出</div>
                             <div class="button_cha">查&nbsp;&nbsp;&nbsp;&nbsp;询</div>
                         </div>
                         <p class="time_select">模拟轨迹</p>
-                        <div class="play" style="display: none;">
-                            <div>
+                        <div class="play" style="display: block;">
+                            <div style="display: none;">
                                 <span>00:00</span>
                                 <div>
                                     <img src="./images/jindu.gif" alt="">
@@ -150,8 +150,8 @@
                                     <div id="play_3"><span></span><span></span></div>
                                 </div>
                                 <div class="play_after">
-                                    <div></div>
-                                    <div></div>
+                                    <div id="replay"></div>
+                                    <div id="delete_mark"></div>
                                 </div>
                             </div>
                         </div>

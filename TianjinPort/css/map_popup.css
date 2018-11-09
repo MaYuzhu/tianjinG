@@ -1,16 +1,25 @@
 .ol-popup {
     position: absolute;
-    background-color: rgba(1,61,85,.7);
+    /*background-color: rgba(1,61,85,.7);
+    border-radius: 10px;*/
     -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
     filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #013d55;
-    bottom: 12px;
-    left: -50px;
+    padding: 15px 20px;
+    border: 0px solid #013d55;
+    bottom: 2px;
+    left: -105px;
     min-width: 280px;
+    width: 280px;
+    height: 200px;
+    background: url("../images/tip.png") no-repeat center center;
+    background-size: 103% 105%;
+    color: #eee;
+    font-size: 13px;
 }
-.ol-popup:after, .ol-popup:before {
+.ol-popup p{
+    margin: 6px auto;
+}
+/*.ol-popup:after, .ol-popup:before {
     top: 100%;
     border: solid transparent;
     content: " ";
@@ -18,24 +27,24 @@
     width: 0;
     position: absolute;
     pointer-events: none;
-}
+}*/
 .ol-popup:after {
     border-top-color: #eeeeee;
     border-width: 10px;
     left: 48px;
     margin-left: -10px;
 }
-.ol-popup:before {
+/*.ol-popup:before {
     border-top-color: #cccccc;
     border-width: 11px;
     left: 48px;
     margin-left: -11px;
-}
+}*/
 .ol-popup-closer {
     text-decoration: none;
     position: absolute;
-    top: 2px;
-    right: 8px;
+    top: 8px;
+    right: 10px;
 }
 .ol-popup-closer:after {
     content: "✖";

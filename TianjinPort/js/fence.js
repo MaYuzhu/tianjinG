@@ -305,7 +305,7 @@
     let areaId
     let getFenceListData = {
         'page.number':fencePageNumber,
-        'page.size':4,
+        'page.size':3,
 
     }
     //围栏列表翻页
@@ -325,7 +325,8 @@
             $('.fence_list_footer>:nth-child(1)').addClass('page_on').removeClass('page_on_not')
             fencePageNumber++
             getFenceListData['page.number'] = fencePageNumber
-            getAjaxRequest("GET", interface_url+"electronic-fence/search", getFenceListData, succGetFenceList, null);
+            getAsyncAjaxRequest("GET", interface_url+"electronic-fence/search", getFenceListData,
+                        false, succGetFenceList, null);
             if(fencePageNumber==fencePageCount){
                 $('.fence_list_footer>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
             }
@@ -341,19 +342,25 @@
             alert('请选择查询时间')
             return false
         }
-        console.log(queryTime)
-        let getTimeFenceListData = {
-            time:queryTime
-        }
-        console.log(getTimeFenceListData)
-       /* getAjaxRequest("GET",interface_url+'electronic-fence/search',
-            getTimeFenceListData,succGetFenceList,errorFunc)*/
+        getFenceListData.validTime = queryTime
+
+        getAjaxRequest("GET",interface_url+'electronic-fence/search',
+            getFenceListData,succGetFenceList,errorFunc)
 
     })
 
     function succGetFenceList(json) {
         if(json.head.status.code == 200){
             fencePageCount = Math.ceil(json.body.total/getFenceListData["page.size"])
+            if(json.body.list<1){
+                alert('没有围栏符合该时间...')
+                return
+            }
+            if(fencePageCount<2){
+                $('.fence_list_footer>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
+            }else {
+                $('.fence_list_footer>:nth-child(2)').removeClass('page_on_not').addClass('page_on')
+            }
             $('.electronic_fence_table').html(`<tr>
                         <th>序号</th>
                         <th>围栏编号</th>
@@ -369,7 +376,7 @@
                     <td>${i+1+getFenceListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].area_id}</td>
                     <td>${json.body.list[i].area_name}</td>
-                    <td>${json.body.list[i].area_type==1?'有效':'失效'}</td>
+                    <td>${json.body.list[i].state==1?'有效':'失效'}</td>
                     <td>${json.body.list[i].start_time}</td>
                     <td>${json.body.list[i].end_time}</td>
                     <td>${json.body.list[i].area_type==1?'可进不可出':json.body.list[i].area_type==2?'可出不可进':'不可进不可出'}</td>
@@ -612,13 +619,14 @@ $(function () {
                 }
             });
             wkt += '))';
-            let polygon_d
+            let polygon_d = ''
             getCoordinate.data[0].forEach((v, k) => {
                 polygon_d += v[0] + " " + v[1];
                 if (getCoordinate.data[0].length != k + 1) {
                     polygon_d += ", ";
                 }
                 fenceAddDate.range = polygon_d
+                console.log(polygon_d)
             });
 
             var format = new ol.format.WKT();

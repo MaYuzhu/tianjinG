@@ -90,6 +90,47 @@
     $('.psd_quxiao').on('click',function () {
         $('.update_psd input').val('')
     })
+
+    //获取用户列表
+    let pageNumber = 1
+    let pageCount
+    let username = $.cookie('username')
+    let userId
+    let getUserListData = {
+        'page.number':pageNumber,
+        'page.size':4,
+        /*'username':username*/
+    }
+    getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
+        false, succFuncGetUserList, errorFunc)
+    $('.footer2>:nth-child(1)').on('click',function () {
+        if(pageNumber>1){
+            $('.footer2>:nth-child(2)').addClass('page_on').removeClass('page_on_not')
+            pageNumber --
+            getUserListData['page.number'] = pageNumber
+            getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
+                false, succFuncGetUserList, errorFunc)
+            if(pageNumber==1){
+                $('.footer2>:nth-child(1)').removeClass('page_on').addClass('page_on_not')
+            }
+        }
+
+    })
+    $('.footer2>:nth-child(2)').on('click',function () {
+        //console.log(pageCount)
+        if(pageNumber<pageCount){
+            $('.footer2>:nth-child(1)').addClass('page_on').removeClass('page_on_not')
+            pageNumber ++
+            getUserListData['page.number'] = pageNumber
+            getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
+                false, succFuncGetUserList, errorFunc)
+            if(pageNumber==pageCount){
+                $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
+            }
+        }
+
+    })
+
     //添加账户按钮
     const $_addUser = $('.content_footer_right3_top>:nth-child(3)')
     $_addUser.on('click',function () {
@@ -104,17 +145,32 @@
         adduserData.add_email = $("input[name='add_email']").val()
         adduserData.locked = $("#add_user_select1").val()
         adduserData.disable = $("#add_user_select2").val()
+        adduserData.roleId = []
         $.each($('.check_juese:checked'),function (index) {
-            adduserData[`roleId[${[index]}]`] = $(this).val()
+            adduserData.roleId.push($(this).val())
         })
+        if(!adduserData.username){
+            alert("请填写用户名...")
+            return
+        }
+        if(!adduserData.password){
+            alert("请填写密码...")
+            return
+        }
+        if(adduserData.roleId.length<1){
+            alert("请选择角色...")
+            return
+        }
 
         getAjaxRequest("POST", interface_url+"/user/add", adduserData, addUser, errorFunc)
         function addUser(json) {
             if(json.head.status.code==200){
                 alert('新添加账户成功！')
                 $('.adduser_quxiao').click()
+                getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
+                    false, succFuncGetUserList, errorFunc)
             }else{
-                alert("添加失败，错误"+json.head.status.code)
+                alert("添加失败，"+json.head.status.message)
                 $('.adduser_quxiao').click()
             }
         }
@@ -199,49 +255,12 @@
         });*/
     });
 
-    //获取用户列表
-    let pageNumber = 1
-    let pageCount
-    let username = $.cookie('username')
-    let userId
-    let getUserListData = {
-        'page.number':pageNumber,
-        'page.size':4,
-        /*'username':username*/
-    }
-    getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
-        false, succFuncGetUserList, errorFunc)
-    $('.footer2>:nth-child(1)').on('click',function () {
-        if(pageNumber>1){
-            $('.footer2>:nth-child(2)').addClass('page_on').removeClass('page_on_not')
-            pageNumber --
-            getUserListData['page.number'] = pageNumber
-            getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
-                false, succFuncGetUserList, errorFunc)
-            if(pageNumber==1){
-                $('.footer2>:nth-child(1)').removeClass('page_on').addClass('page_on_not')
-            }
-        }
-
-    })
-    $('.footer2>:nth-child(2)').on('click',function () {
-        //console.log(pageCount)
-        if(pageNumber<pageCount){
-            $('.footer2>:nth-child(1)').addClass('page_on').removeClass('page_on_not')
-            pageNumber ++
-            getUserListData['page.number'] = pageNumber
-            getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
-                false, succFuncGetUserList, errorFunc)
-            if(pageNumber==pageCount){
-                $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
-            }
-        }
-
-    })
-
     function succFuncGetUserList(json){
         //console.log(json)
         pageCount = Math.ceil(json.body.total/getUserListData["page.size"])
+        if(pageCount<2){
+            $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
+        }
         $('.user_list').html(`<tr>
                    <th>序号</th>
                     <th>用户名</th>
@@ -343,15 +362,24 @@
 
         updateUserData.locked = $('#update_user_select1').val()
         updateUserData.disable = $('#update_user_select2').val()
-
-        $.each($('.check_juese:checked'),function (index) {
-            updateUserData[`roleId[${[index]}]`] = $(this).val()
+        updateUserData.roleId = []
+        $.each($('.check_juese:checked'),function () {
+            updateUserData.roleId.push($(this).val())
         })
+        if(!adduserData.username){
+            alert("请填写用户名...")
+            return
+        }
+        if(updateUserData.roleId.length<1){
+            alert("请选择角色...")
+            return
+        }
 
         $.ajax({
             type:"POST",
             async: true,
             cache:true,
+            traditional: true,
             url: url + '/user/edit',
             data:updateUserData,
             dataType: 'json',
@@ -429,6 +457,9 @@
 
     function getRoleList(json) {
         rolePageCount = Math.ceil(json.body.total/getRoleListData["page.size"])
+        if(rolePageCount<2){
+            $('.juese_list_paging>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
+        }
         $('.juese_list').html(`<tr>
                     <th>序号</th>
                     <th>角色名称</th>
@@ -487,14 +518,17 @@
             updateRoleData.identityName = $("input[name='updateIdentityName']").val()
             updateRoleData.disable = $('#update_juese_select2').val()
             updateRoleData.memo = $('input[name="updateRemarks"]').val()
-
+            updateRoleData.resourceId = []
             $.each($('.update_role_lv3Checks:checked'),function (index) {
                 //console.log(index + '个' + $(this).val())
-                updateRoleData[`resourceId[${[index]}]`] = $(this).val()
+                updateRoleData.resourceId.push($(this).val())
             })
-            //console.log(addRoleData)
+            if(updateRoleData.resourceId<1){
+                alert("请选择角色权限...")
+                return
+            }
             if(!updateRoleData.identityName){
-                alert('请输入角色名称')
+                alert('请输入角色名称...')
                 return
             }
             $.ajax({
@@ -507,13 +541,15 @@
                 xhrFields:{
                     withCredentials:true
                 },
+                traditional: true,
                 crossDomain: true,
                 success:function (json) {
                     console.log(json)
                     if(json.head.status.code == 200){
                         alert('修改成功！')
                         $('.show3').css('display','none')
-                        window.location.reload()
+                        getAjaxRequest("GET", interface_url+'role/search',
+                            getRoleListData, getRoleList, errorFunc)
                     }else {
                         alert(`修改失败！${json.head.status.code}错误`)
                     }
@@ -544,7 +580,11 @@
                     },
                     crossDomain: true,
                     success:function (json) {
-                        console.log(json)
+                        if(json.head.status.code == 200){
+                            alert('删除成功！')
+                            getAjaxRequest("GET", interface_url+'role/search',
+                                getRoleListData, getRoleList, errorFunc)
+                        }
                     }
                 })
             }
@@ -750,14 +790,18 @@
                 addRoleData.identityName = $("input[name='addIdentityName']").val()
                 addRoleData.disable = $('#add_juese_select2').val()
                 addRoleData.memo = $('input[name="remarks"]').val()
-
-                $.each($('.lv3Checks:checked'),function (index) {
+                addRoleData.resourceId = []
+                $.each($('.lv3Checks:checked'),function () {
                     //console.log(index + '个' + $(this).val())
-                    addRoleData[`resourceId[${[index]}]`] = $(this).val()
+                    addRoleData.resourceId.push($(this).val())
                 })
                 //console.log(addRoleData)
                 if(!addRoleData.identityName){
-                    alert('请输入角色名称')
+                    alert('请输入角色名称...')
+                    return
+                }
+                if(addRoleData.resourceId.length<1){
+                    alert('请选择角色权限...')
                     return
                 }
                 $.ajax({
@@ -770,15 +814,16 @@
                     xhrFields:{
                         withCredentials:true
                     },
+                    traditional: true,
                     crossDomain: true,
                     success:function (json) {
                         console.log(json)
                         if(json.head.status.code == 200){
                             alert('新增成功！')
                             $('.show2').css('display','none')
-                            window.location.reload()
+                            getAjaxRequest("GET", interface_url+'role/search', getRoleListData, getRoleList, errorFunc)
                         }else {
-                            alert(`提交失败！${json.head.status.code}错误`)
+                            alert(`提交失败！${json.head.status.message}`)
                         }
                     },
                     error:function () {

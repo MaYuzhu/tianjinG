@@ -20,33 +20,80 @@ let pages = 0; //总页数
     getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
     
     // 获取车辆实时位置信息
-    var data = {'vehicleId':[21,22]};
+    var data = {'vehicleId':[1,2]};
     getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
    
-
-    for (let i = 0; i < 5; i++) {
-        $('.list_che2').append(`<li>
-                                <input type="checkbox" value="" id="myCheck2+${i}" class="myCheck">
-                                <label for="myCheck2+${i}"></label>
-                                <p>拖车A1233451</p>
-                                <div></div>
-                            </li>`)
+    //获取部门添加到select里
+    let getVehicleData = {
+        'page.number':1,
+        'page.size':3,
+        pages:0,
+        departmentId:1
     }
-    //翻页三角
-    $('.next_wrap').on('click', function (ev) {
-        var $target = $(ev.target);
-        if ($target.prop("nodeName") == "LI") {
-            $('.next_wrap>li').removeClass('on2')
-            $target.addClass("on2");
+    getAjaxRequest("GET", interface_url+"department/search", null, getDepartment, null);
+    function getDepartment (json) {
+        if(json.head.status.code == 200){
+            $('#a2').empty()
+            for(let i=0;i<json.body.list.length;i++){
+                $('#a2').append(`<option value=${json.body.list[i].department_id}>
+                                    ${json.body.list[i].identity_name}</option>`)
+            }
+            //轨迹查询选择车辆列表
+            getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+            //按部门查找
+            $('#a2').on('change',function () {
+                getVehicleData.departmentId = $('#a2').val()
+                getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+            })
+            //翻页
+            $('.next_wrap3>:first-child').on('click', function () {
+                if(getVehicleData['page.number']>1){
+                    $('.next_wrap3>:last-child').addClass('page_on').removeClass('page_on_not')
+                    getVehicleData['page.number']--
+                    getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+                    if(getVehicleData['page.number']==1){
+                        $('.next_wrap3>:first-child').removeClass('page_on').addClass('page_on_not')
+                    }
+                }
+            })
+            $('.next_wrap3>:last-child').on('click', function () {
+                if(getVehicleData['page.number']<getVehicleData.pages){
+                    $('.next_wrap3>:first-child').addClass('page_on').removeClass('page_on_not')
+                    getVehicleData['page.number']++
+                    getAsyncAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, false, getVehicleList, null);
+                    if(getVehicleData['page.number']==getVehicleData.pages){
+                        $('.next_wrap3>:last-child').removeClass('page_on').addClass('page_on_not')
+                    }
+                }
+            })
         }
-    })
-    $('.next_wrap3').on('click', function (ev) {
-        var $target = $(ev.target);
-        if ($target.prop("nodeName") == "LI") {
-            $('.next_wrap3>li').removeClass('on3')
-            $target.addClass("on3");
+
+    }
+
+    function getVehicleList (json) {
+        //console.log(json)
+        if(json.head.status.code == 200){
+            getVehicleData.pages = json.body.pages
+            if(getVehicleData.pages<2){
+                $('.next_wrap3>:last-child').removeClass('page_on').addClass('page_on_not')
+                $('.next_wrap3>:first-child').removeClass('page_on').addClass('page_on_not')
+            }else {
+                $('.next_wrap3>:last-child').removeClass('page_on_not').addClass('page_on')
+            }
+            $('.list_che2').empty()
+            for (let i = 0; i < json.body.list.length; i++) {
+                $('.list_che2').append(`<li>
+                                <input name="vehicle_radio" type="radio" 
+                                    value=${json.body.list[i].vehicle_id} id="myCheck2${i}" class="myCheck">
+                                <label for="myCheck2${i}" class="vehicle_radio_label"></label>
+                                <p>拖车${json.body.list[i].plate_number}</p>
+                                <div class=${json.body.list[i].state==2?'red_ball':
+                                json.body.list[i].state==1?'green_ball':'gray_ball'}></div>
+                            </li>`)
+            }
         }
-    })
+    }
+
     //移入右侧显示
     $('.show_sanjiao').on('click', function () {
         $('.right_content').css('transform', 'translateX(0)')
@@ -97,6 +144,35 @@ let pages = 0; //总页数
             $('#dianziweilan').prop('checked', false);
         }
     })
+    //播放一些按钮移入文字提示mouseover
+    textTip($('#play_1'),'0.5X播放')
+    textTip($('#play_2'),'播放')
+    textTip($('#play_3'),'2X播放')
+    textTip($('#replay'),'重新播放')
+    textTip($('#delete_mark'),'删除轨迹')
+    function textTip(dom,string) {
+        dom.mouseover(function(event){
+            var tooltipHtml = `<div id='tooltip' class='tooltip'>${string}</div>`;
+            $(this).append(tooltipHtml);
+            $("#tooltip").css({
+                "top": (event.pageY)-(dom.offset().top) + 154 + "px",
+                "left": (event.pageX)-(dom.offset().left) + 50 + "px"
+            }).show("fast");
+        }).mouseout(function(){
+            $("#tooltip").remove();
+        })
+    }
+    $("#myTip").mouseover(function(event){
+        var tooltipHtml = "<div id='tooltip' class='tooltip'>绘制多边形</div>";
+        $(this).append(tooltipHtml);
+        $("#tooltip").css({
+            "top": (event.pageY)-($('#myTip').offset().top)+24 + "px",
+            "left": (event.pageX)-($('#myTip').offset().left) + "px"
+        }).show("fast");
+    }).mouseout(function(){
+        $("#tooltip").remove();
+    })
+
 })(window)
 
 
@@ -108,19 +184,37 @@ $("#state_car").change(function () {
 
 //车辆列表展示， 成功回调函数
 function rltCarState(json){
-	console.log(json);
+	//console.log(json);
 	if(json.head.status.code == 200){
 		$('.list_che').empty();
 		var cars = json.body.list;
 		pages = json.body.pages;
+		if(pages < 2){
+            $('.lst,.fst').addClass('page_on_not').removeClass('page_on')
+        }
 		for (var i = 0; i < cars.length; i++) {
 			 $('.list_che').append(`<li>
                      <input type="checkbox" value="" id="myCheck2+${i}" class="myCheck">
                      <label for="myCheck2+${i}"></label>
-                     <p>` + cars[i].plate_number + `</p>
+                     <p class="itemCar" value=${cars[i].vehicle_id}>${cars[i].plate_number}</p>
                      <div></div>
                  </li>`)   
 	    }
+	    $('.itemCar').on('click',function () {
+            let getCarData = {
+                vehicleId:$(this).attr('value')
+            }
+            getAjaxRequest("GET", interface_url+"location/realtime", getCarData, thisCarState, null);
+            function thisCarState (json){
+                if(json.head.status.code == 200){
+                    let lon = json.body[0].packet_data[0].data.longitude
+                    let lat = json.body[0].packet_data[0].data.latitude
+                    //setMapView(13110795.607205058,4719031.500290665)
+                    console.log(lon*100000,lat*100000)
+                    //setMapView(13110895.607205058,4719131.500290665)
+                }
+            }
+        })
 	}else{
 		alert(json.head.status.message);
 	}
@@ -129,18 +223,27 @@ function rltCarState(json){
 //上一页事件处理
 $('.fst').click(function () {
 	if(pageNumber > 1){
+        $('.lst').addClass('page_on').removeClass('page_on_not')
 		pageNumber--;
 		var data = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
 		getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+        if(pageNumber = 1){
+            $('.fst').addClass('page_on_not').removeClass('page_on')
+        }
 	}
 });
 
 //下一页事件处理
 $('.lst').click(function () {
 	if(pageNumber < pages){
+        $('.fst').addClass('page_on').removeClass('page_on_not')
 		pageNumber++;
 		var data = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
 		getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+		if(pageNumber == pages){
+            $('.lst').addClass('page_on_not').removeClass('page_on')
+        }
+
 	}
 });
 
@@ -209,29 +312,47 @@ function eleFenceData(json){
 		var wkt = 'POLYGON((';
 	    var db = json.body.list;
 	    for(let i=0; i<db.length; i++){
-	    	var lonlat = db.range.split(";");
-	    	if(db[i].type == "0" ){ //Circle
+	    	var lonlat = db[i].range.split(",");
+	    	if(db[i].shape == "1" ){ //Circle
 	    		fenceFeature = new ol.Feature({
-	                geometry: new ol.geom.Circle(lonlat[0].split(","), lonlat[1])
+	                geometry: new ol.geom.Circle([lonlat[0].split(" ")[0]*1, lonlat[0].split(" ")[1]*1], lonlat[1]*1)
 	            });
 	    		fenceFeatures.push(fenceFeature);
 	    	}
-	    	if(db[i].type == "1"){ //Polygon
+	    	if(db[i].shape == "2"){ //Polygon
 	    		 var wkt = 'POLYGON((';
 	    		 for(let j=0; j<lonlat.length; j++){
-	    			 wkt += lonlat[j].split(",")[0] + " " + lonlat[j].split(",")[1];
+	    			 wkt += lonlat[j];
 	    			 if (lonlat.length != j + 1) {
-		                 wkt += ", ";
+		                 wkt += ",";
 		             }
 	    		 }
 	    		 wkt += '))';
+	    		 console.log(wkt);
 	    		 var format = new ol.format.WKT();
 		         fenceFeature = format.readFeature(wkt);
 		         fenceFeatures.push(fenceFeature);
 	    	}
 	    }
 	    fenceSource = new ol.source.Vector({features: fenceFeatures});
-	    fenceLayer = new ol.layer.Vector({ source: fenceSource });
+	    fenceLayer = new ol.layer.Vector({
+	    	source: fenceSource,
+		    style: new ol.style.Style({
+		        fill: new ol.style.Fill({
+		            color: 'rgba(217, 220, 0, 0.3)'
+		        }),
+		        stroke: new ol.style.Stroke({
+		            color: '#fff',
+		            width: 2
+		        }),
+		        image: new ol.style.Circle({
+		            radius: 7,
+		            fill: new ol.style.Fill({
+		                color: '#ffcc33'
+		            })
+		        })
+		    })
+		});
 	    map.addLayer(fenceLayer);
 	}else{
 		alert(json.head.status.message);

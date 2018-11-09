@@ -101,23 +101,33 @@ map.on('click', function(e) {
     var pixel = map.getEventPixel(e.originalEvent);
     var msg ;
     map.forEachFeatureAtPixel(pixel, function(feature) {
+    	if(feature.getId() == null){
+    		return;
+    	}
     	var data = {'vehicleId': feature.getId()} ;
     	getAjaxRequest("GET", interface_url+"vehicle/get", data, function(json){
     		if(json.head.status.code == 200){
     			var info = json.body;
-    			console.log(info.vehicle_id)
+    			/*console.log(info.vehicle_id)
     			console.log(info.plate_number)
-    			console.log(info.department.identity_name)
+    			console.log(info.department.identity_name)*/
     			msg = info.vehicle_id +"\n"+ info.plate_number +"\n"+ info.department.identity_name; 
-    			console.log(msg)
+    			//console.log(info)
+                //设置弹出框内容，可以HTML自定义
+                $('#popup-content').html(`<p><span>车辆：</span><span>${info.plate_number}</span></p>
+                                            <p><span>部门：</span><span>${info.department.identity_name}</span></p>
+                                            <p><span>型号：</span><span>XXX</span></p>
+                                            <p><span>时间：</span><span>${info.travel_time}</span></p>
+                                            <p><span>平均速度：</span><span>${info.average_velocity}</span></p>
+                                            <p><span>总里程：</span><span>${info.total_mileage}&nbsp;,</span>&nbsp;&nbsp;<span>当日里程：</span><span>${info.daily_mileage}</span></p>
+                                            <p><span>状态：</span><span>${info.state==1?'空闲':info.state==2?'忙碌':'离线'}</span></p>`)
     		}else{
     			alert(json.head.status.message);
     		}
     	}, null);
         //coodinate存放了点击时的坐标信息
         var coodinate = e.coordinate;
-        //设置弹出框内容，可以HTML自定义
-        content.innerHTML = msg;
+
         //设置overlay的显示位置
         overlay.setPosition(coodinate);
         //显示overlay
@@ -138,8 +148,6 @@ closer.addEventListener('click', function() {
 //    var hit = map.hasFeatureAtPixel(pixel);
 //    map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 //})
-
-
 
 var draw, snap;
 var temp;
@@ -204,6 +212,7 @@ $(".outrail").click(function () {
 
 //轨迹
 var lineSources = null;
+var lineLayer = null;
 var trackData = [];
 //车辆轨迹查询事件
 function selectVehTrack(){
@@ -225,8 +234,7 @@ function selectVehTrack(){
 	            name: "line",
 	            geometry: new ol.geom.LineString(lineArray)
 	        }));
-	        
-	        map.addLayer(new ol.layer.Vector({
+	        lineLayer = new ol.layer.Vector({
 	            source: lineSources,
 	            style: [new ol.style.Style({
 	                stroke: new ol.style.Stroke({
@@ -234,7 +242,8 @@ function selectVehTrack(){
 	                    width: 2
 	                })
 	            })]
-	        }));
+	        });
+	        map.addLayer(lineLayer);
 		}else{
 			alert(json.head.status.message);
 		}
@@ -249,7 +258,7 @@ var carStyle = new ol.style.Style({
     image: new ol.style.Icon({
         color: "white",
         src: "/img/icon/1.png",
-        rotation: 0
+        rotation: 45
     })
 });
 
@@ -312,7 +321,7 @@ var carMove = function () {
         });
         carSource.addFeature(pos);
     }
-    index += 1;
+    index += 1 ;
     if (!trackData[index]) {
     	index = 0;
     }
