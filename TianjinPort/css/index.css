@@ -677,7 +677,6 @@ html,body{
     margin: 10px auto;
     border: inset 1px #262d5b;
     border-radius: 3px;
-    position: relative;
 }
 .play>:nth-child(1){
     height: 28px;
@@ -723,7 +722,6 @@ html,body{
     background: #151c35;
     border-radius: 50%;
     box-shadow: 1px 1px 1px 0px #172d48;
-    display: flex;
     cursor: pointer;
 }
 .play_before>:nth-child(2){
@@ -744,18 +742,33 @@ html,body{
     opacity: 0.8;
 }
 .play_before>:nth-child(1)>span,.play_before>:nth-child(3)>span{
-    transform: rotate(180deg) translate(-7px,-10px);
+    transform: rotate(180deg);
     display: block;
-    width: 10px;
-    height: 10px;
+    width: 24px;
+    height: 24px;
     margin-left: -2px;
-    background: url("../images/play_but.png") no-repeat;
-    background-size: 100% 100%;
+    background: url("../images/kuaijin.png") no-repeat;
+    background-size: 76% 66%;
     opacity: 0.8;
 }
 .play_before>:nth-child(3)>span{
     display: block;
-    transform: rotate(0deg) translate(10px,10px);
+    transform: rotate(0deg) translate(11px,8px);
+}
+#play_1,#play_2,#play_3,#replay,#delete_mark{
+    position: relative;
+}
+.tooltip{
+    width: 60px;
+    display: block;
+    background: #fff;
+    color: #333;
+    padding: 2px;
+    text-align: center;
+    position: absolute;
+    border: 1px solid #333;
+    box-shadow: 3px 3px 3px -1px #333;
+    z-index: 100;
 }
 .play_after{
     width: 68px;
@@ -765,7 +778,7 @@ html,body{
 .play_after>:nth-child(1),.play_after>:nth-child(2){
     width: 32px;
     height: 26px;
-    opacity: 0.7;
+    opacity: .8;
     cursor: pointer;
 }
 .play_after>:nth-child(1){

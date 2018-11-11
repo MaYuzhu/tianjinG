@@ -1,7 +1,7 @@
 
 (function (w) {
-    const url = 'http://192.168.20.18:8080'
-    //let url = 'http://36.110.66.218:8080'
+    //const url = 'http://192.168.20.18:8080'
+    const url = 'http://36.110.66.218:8080'
     //table切换
     let $tab = $('.content_footer_left>li')
     $tab.on('click',(function() {

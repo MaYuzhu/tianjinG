@@ -50,6 +50,7 @@
 </div>
 <script src="js/jquery-1.11.3.min.js"></script>
 <script src="js/jquery.cookie.js"></script>
+<script src="js/config.js"></script>
 <script>
     $(function () {
 
@@ -80,7 +81,7 @@
                 async: false,
                 cache:true,
                 //url:'http://36.110.66.218:8091/zzcismp/user/login.shtml',
-                url: 'http://192.168.20.18:8080/authc/login',
+                url: interface_url + 'authc/login',
                 data:{username:data.username,password:data.password},
                 dataType: 'json',
                 //jsonp: "callback",

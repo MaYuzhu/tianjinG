@@ -151,27 +151,19 @@ let pages = 0; //总页数
     textTip($('#replay'),'重新播放')
     textTip($('#delete_mark'),'删除轨迹')
     function textTip(dom,string) {
-        dom.mouseover(function(event){
-            var tooltipHtml = `<div id='tooltip' class='tooltip'>${string}</div>`;
-            $(this).append(tooltipHtml);
-            $("#tooltip").css({
-                "top": (event.pageY)-(dom.offset().top) + 154 + "px",
-                "left": (event.pageX)-(dom.offset().left) + 50 + "px"
-            }).show("fast");
-        }).mouseout(function(){
-            $("#tooltip").remove();
-        })
+	    dom.mouseover(function(event){
+		    var tooltipHtml = `<div id='tooltip' class='tooltip'>${string}</div>`;
+		    $(this).append(tooltipHtml);
+		    $("#tooltip").css({
+			    "opacity": .8,
+			    "top": (event.pageY)-(dom.offset().top) + 20 + "px",
+			    "left": (event.pageX)-(dom.offset().left) - 20 + "px"
+		    }).show("fast");
+	    }).mouseout(function(){
+		    $("#tooltip").remove();
+	    })
     }
-    $("#myTip").mouseover(function(event){
-        var tooltipHtml = "<div id='tooltip' class='tooltip'>绘制多边形</div>";
-        $(this).append(tooltipHtml);
-        $("#tooltip").css({
-            "top": (event.pageY)-($('#myTip').offset().top)+24 + "px",
-            "left": (event.pageX)-($('#myTip').offset().left) + "px"
-        }).show("fast");
-    }).mouseout(function(){
-        $("#tooltip").remove();
-    })
+
 
 })(window)
 

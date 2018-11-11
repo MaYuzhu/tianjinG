@@ -386,7 +386,8 @@ footer .on4{
 }
 .add_right_2_right{
     width: 720px;
-    height: 450px;
+    /*height: 450px;*/
+    height: 80%;
     margin-top: 20px;
     position: relative;
 }
