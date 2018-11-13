@@ -46,6 +46,17 @@ var map = new ol.Map({
         doubleClickZoom: false,
     })
 });
+var map_res = new ol.Map({
+    layers: layers,
+    target: 'map_res',
+    view: new ol.View({
+        center: pos,
+        zoom: 16
+    }),
+    interactions: new ol.interaction.defaults({
+        doubleClickZoom: false,
+    })
+});
 
 var mousePositionControl = new ol.control.MousePosition({
     //样式类名称
@@ -214,9 +225,17 @@ $(".outrail").click(function () {
 var lineSources = null;
 var lineLayer = null;
 var trackData = [];
+
 //车辆轨迹查询事件
 function selectVehTrack(){
-	var data = {'vehicleId':22, 'startTime':'2018-11-06 14:30:01' , 'endTime':'2018-11-06 14:40:01'};
+    var vehicleId = $('input[name="vehicle_radio"]:checked').val()
+    /*var startTime = '2018-11-06 14:30:01'
+    var endTime = '2018-11-06 14:40:01'*/
+
+    var startTime = $('#one_guiji').val().substr(0,19).trim()
+    var endTime = $('#one_guiji').val().substr(21,40).trim()
+
+	var data = {'vehicleId':vehicleId, 'startTime':startTime , 'endTime':endTime};
 	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
 		if(json.head.status.code == 200){
 			trackData = json.body[0].packet_data;
@@ -247,7 +266,7 @@ function selectVehTrack(){
 		}else{
 			alert(json.head.status.message);
 		}
-	}, null); 
+	}, null);
 }
 
 //模拟轨迹

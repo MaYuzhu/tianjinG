@@ -24,13 +24,14 @@
         /* #map canvas {
             width: 545px;
             height: 352px;
-        } */
+        }*/
     </style>
 
 </head>
 
 <body>
     <div class="wrap">
+
         <header>
             <div class="menu">
                 <div class="menuHolder">
@@ -66,6 +67,7 @@
             <div class="avatar"></div>
         </header>
         <div class="content">
+
             <div class="electronic_fence_list">
                 <div class="top">
                     <p>电子围栏</p>
@@ -173,6 +175,7 @@
             </div>
 
             <div class="electronic_fence_add" style="display: none">
+
                 <div class="top">
                     <p>电子围栏</p>
                 </div>
@@ -274,9 +277,9 @@
                         <div>
                             <span>车辆列表</span>
                             <select name="add_fence_carlist_state">
-                                <option value="1">忙碌</option>
-                                <option value="0">空闲</option>
-                                <option value="-1">离线</option>
+                                <option value="2">忙碌</option>
+                                <option value="1">空闲</option>
+                                <option value="0">离线</option>
                             </select>
                         </div>
                         <table class="table2 add_fence_car_list">
@@ -312,15 +315,15 @@
                     <div class="add_right_4" style="display: none">
                         <div>
                             <div class="add_right_4_left">
-                                <p>手动绘制</p>
-                                <div>
+                                <p>您好！</p>
+                                <spap style="color:#ccc;">此次任务您共分配以下车辆</spap>
+                                <div style="display: none">
                                     <p>您好！</p>
                                     <p>您已成功添加围栏12131，经纬度为：</p>
                                     <p>经度：117 </p>
                                     <p>纬度：36 </p>
                                 </div>
-                                <div>
-                                    <p>此次任务您共分配车辆4台</p>
+                                <div id="add_car_message">
                                     <p>1.苏E345565</p>
                                     <p>2.苏E345565</p>
                                     <p>3.苏E345565</p>

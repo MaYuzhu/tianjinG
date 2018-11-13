@@ -1,4 +1,5 @@
-(function (w) {
+let fenceAddDate = {}
+;(function (w) {
     //选择时间范围input
     laydate.render({
         elem: '#weilan_add'
@@ -91,7 +92,7 @@
                 $('.add_fence_car_list').append(`<tr>
                             <td>
                                 <input class="add_fence_car_item" id=${cars[i].vehicle_id}+'' type="checkbox" 
-                                       value=${cars[i].vehicle_id}>
+                                       value=${cars[i].vehicle_id}  name=拖车${cars[i].plate_number}>
                                 <label for=${cars[i].vehicle_id}+'' class="add_fence_car_label"></label>
                             </td>
                             <td>${cars[i].vehicle_id}</td>
@@ -131,6 +132,25 @@
     })
     //保存并继续1
     $('.add_right1_next').on('click',function () {
+        //18.11.5 ma
+        fenceAddDate.areaName = $('input[name=add_fence_name]').val()
+        fenceAddDate.startTime = $('#add_right_start').val()
+        fenceAddDate.endTime = $('#add_right_end').val()
+        fenceAddDate.areaType = $('select[name=fence_type]').val()
+        fenceAddDate.memo = $('textarea[name=memo]').val()
+        $.cookie('coordinate',null)
+        if(!fenceAddDate.areaName){
+            alert("请填写围栏名称...")
+            return
+        }
+        if(!fenceAddDate.startTime){
+            alert("请填写开始时间...")
+            return
+        }
+        if(!fenceAddDate.endTime){
+            alert("请填写结束时间...")
+            return
+        }
         $('.add_right').css('display','none')
         $('.add_right_2').css('display','block')
         $('.add_right_4').css('display','none')
@@ -139,6 +159,7 @@
             $('.step span').removeClass('active')
             $('.step span:nth-child(2)').addClass('active')
         }
+
     })
     //取消2
     $('.add_right_2_quxiao').on('click',function () {
@@ -160,13 +181,22 @@
         $('.step span:nth-child(1)').addClass('active')
     })
     //保存继续2
-    $('.add_right_2_next').on('click',function () {
-        var getCoordinate = $.cookie('coordinate');
-        /*if (!getCoordinate || getCoordinate == null || getCoordinate == "null") {
-            alert("请先绘制围栏。");
+    //18.11.6 ma
+    $(".add_right_2_next").on('click',function () {
+        var getCoordinate = $.cookie('coordinate')
+        if (!getCoordinate || getCoordinate == null || getCoordinate == "null") {
+            alert("请先绘制围栏!!!");
             return false;
-        }*/
-        /*map.removeInteraction(draw);
+        }
+        getCoordinate = JSON.parse(getCoordinate);
+        if(getCoordinate.name == 'Circle'){
+            fenceAddDate.shape = 1
+        }else if(getCoordinate.name == 'Polygon'){
+            fenceAddDate.shape = 2
+        }
+        //fenceAddDate.range = getCoordinate.data+''
+        //console.log(getCoordinate.data)
+        map.removeInteraction(draw);
         map.removeInteraction(snap);
         $('.add_right_2').css('display','none')
         $('.add_right').css('display','none')
@@ -175,8 +205,26 @@
         if($('.add_right_3').css('display')!=='none'){
             $('.step span').removeClass('active')
             $('.step span:nth-child(3)').addClass('active')
-        }*/
+        }
     })
+    /*$('.add_right_2_next').on('click',function () {
+        var getCoordinate = $.cookie('coordinate');
+
+        /!*if (!getCoordinate || getCoordinate == null || getCoordinate == "null") {
+            alert("请先绘制围栏。");
+            return false;
+        }*!/
+        /!*map.removeInteraction(draw);
+        map.removeInteraction(snap);
+        $('.add_right_2').css('display','none')
+        $('.add_right').css('display','none')
+        $('.add_right_4').css('display','none')
+        $('.add_right_3').css('display','block')
+        if($('.add_right_3').css('display')!=='none'){
+            $('.step span').removeClass('active')
+            $('.step span:nth-child(3)').addClass('active')
+        }*!/
+    })*/
     //取消3
     $('.add_right_3_quxiao').on('click',function () {
         $('.electronic_fence_list').css('display','table')
@@ -196,8 +244,20 @@
         $('.step span').removeClass('active')
         $('.step span:nth-child(2)').addClass('active')
     })
-    //保存继续3
-    $('.add_right_3_next').on('click',function () {
+    $('.add_right_3_next').on('click',function (){
+        //给新增的围栏添加车辆  18.11.6  ma
+        $('#add_car_message').empty()
+        let addCarList = []
+        $.each($('.add_fence_car_item:checked'),function (index) {
+            addCarList[index] = $(this).val()
+            $('#add_car_message').append(`<p>${$(this).attr("name")}</p>`)
+        })
+        fenceAddDate.vehicleId = addCarList
+        //console.log(fenceAddDate)
+        if(addCarList.length<1){
+            alert('请选择车辆...')
+            return
+        }
         $('.add_right_2').css('display','none')
         $('.add_right').css('display','none')
         $('.add_right_4').css('display','block')
@@ -206,7 +266,9 @@
             $('.step span').removeClass('active')
             $('.step span:nth-child(4)').addClass('active')
         }
+
     })
+
     //取消4
     $('.add_right_4_quxiao').on('click',function () {
         $('.electronic_fence_list').css('display','table')
@@ -306,7 +368,6 @@
     let getFenceListData = {
         'page.number':fencePageNumber,
         'page.size':3,
-
     }
     //围栏列表翻页
     $('.fence_list_footer>:nth-child(1)').on('click',function () {
@@ -332,8 +393,8 @@
             }
         }
     })
-    getAjaxRequest("GET",interface_url+'electronic-fence/search',
-        getFenceListData,succGetFenceList,errorFunc)
+    getAsyncAjaxRequest("GET", interface_url+'electronic-fence/search',
+        getFenceListData, false, succGetFenceList, errorFunc)
 
     //按时间查询围栏
     $('.cha').on('click',function () {
@@ -357,12 +418,13 @@
                 return
             }
             if(fencePageCount<2){
+                $('.fence_list_footer>:nth-child(1)').removeClass('page_on').addClass('page_on_not')
                 $('.fence_list_footer>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
             }else {
                 $('.fence_list_footer>:nth-child(2)').removeClass('page_on_not').addClass('page_on')
             }
+            //每页序号${i+1+getFenceListData["page.size"]*(json.body.number-1)}
             $('.electronic_fence_table').html(`<tr>
-                        <th>序号</th>
                         <th>围栏编号</th>
                         <th>围栏名称</th>
                         <th>有效性</th>
@@ -373,7 +435,6 @@
                     </tr>`)
             for(let i=0;i<json.body.list.length;i++){
                 $('.electronic_fence_table').append(`<tr>
-                    <td>${i+1+getFenceListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].area_id}</td>
                     <td>${json.body.list[i].area_name}</td>
                     <td>${json.body.list[i].state==1?'有效':'失效'}</td>
@@ -425,10 +486,9 @@
         function succDelFence(json){
             if(json.head.status.code == 200){
                 alert('删除成功!')
-                getAjaxRequest("GET",interface_url+'electronic-fence/search',getFenceListData,
-                    succGetFenceList,errorFunc)
+                location.reload()
             }else {
-                alert(`${json.head.status.code}错误,删除失败`)
+                alert(`删除失败${json.head.status.message}`)
             }
         }
 
@@ -502,7 +562,33 @@
     $('.editAreaFooter>:first-child').on('click',function () {
         $('.fence_edit').css('display','none')
     })
-    
+    //编辑围栏弹出框提交按钮  electronic-fence/edit
+    $('.editAreaFooter>:last-child').on('click',function () {
+        let editFenceData = {
+            areaId:areaId,
+            areaName:$('input[name=editAreaName]').val(),
+            startTime:$('#editAreaStartTime').val(),
+            endTime:$('#editAreaEndTime').val(),
+            areaType:$('#editAreaType').val(),
+            memo:$('input[name=editAreaMemo]').val(),
+            state:$('select[name=editAreaDisable]').val(),
+        }
+        editFenceData.vehicleId = []
+        $.each($('.editCarList ul input:checked'),function () {
+            editFenceData.vehicleId.push($(this).val())
+        })
+        console.log(editFenceData)
+        getAjaxRequest('POST', interface_url+'electronic-fence/edit', editFenceData, editFenceFunc, errorFunc)
+    })
+    function editFenceFunc(json) {
+        if(json.head.status.code == 200){
+            alert('修改围栏成功！')
+            $('.fence_edit').css('display','none')
+            location.reload()
+        }else{
+            alert(json.head.status.message);
+        }
+    }
     function editGetCarList(json) {
         if(json.head.status.code == 200){
             let cars = json.body.list;
@@ -534,7 +620,7 @@
 
 $(function () {
     var vector_this,source_res;
-    let fenceAddDate = {}
+    //let fenceAddDate = {}
     $("input[name=huizhi]").click(function () {
         // console.log($(this).val());
         drawType = $(this).val();
@@ -542,7 +628,7 @@ $(function () {
         map.removeInteraction(snap);
         addInteractions();
     });
-    var map_res = new ol.Map({
+    /*var map_res = new ol.Map({
         layers: layers,
         target: 'map_res',
         view: new ol.View({
@@ -552,49 +638,64 @@ $(function () {
         interactions: new ol.interaction.defaults({
             doubleClickZoom: false,
         })
-    });
+    });*/
+
     $(".add_right1_next").click(function () {
         map.updateSize();
         addInteractions();
         map_res.removeLayer(vector_this);
         map_res.updateSize();
-        //18.11.5 ma
-        fenceAddDate.areaName = $('input[name=add_fence_name]').val()
-        fenceAddDate.startTime = $('#add_right_start').val()
-        fenceAddDate.endTime = $('#add_right_end').val()
-        fenceAddDate.areaType = $('select[name=fence_type]').val()
-        fenceAddDate.memo = $('textarea[name=memo]').val()
-        source.clear()
-        $.cookie('coordinate',null)
     });
-    //18.11.6 ma
-    $(".add_right_2_next").on('click',function () {
-        var getCoordinate = $.cookie('coordinate')
-        if (!getCoordinate || getCoordinate == null || getCoordinate == "null") {
-            alert("请先绘制围栏!!!");
-            return false;
-        }
+    /*$(".add_right_3_next").click(function () {
+        var getCoordinate = $.cookie('coordinate');
+
         getCoordinate = JSON.parse(getCoordinate);
-        if(getCoordinate.name == 'Circle'){
-            fenceAddDate.shape = 1
-        }else if(getCoordinate.name == 'Polygon'){
-            fenceAddDate.shape = 2
-        }
-        //fenceAddDate.range = getCoordinate.data+''
-        //console.log(getCoordinate.data)
-        map.removeInteraction(draw);
-        map.removeInteraction(snap);
-        $('.add_right_2').css('display','none')
-        $('.add_right').css('display','none')
-        $('.add_right_4').css('display','none')
-        $('.add_right_3').css('display','block')
-        if($('.add_right_3').css('display')!=='none'){
-            $('.step span').removeClass('active')
-            $('.step span:nth-child(3)').addClass('active')
-        }
-    })
 
+        if (getCoordinate.name == 'Circle') {
+            var feature = new ol.Feature({
+                geometry: new ol.geom.Circle(getCoordinate.data[0], getCoordinate.data[1])
+            })
+        } else if (getCoordinate.name == 'Polygon') {
+            var wkt = 'POLYGON((';
+            getCoordinate.data[0].forEach((v, k) => {
+                wkt += v[0] + " " + v[1];
+                if (getCoordinate.data[0].length != k + 1) {
+                    wkt += ", ";
+                }
+            });
+            wkt += '))';
 
+            var format = new ol.format.WKT();
+            var feature = format.readFeature(wkt);
+        }
+
+        var source = new ol.source.Vector({
+            features: [feature]
+        });
+        source_res = source;
+
+        vector_this = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(217, 220, 0, 0.3)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#000',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
+                })
+            })
+        });
+        map_res.addLayer(vector_this);
+        map_res.updateSize();
+
+    });*/
     $(".add_right_3_next").click(function () {
         var getCoordinate = $.cookie('coordinate');
 
@@ -658,15 +759,7 @@ $(function () {
         });
         map_res.addLayer(vector_this);
         map_res.updateSize();
-
-        //给新增的围栏添加车辆  18.11.6  ma
-        let addCarList = []
-        $.each($('.add_fence_car_item:checked'),function (index) {
-            addCarList[index] = $(this).val()
-        })
-        fenceAddDate.vehicleId = addCarList
-        //console.log(fenceAddDate)
-    });
+      });
 
     $(".add_right_4_next").click(function () {
         var db = $.cookie('db');

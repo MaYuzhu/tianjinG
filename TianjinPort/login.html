@@ -53,7 +53,6 @@
 <script src="js/config.js"></script>
 <script>
     $(function () {
-
         if($.cookie('login_auto')){
             $(".username").val($.cookie('username'));
             $(".password").val($.cookie('password'));
@@ -118,6 +117,7 @@
             });
         });
     })
+    console.log(userInfo)
 </script>
 </body>
 </html>

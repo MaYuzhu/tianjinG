@@ -91,6 +91,7 @@ let pages = 0; //总页数
                                 json.body.list[i].state==1?'green_ball':'gray_ball'}></div>
                             </li>`)
             }
+            $('input[name="vehicle_radio"][value="1"]').attr('checked',true)
         }
     }
 
@@ -107,7 +108,7 @@ let pages = 0; //总页数
         elem: '#one_guiji'
         , type: 'datetime'
         , range: '~'
-        , format: 'M/d/H:m'
+        //, format: 'M/d/H:m'
     });
     /*laydate.render({
         elem: '#test16'
@@ -186,7 +187,7 @@ function rltCarState(json){
         }
 		for (var i = 0; i < cars.length; i++) {
 			 $('.list_che').append(`<li>
-                     <input type="checkbox" value="" id="myCheck2+${i}" class="myCheck">
+                     <input type="checkbox" value=${cars[i].vehicle_id} id="myCheck2+${i}" class="myCheck">
                      <label for="myCheck2+${i}"></label>
                      <p class="itemCar" value=${cars[i].vehicle_id}>${cars[i].plate_number}</p>
                      <div></div>
@@ -253,8 +254,13 @@ function btnFlush() {
 	}
 }
 function getCurData(){
-	var data = {'vehicleId':[21,22]};
-	getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
+	//var data = {'vehicleId':[1,2]};
+    var data = {}
+    data.vehicleId = []
+    $.each($('.list_che .myCheck:checked'),function () {
+        data.vehicleId.push($(this).val())
+    })
+    getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
 }
 
 
@@ -287,15 +293,23 @@ var fenceFeature;
 var fenceFeatures = [];
 var fenceSource;
 var fenceLayer;
+var flag_fence = true;
 $(".dianzi").click(function () {
-    if($(".myCheck").is(':checked')){
-        if(fenceLayer){
-        	map.removeLayer(fenceLayer);
+    if(flag_fence){
+        if($(".myCheck").is(':checked')){
+            if(fenceLayer){
+                map.removeLayer(fenceLayer);
+            }
+            var data = {'page.size':100};
+            getAjaxRequest("GET", interface_url+"electronic-fence/search", data, eleFenceData, null);
+            //return true;
         }
-        return true;
+        flag_fence = false;
+    }else {
+        map.removeLayer(fenceLayer);
+        flag_fence = true
     }
-    var data = {'page.size':100};
-	getAjaxRequest("GET", interface_url+"electronic-fence/search", data, eleFenceData, null);   
+
 });
 
 //地图上加载电子围栏数据
@@ -320,7 +334,7 @@ function eleFenceData(json){
 		             }
 	    		 }
 	    		 wkt += '))';
-	    		 console.log(wkt);
+	    		 //console.log(wkt);
 	    		 var format = new ol.format.WKT();
 		         fenceFeature = format.readFeature(wkt);
 		         fenceFeatures.push(fenceFeature);
@@ -370,7 +384,7 @@ $("#info").on('click',function () {
     infoJumpTo()
 })
 function jumpTo(p, url) {
-    var customerId=sessionStorage.customerId;
+    var customerId = sessionStorage.customerId;
     if (customerId == undefined) {
         alert('您尚未登录，请登录')
         p.attr("href", "./login.html");
@@ -383,7 +397,4 @@ function infoJumpTo() {
     var $info = $("#info");
     jumpTo($info, "./user.html");
 }
-/*function starJumpTo() {
-    var $star = $("#star");
-    jumpTo($star, "http://localhost/page/MyAccount/myAccount.html");
-}*/
+
