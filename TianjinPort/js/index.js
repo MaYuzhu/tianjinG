@@ -116,24 +116,7 @@ let pages = 0; //总页数
         ,range: '到'
         ,format: 'yyyy年M月d日H时m分s秒'
     });*/
-    //播放按钮
-    var flag = true
-    $('#play_2').on('click', function () {
-        if (flag) {
-            $('#play_2>span').css({
-                'background': 'url("./images/zanting.png") no-repeat left top',
-                'background-size': '100% 100%',
-                'margin': '11px 10px'
-            })
-            flag = false
-        } else if (!flag) {
-            $('#play_2>span').css({
-                'background': 'url("./images/play_but.png") no-repeat left top',
-                'margin': '11px 15px'
-            })
-            flag = true
-        }
-    })
+
     //两个电子围栏同时选中 懒得改结构了
     $('.myCheck_dian').on('click',function() {
         if (this.checked == true) {
@@ -373,11 +356,41 @@ $(function () {
             $(".play").css({ display: 'block' });
         }, 3000);
     });
-    $("#play_2").click(function () {
+    //播放按钮
+    /*$("#play_2").click(function () {
         run_carMove = true;
         carMove();
-    });
+    });*/
+    $('#play_2').on('click', function () {
+        if (!run_carMove) {
+            $('#play_2>span').css({
+                'background': 'url("./images/zanting.png") no-repeat left top',
+                'background-size': '100% 100%',
+                'margin': '11px 10px'
+            })
+            run_carMove = true
+            carMove()
+            $('#play_1').on('click',function () {
+                speed = 120
+                run_carMove = true
+                carMove()
+            })
+            $('#play_3').on('click',function () {
+                speed = 30
+                run_carMove = true
+                carMove()
+            })
+        } else if (run_carMove) {
+            $('#play_2>span').css({
+                'background': 'url("./images/play_but.png") no-repeat left top',
+                'margin': '11px 15px'
+            })
+            run_carMove = false
+        }
+    })
+
 })
+
 
 //跳转页面前判断用户是否登录
 $("#info").on('click',function () {

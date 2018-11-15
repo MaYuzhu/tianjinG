@@ -438,19 +438,9 @@
             $('.show3').css('display','block')
             roleId = $(this).attr('value')
             $('.show3 input[type="checkbox"]').attr("checked", false)
-            $.ajax({
-                type:"GET",
-                async: true,
-                cache:true,
-                url: url + '/role/get',
-                data:{roleId:roleId},
-                dataType: 'json',
-                xhrFields:{
-                    withCredentials:true
-                },
-                crossDomain: true,
-                success:function (json) {
-                    //console.log(json)
+            getAjaxRequest("GET", interface_url+"role/get", {roleId:roleId}, getRoleDisplay, errorFunc)
+            function getRoleDisplay(json){
+                if(json.head.status.code == 200){
                     $('.show3 input[name="updateIdentityName"]').val(json.body.identity_name)
                     $('.show3 input[name="updateRemarks"]').val(json.body.memo)
                     $('#update_juese_select2').val(json.body.disable)
@@ -461,9 +451,10 @@
                             $(`.show3 input[value=${id}]`).prop("checked", true)
                         }
                     }
-
+                }else {
+                    alert(json.head.status.message)
                 }
-            })
+            }
         })
         //角色列表删除按钮
         $('.del_role').on('click',function () {
@@ -643,6 +634,7 @@
         alert("请求失败,请检查您的网络是否通畅")
         console.log('file')
     }
+
 })(window)
 
 
