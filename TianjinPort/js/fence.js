@@ -126,6 +126,7 @@ Array.prototype.remove = function(val) {
             })
         }else{
             alert(json.head.status.message);
+            location.href="./login.html";
         }
     }
     var flag = true

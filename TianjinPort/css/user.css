@@ -271,7 +271,7 @@ footer div:last-child{
     position: absolute;
     top:20%;
     left: 30%;
-    z-index: 20;
+    z-index: 120;
     box-shadow: 0px 0px 18px 4px #0c0c19;
     cursor: move;
     color: #eee;
@@ -457,7 +457,7 @@ footer div:last-child{
 /*添加角色弹窗*/ /*编辑角色同*/
 .tip_add_juese,.tip_update_juese{
     width: 300px;
-    height: 540px;
+    height: 420px;
     background: #2e3854;
     border: 2px solid #687289;
     background-size: 100%,100%;
@@ -472,7 +472,7 @@ footer div:last-child{
 }
 .tip_add_juese_right{
     width: 300px;
-    height: 310px;
+    height: 210px;
     overflow: auto;
     margin-top: 10px;
 }

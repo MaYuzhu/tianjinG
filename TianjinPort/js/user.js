@@ -132,6 +132,35 @@
     $_addUser.on('click',function () {
         $(".show").css('display','block')
     })
+    //验证用户名是否存在
+    $("input[name='add_username']").change(function () {
+        let renameData = {username:$("input[name='add_username']").val()}
+        getAjaxRequest("GET", interface_url+"user/search", renameData, renameUser, errorFunc)
+        function renameUser(json){
+            if(json.head.status.code==200){
+                //style="color:#EC3937" '<p style="color:#e4393c">用户名已存在</p>'
+                if(json.body.list.length==1){
+                    //alert('该用户名已存在')
+                    $('.tip_add_user1').after(
+                        '<p style="color:#e4393c;margin:0px 0px -6px 75px">该用户名已存在</p>')
+                }else {
+                    $('.tip_add_user1+p').remove()
+                }
+
+            }
+        }
+    })
+    //密码验证长度
+    $("input[name='add_password']").change(function () {
+        if($("input[name='add_password']").val().length<6){
+            $('.tip_add_user2').after(
+                '<p style="color:#e4393c;margin:0px 0px -6px 75px">密码最少6位</p>')
+        }else {
+            $('.tip_add_user2+p').remove()
+        }
+    })
+    
+    
     //保存新添加的账户
     $('.adduser_commit').on('click',function () {
         let adduserData = {}
@@ -158,12 +187,12 @@
             return
         }
 
-        getAjaxRequest("POST", interface_url+"/user/add", adduserData, addUser, errorFunc)
+        getAjaxRequest("POST", interface_url+"user/add", adduserData, addUser, errorFunc)
         function addUser(json) {
             if(json.head.status.code==200){
                 alert('新添加账户成功！')
                 $('.adduser_quxiao').click()
-                getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
+                getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData,
                     false, succFuncGetUserList, errorFunc)
             }else{
                 alert("添加失败，"+json.head.status.message)
@@ -253,12 +282,12 @@
     });
 
     function succFuncGetUserList(json){
-        //console.log(json)
-        pageCount = Math.ceil(json.body.total/getUserListData["page.size"])
-        if(pageCount<2){
-            $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
-        }
-        $('.user_list').html(`<tr>
+        if(json.head.status.code == 200){
+            pageCount = Math.ceil(json.body.total/getUserListData["page.size"])
+            if(pageCount<2){
+                $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
+            }
+            $('.user_list').html(`<tr>
                    <th>序号</th>
                     <th>用户名</th>
                     <th>工作职位</th>
@@ -268,8 +297,8 @@
                     <th>联系电话</th>
                     <th>操作</th>
                 </tr>`)
-        for(let i=0;i<json.body.list.length;i++){
-            $('.user_list').append(`<tr>
+            for(let i=0;i<json.body.list.length;i++){
+                $('.user_list').append(`<tr>
                     <td>${i+1+getUserListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].username}</td>
                     <td>xxx</td>
@@ -282,45 +311,50 @@
                         <a class="del_user" value=${json.body.list[i].user_id} href="javascript:;">删除</a>
                     </td>
                 </tr>`)
-        }
-        //用户列表的编辑按钮
-        $('.update_user').on('click',function () {
-            $('.show1').css('display','block')
-            userId = $(this).attr('value')
-            $('.show1 input[type="checkbox"]').attr("checked", false)
-            getAjaxRequest("GET", interface_url+'user/get', {userId:userId}, getEditUser, errorFunc)
-            function getEditUser(json){
-                $('.show1 input[name="update_username"]').val(json.body.username)
-                $('.show1 input[name="update_mobilePhone"]').val(json.body.mobile_phone)
-                $('.show1 input[name="update_email"]').val(json.body.email)
-                $('#update_user_select1').val(json.body.locked)
-                $('#update_user_select2').val(json.body.disable)
-                let arr_roles = json.body.roles
-                if(arr_roles.length>0){
-                    for(let i=0;i<arr_roles.length;i++){
-                        let id = arr_roles[i].role_id
-                        $(`.show1 input[value=${id}]`).prop("checked", true)
-                    }
-                }
             }
-
-        })
-        //用户列表的删除按钮
-        $('.del_user').on('click',function () {
-            var r = confirm("确定删除此账户？");
-            if (r == true){
+            //用户列表的编辑按钮
+            $('.update_user').on('click',function () {
+                $('.show1').css('display','block')
                 userId = $(this).attr('value')
-                getAjaxRequest("POST", interface_url+'user/remove', {userId:userId}, removeUserFunc, errorFunc)
-                function removeUserFunc(json){
-                    if(json.head.status.code == 200){
-                        alert('删除成功!')
-                    }else {
-                        alert(`${json.head.status.message}`)
+                $('.show1 input[type="checkbox"]').attr("checked", false)
+                getAjaxRequest("GET", interface_url+'user/get', {userId:userId}, getEditUser, errorFunc)
+                function getEditUser(json){
+                    $('.show1 input[name="update_username"]').val(json.body.username)
+                    $('.show1 input[name="update_mobilePhone"]').val(json.body.mobile_phone)
+                    $('.show1 input[name="update_email"]').val(json.body.email)
+                    $('#update_user_select1').val(json.body.locked)
+                    $('#update_user_select2').val(json.body.disable)
+                    let arr_roles = json.body.roles
+                    if(arr_roles.length>0){
+                        for(let i=0;i<arr_roles.length;i++){
+                            let id = arr_roles[i].role_id
+                            $(`.show1 input[value=${id}]`).prop("checked", true)
+                        }
                     }
                 }
-            }
 
-        })
+            })
+            //用户列表的删除按钮
+            $('.del_user').on('click',function () {
+                var r = confirm("确定删除此账户？");
+                if (r == true){
+                    userId = $(this).attr('value')
+                    getAjaxRequest("POST", interface_url+'user/remove', {userId:userId}, removeUserFunc, errorFunc)
+                    function removeUserFunc(json){
+                        if(json.head.status.code == 200){
+                            alert('删除成功!')
+                        }else {
+                            alert(`${json.head.status.message}`)
+                        }
+                    }
+                }
+
+            })
+        }else {
+            alert(json.head.status.message);
+            location.href="./login.html";
+        }
+
     }
 
     //编辑用户提交按钮

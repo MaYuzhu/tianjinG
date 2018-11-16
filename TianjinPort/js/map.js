@@ -6,8 +6,10 @@ const closer = document.getElementById('popup-closer');
 
 var drawType = "Polygon";
 
+var features = []
+
 //点击兴趣点弹出框使用
-const overlay = new ol.Overlay({
+var overlay = new ol.Overlay({
     element: container,//设置弹出框的容器
     autoPan: true, //是否自动平移，即假如标记在屏幕边缘，弹出时自动平移地图使弹出框完全可见
     autoPanAnimation: {
@@ -231,9 +233,17 @@ function selectVehTrack(){
     var vehicleId = $('input[name="vehicle_radio"]:checked').val()
     /*var startTime = '2018-11-06 14:30:01'
     var endTime = '2018-11-06 14:40:01'*/
-
     var startTime = $('#one_guiji').val().substr(0,19).trim()
     var endTime = $('#one_guiji').val().substr(21,40).trim()
+
+    if(!$('#one_guiji').val()){
+        alert('请选择时间范围...')
+        return false
+    }
+
+    setTimeout(function () {
+        $(".play").css({ display: 'block' });
+    }, 3000);
 
 	var data = {'vehicleId':vehicleId, 'startTime':startTime , 'endTime':endTime};
 	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
@@ -286,7 +296,8 @@ var run_carMove = false;
 //- 速度
 var speed = 60;
 var index = 0;
-
+var setTimeoutFlag = false;
+var setTimeoutEve
 var carMove = function () {
     if (trackData.length < 1) {
         alert("没有检测轨迹，请重试")
@@ -345,7 +356,8 @@ var carMove = function () {
     	index = 0;
     }
     if (run_carMove) {
-        setTimeout(carMove, speed);
+        setTimeoutEve = setTimeout(carMove, speed);
+        setTimeoutFlag = true
     }
 }
 

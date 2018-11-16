@@ -23,7 +23,7 @@
 <body>
     <div class="bg"></div>
     <div id="popup" class="ol-popup">
-        <a href="" id="popup-closer" class="ol-popup-closer"></a>
+        <a href="javascript:;" id="popup-closer" class="ol-popup-closer"></a>
         <div id="popup-content"></div>
     </div>
     <div class="wrap" id="map">
@@ -165,9 +165,11 @@
 <script src="./js/jquery-1.11.3.min.js"></script>
 <script src="./js/layDate-v5.0.9/laydate/laydate.js"></script>
 <script src="http://lib.sinaapp.com/js/jquery.cookie/jquery.cookie.js"></script>
-<!-- <script src="./js/browser.js"></script> -->
+<script src="./js/browser.js"></script> <!--不同浏览器兼容es6-->
 <script type="text/javascript" src="./js/common.js"></script>
 <script type="text/javascript" src="./js/config.js"></script>
-<script type="text/javascript" src="./js/index.js"></script>
 <script type="text/javascript" src="./js/map.js"></script>
+
+<script type="text/babel" src="./js/index.js"></script>
+
 </html>

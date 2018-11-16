@@ -12,11 +12,27 @@ let pages = 0; //总页数
 	        $(this).addClass('on').siblings().removeClass('on');
 	        $('.on img').css('display', 'block')
 	        $('.box_right>div').eq(i).show().siblings().hide();
+	        if(i == 1){
+	            map.removeLayer(vector)
+            }else if(i == 0){
+                map.addLayer(vector)
+                if(run_carMove){
+                    $('#play_2').click()
+                    setTimeout(function () {
+                        map.removeLayer(carLayer)
+                        map.removeLayer(lineLayer)
+                    },300)
+                }else {
+                    map.removeLayer(carLayer)
+                    map.removeLayer(lineLayer)
+                }
+                $('.play').css('display','none')
+            }
 	    })
     );
     
     // 获取车辆实时状态
-    var data = {'state': 1, 'page.number':pageNumber, 'page.size':pageSize} ;
+    var data = {'state': 2, 'page.number':pageNumber, 'page.size':pageSize} ;
     getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
     
     // 获取车辆实时位置信息
@@ -152,15 +168,13 @@ let pages = 0; //总页数
 })(window)
 
 
-//车辆状态-下拉选择事件
 $("#state_car").change(function () {
-	var data = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
-	getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+    var vehicleData = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
+	getAjaxRequest("GET", interface_url+"vehicle/search", vehicleData, rltCarState, null);
 });
 
 //车辆列表展示， 成功回调函数
 function rltCarState(json){
-	//console.log(json);
 	if(json.head.status.code == 200){
 		$('.list_che').empty();
 		var cars = json.body.list;
@@ -173,7 +187,8 @@ function rltCarState(json){
                      <input type="checkbox" value=${cars[i].vehicle_id} id="myCheck2+${i}" class="myCheck">
                      <label for="myCheck2+${i}"></label>
                      <p class="itemCar" value=${cars[i].vehicle_id}>${cars[i].plate_number}</p>
-                     <div></div>
+                     <div class=${json.body.list[i].state==2?'red_ball':
+                        json.body.list[i].state==1?'green_ball':'gray_ball'}></div>
                  </li>`)   
 	    }
 	    $('.itemCar').on('click',function () {
@@ -193,6 +208,7 @@ function rltCarState(json){
         })
 	}else{
 		alert(json.head.status.message);
+        location.href="./login.html";
 	}
 }
 
@@ -226,8 +242,17 @@ $('.lst').click(function () {
 //跟踪按钮-事件处理
 var bool = true;
 var tmp ;
+var data = {};
 $('.button_gen').click(btnFlush);
 function btnFlush() {
+    data.vehicleId = []
+    $.each($('.list_che .myCheck:checked'),function () {
+        data.vehicleId.push($(this).val())
+    })
+    if(data.vehicleId.length<1){
+        alert('请选择车辆...')
+        return false
+    }
 	if(bool){
 		bool = false;
 		tmp = setInterval(getCurData, 1000);
@@ -238,11 +263,7 @@ function btnFlush() {
 }
 function getCurData(){
 	//var data = {'vehicleId':[1,2]};
-    var data = {}
-    data.vehicleId = []
-    $.each($('.list_che .myCheck:checked'),function () {
-        data.vehicleId.push($(this).val())
-    })
+
     getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
 }
 
@@ -268,7 +289,8 @@ function realTimeCarData(json){
 	    map.updateSize();
 		//map.getView().fit(source.getExtent(), map.getSize());
 	}else{
-		alert(json.head.status.message);
+		//alert(json.head.status.message);
+        console.log(json.head.status.message)
 	}
 }
 
@@ -285,7 +307,6 @@ $(".dianzi").click(function () {
             }
             var data = {'page.size':100};
             getAjaxRequest("GET", interface_url+"electronic-fence/search", data, eleFenceData, null);
-            //return true;
         }
         flag_fence = false;
     }else {
@@ -351,10 +372,11 @@ function eleFenceData(json){
 
 $(function () {
     $(".button_cha").click(function () {
-    	selectVehTrack();
-        setTimeout(function () {
+        selectVehTrack();
+        /*setTimeout(function () {
             $(".play").css({ display: 'block' });
-        }, 3000);
+        }, 3000);*/
+
     });
     //播放按钮
     /*$("#play_2").click(function () {
@@ -370,14 +392,31 @@ $(function () {
             })
             run_carMove = true
             carMove()
+
             $('#play_1').on('click',function () {
+                if(setTimeoutFlag){
+                    clearTimeout(setTimeoutEve);
+                }
                 speed = 120
                 run_carMove = true
                 carMove()
             })
             $('#play_3').on('click',function () {
+                if(setTimeoutFlag){
+                    clearTimeout(setTimeoutEve);
+                }
                 speed = 30
                 run_carMove = true
+                carMove()
+            })
+            $('#replay').off('click').on('click',function (){
+                if(setTimeoutFlag){
+                    clearTimeout(setTimeoutEve);
+                }
+                setTimeoutFlag = true
+                run_carMove = true
+                speed = 60
+                index = 0
                 carMove()
             })
         } else if (run_carMove) {
@@ -388,7 +427,20 @@ $(function () {
             run_carMove = false
         }
     })
-
+    //删除轨迹按钮
+    $('#delete_mark').on('click',function () {
+        if(run_carMove){
+            $('#play_2').click()
+            setTimeout(function () {
+                map.removeLayer(carLayer)
+                map.removeLayer(lineLayer)
+            },300)
+        }else {
+            map.removeLayer(carLayer)
+            map.removeLayer(lineLayer)
+        }
+        $('.play').css('display','none')
+    })
 })
 
 

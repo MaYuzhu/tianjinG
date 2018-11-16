@@ -6,7 +6,8 @@ const interface_url = 'http://36.110.66.218:8080/';
 $('.avatar').on('click',function () {
     var r = confirm("确定退出此次登陆吗？");
     if (r == true){
-    	 getAjaxRequest("GET", interface_url+"authc/logout", null, returnToIndex, null);
+        getAjaxRequest("GET", interface_url+"authc/logout", null, returnToIndex, null)
+        sessionStorage.customerId = null
     }
 })
 
