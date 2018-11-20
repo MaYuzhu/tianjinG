@@ -431,7 +431,7 @@ Array.prototype.remove = function(val) {
         getFenceListData, false, succGetFenceList, errorFunc)
 
     //按时间查询围栏
-    $('.cha').on('click',function () {
+    $('.time_find').on('click',function () {
         let queryTime = $('#weilan_add').val()
         if(!queryTime){
             alert('请选择查询时间')

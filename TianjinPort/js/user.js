@@ -94,7 +94,7 @@
     let userId
     let getUserListData = {
         'page.number':pageNumber,
-        'page.size':4,
+        'page.size':8,
         /*'username':username*/
     }
     getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
@@ -132,7 +132,14 @@
     $_addUser.on('click',function () {
         $(".show").css('display','block')
     })
-    //验证用户名是否存在
+    //验证用户名是否存在 或 为空
+    let adduserData = {}
+    $("input[name='add_username']").blur(function () {
+        adduserData.username = $("input[name='add_username']").val()
+        if(!adduserData.username){
+            $('.tip_add_user1 + p').text('请填写用户名')
+        }
+    })
     $("input[name='add_username']").change(function () {
         let renameData = {username:$("input[name='add_username']").val()}
         getAjaxRequest("GET", interface_url+"user/search", renameData, renameUser, errorFunc)
@@ -141,29 +148,75 @@
                 //style="color:#EC3937" '<p style="color:#e4393c">用户名已存在</p>'
                 if(json.body.list.length==1){
                     //alert('该用户名已存在')
-                    $('.tip_add_user1').after(
-                        '<p style="color:#e4393c;margin:0px 0px -6px 75px">该用户名已存在</p>')
+                    $('.tip_add_user1 + p').text('该用户名已存在')
                 }else {
-                    $('.tip_add_user1+p').remove()
+                    $('.tip_add_user1 + p').text('')
                 }
 
             }
         }
     })
+    $("input[name='add_password']").on('keydown',function () {
+        if($('.tip_add_user1 + p').text() != ''){
+            $('.tip_add_user1 + p').text('请填写正确的用户名')
+            return false
+        }else {
+            $('.tip_add_user1 + p').text('')
+        }
+    })
     //密码验证长度
     $("input[name='add_password']").change(function () {
         if($("input[name='add_password']").val().length<6){
-            $('.tip_add_user2').after(
-                '<p style="color:#e4393c;margin:0px 0px -6px 75px">密码最少6位</p>')
+            $('.tip_add_user2 + p').text('密码最少6位')
         }else {
-            $('.tip_add_user2+p').remove()
+            $('.tip_add_user2 + p').text('')
         }
     })
-    
-    
+    //电话号码验证
+    $("input[name='add_mobilePhone']").change(function () {
+        let telephone = $("input[name='add_mobilePhone']").val()
+        if ($.trim(telephone) == '') {
+            $('.tip_add_user3 + p').text('请输入电话号码')
+            return false
+        }
+        else {
+            if (checkTel(telephone) == false) {
+                $('.tip_add_user3 + p').text('请输入正确的电话号码')
+                return false
+            }else {
+                $('.tip_add_user3 + p').text('')
+            }
+        }
+    })
+    function checkTel(tel) {
+        //手机或固定电话
+        let mobile = /^1[0-9]{10}$/, phone = /^0\d{2,3}-?\d{7,8}$/
+        return mobile.test(tel) || phone.test(tel)
+    }
+    //电子邮箱验证
+    $("input[name='add_email']").change(function () {
+        let email = $("input[name='add_email']").val()
+        if ($.trim(email) == '') {
+            $('.tip_add_user4 + p').text('请输入电子邮箱')
+            return false
+        }
+        else {
+            if (checkEmail(email) == false) {
+                $('.tip_add_user4 + p').text('请输入正确的电子邮箱')
+                return false
+            }else {
+                $('.tip_add_user4 + p').text('')
+            }
+        }
+    })
+    function checkEmail(email) {
+        let e_mail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+        return e_mail.test(email)
+    }
+
+
     //保存新添加的账户
     $('.adduser_commit').on('click',function () {
-        let adduserData = {}
         adduserData.username = $("input[name='add_username']").val()
         adduserData.password = $("input[name='add_password']").val()
         adduserData.mobilePhone = $("input[name='add_mobilePhone']").val()
@@ -171,7 +224,7 @@
         adduserData.locked = $("#add_user_select1").val()
         adduserData.disable = $("#add_user_select2").val()
         adduserData.roleId = []
-        $.each($('.check_juese:checked'),function (index) {
+        $.each($('.check_juese:checked'),function () {
             adduserData.roleId.push($(this).val())
         })
         if(!adduserData.username){
@@ -239,28 +292,6 @@
             }
             $("#update_role_lv2U").slideToggle(300);
         });
-        //在树结构生成后绑定事件
-        /*$("#lv2M2").click(function() {
-            if($("#lv3U2").is(":visible")) {
-                //                      alert("隐藏内容");
-                $("#lv2M2").attr("src", "./images/user/plus_alt.png");
-            } else {
-                //                      alert("显示内容");
-                $("#lv2M2").attr("src", "./images/user/minus_alt.png");
-            }
-            $("#lv3U2").slideToggle(500);
-        });*/
-
-        /*$("#lv2M3").click(function() {
-            if($("#lv3U3").is(":visible")) {
-                //                      alert("隐藏内容");
-                $("#lv2M3").attr("src", "./images/user/plus_alt.png");
-            } else {
-                //                      alert("显示内容");
-                $("#lv2M3").attr("src", "./images/user/minus_alt.png");
-            }
-            $("#lv3U3").slideToggle(400);
-        });*/
 
         $("#allCheck").click(function(){
             $("#tree input[type=checkbox]").prop("checked",$("#allCheck").prop("checked"));
@@ -290,7 +321,7 @@
             $('.user_list').html(`<tr>
                    <th>序号</th>
                     <th>用户名</th>
-                    <th>工作职位</th>
+                    <th>姓名</th>
                     <th>邮箱</th>
                     <th>所属单位</th>
                     <th>创建时间</th>
@@ -301,7 +332,7 @@
                 $('.user_list').append(`<tr>
                     <td>${i+1+getUserListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].username}</td>
-                    <td>xxx</td>
+                    <td>${json.body.list[i].full_name}</td>
                     <td>${json.body.list[i].email}</td>
                     <td onclick="aaa()">XXX</td>
                     <td>2018.09.26</td>
@@ -319,7 +350,8 @@
                 $('.show1 input[type="checkbox"]').attr("checked", false)
                 getAjaxRequest("GET", interface_url+'user/get', {userId:userId}, getEditUser, errorFunc)
                 function getEditUser(json){
-                    $('.show1 input[name="update_username"]').val(json.body.username)
+                    //console.log(json)
+                    $('.show1 input[name="update_full_name"]').val(json.body.full_name)
                     $('.show1 input[name="update_mobilePhone"]').val(json.body.mobile_phone)
                     $('.show1 input[name="update_email"]').val(json.body.email)
                     $('#update_user_select1').val(json.body.locked)
@@ -357,22 +389,54 @@
 
     }
 
+    //编辑用户的一些格式验证
+    $("input[name='update_mobilePhone']").change(function () {
+        let telephone = $("input[name='update_mobilePhone']").val()
+        if ($.trim(telephone) == '') {
+            $('.editMobilePhone + p').text('请输入电话号码')
+            return false
+        }
+        else {
+            if (checkTel(telephone) == false) {
+                $('.editMobilePhone + p').text('请输入正确的电话号码')
+                return false
+            }else {
+                $('.editMobilePhone + p').text('')
+            }
+        }
+    })
+    $("input[name='update_email']").change(function () {
+        let email = $("input[name='update_email']").val()
+        if ($.trim(email) == '') {
+            $('.editEmail + p').text('请输入电子邮箱')
+            return false
+        }
+        else {
+            if (checkEmail(email) == false) {
+                $('.editEmail + p').text('请输入正确的电子邮箱')
+                return false
+            }else {
+                $('.editEmail + p').text('')
+            }
+        }
+    })
     //编辑用户提交按钮
     $('.update_user_commit').on('click',function () {
         let updateUserData = {}
         updateUserData.userId = userId
-        updateUserData.username = $("input[name='update_username']").val()
+        updateUserData.fullName = $("input[name='update_full_name']").val()
+        //updateUserData.username = $("input[name='update_username']").val()
         updateUserData.mobilePhone = $("input[name='update_mobilePhone']").val()
         updateUserData.email = $("input[name='update_email']").val()
-
         updateUserData.locked = $('#update_user_select1').val()
         updateUserData.disable = $('#update_user_select2').val()
         updateUserData.roleId = []
         $.each($('.check_juese:checked'),function () {
             updateUserData.roleId.push($(this).val())
         })
-        if(!updateUserData.username){
-            alert("请填写用户名...")
+        //console.log(updateUserData)
+        if(!updateUserData.fullName){
+            alert("请填写姓名...")
             return
         }
         if(updateUserData.roleId.length<1){

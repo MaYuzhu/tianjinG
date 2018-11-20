@@ -264,7 +264,7 @@ footer div:last-child{
 /*添加账户*/
 .tip_add_user,.tip_update_user{
     width: 300px;
-    height: 580px;
+    height: 550px;
     background: #2e3854;
     border: 2px solid #687289;
     background-size: 100%,100%;
