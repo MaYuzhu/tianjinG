@@ -56,12 +56,12 @@ $(function () {
     })
 
     //获取车辆列表
-    const getVehicleListPromise = (param) => {
+    const getPromise = (param) => {
         return new Promise((resolve, reject) => {
             $.ajax({
-                type: "GET",
-                url: interface_url+'vehicle/search',
-                data: null,
+                type:param.type || "get",
+                url: param.url,
+                data: param.data || null,
                 dataType: 'json',
                 xhrFields:{
                     withCredentials:true
@@ -69,7 +69,7 @@ $(function () {
                 traditional: true,
                 crossDomain: true,
                 cache:true,
-                async: true,
+                async: param.async || true,
                 success:  json => {
                     resolve(json)
                 },
@@ -80,99 +80,57 @@ $(function () {
         })
     }
 
-    let step1 = () => {
-        getVehicleListPromise({
+    let getVehicleList = () => {
+        getPromise({
+            type: "GET",
+            url: interface_url+'vehicle/search',
+        }).then(json => {
+            //console.log(json)
+            if(json.head.status.code == 200){
+                $('.vehicleList').html(`<tr>
+                <th>ID</th>
+                <th>车辆编号</th>
+                <th>品牌型号</th>
+                <th>车载设备</th>
+                <th>设备编号</th>
+                <th>车辆状态</th>
+                <th>单位部门</th>
+                <th>联系人</th>
+                <th>出厂时间</th>
+                <th>操作</th>
+            </tr>`)
+                let vehicleList = json.body.list
+                for(let i=0;i<vehicleList.length;i++){
+                    $('.vehicleList').append(`<tr>
+                <td>${vehicleList[i].vehicle_id}</td>
+                <td>${vehicleList[i].plate_number}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>${vehicleList[i].state==2?'忙碌':vehicleList[i].state==1?'空闲':'离线'}</td>
+                <td>XXX</td>
+                <td>未知</td>
+                <td>xxxx年xx月</td>
+                <td>
+                    <a href="javascript:;" class="edit">修改</a>
+                    <a href="javascript:;">禁用</a>
+                    <a href="javascript:;">删除</a>
+                </td>
+            </tr>`)
+                }
+            }
 
         }).then(json => {
-            console.log(json);
-            if(json.head.status.code == 200){
-                $('.vehicleList').html(`<tr>
-                <th>ID</th>
-                <th>车辆编号</th>
-                <th>品牌型号</th>
-                <th>车载设备</th>
-                <th>设备编号</th>
-                <th>车辆状态</th>
-                <th>单位部门</th>
-                <th>联系人</th>
-                <th>出厂时间</th>
-                <th>操作</th>
-            </tr>`)
-                let vehicleList = json.body.list
-                for(let i=0;i<vehicleList.length;i++){
-                    $('.vehicleList').append(`<tr>
-                <td>${vehicleList[i].vehicle_id}</td>
-                <td>${vehicleList[i].plate_number}</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>${vehicleList[i].state==2?'忙碌':vehicleList[i].state==1?'空闲':'离线'}</td>
-                <td>XXX</td>
-                <td>未知</td>
-                <td>xxxx年xx月</td>
-                <td>
-                    <a href="javascript:;" class="edit">修改</a>
-                    <a href="javascript:;">禁用</a>
-                    <a href="javascript:;">删除</a>
-                </td>
-            </tr>`)
-                }
-            }
-
-        }).then(res => {
             $('.edit').on('click',function () {
                 alert(123)
+                console.log(json)
             })
         }).catch(err => {
-            console.log("第一个请求失败");
+            console.log("第一个请求失败")
+            errorFunc()
         })
     }
-    step1()
-    /*getAjaxRequest("GET", interface_url+'vehicle/search', null, getVehicleList, errorFunc)
-
-    function getVehicleList(json){
-        console.log(json)
-
-
-            if(json.head.status.code == 200){
-                $('.vehicleList').html(`<tr>
-                <th>ID</th>
-                <th>车辆编号</th>
-                <th>品牌型号</th>
-                <th>车载设备</th>
-                <th>设备编号</th>
-                <th>车辆状态</th>
-                <th>单位部门</th>
-                <th>联系人</th>
-                <th>出厂时间</th>
-                <th>操作</th>
-            </tr>`)
-                let vehicleList = json.body.list
-                for(let i=0;i<vehicleList.length;i++){
-                    $('.vehicleList').append(`<tr>
-                <td>${vehicleList[i].vehicle_id}</td>
-                <td>${vehicleList[i].plate_number}</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>${vehicleList[i].state==2?'忙碌':vehicleList[i].state==1?'空闲':'离线'}</td>
-                <td>XXX</td>
-                <td>未知</td>
-                <td>xxxx年xx月</td>
-                <td>
-                    <a href="javascript:;" class="edit">修改</a>
-                    <a href="javascript:;">禁用</a>
-                    <a href="javascript:;">删除</a>
-                </td>
-            </tr>`)
-                }
-            }
-
-        /!*$('.edit').on('click',function () {
-            alert(123)
-        })*!/
-    }*/
-
+    getVehicleList()
 
     //所有请求失败的回调
     function errorFunc() {
