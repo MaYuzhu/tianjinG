@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/user.css">
     <link rel="stylesheet" href="./css/index.css">
-
 </head>
 <body>
 <div class="wrap">
@@ -52,7 +51,7 @@
         <div class="content_footer">
             <ul class="content_footer_left">
                 <li class="active1"><span></span>操作日志</li>
-                <li><span></span>资料重设</li>
+                <li class="Data_reset"><span></span>资料重设</li>
                 <li><span></span>账户管理</li>
                 <li><span></span>角色管理</li>
             </ul>
@@ -96,27 +95,27 @@
                     </footer>
                 </div>
                 <div class="content_footer_right2" style="display: none">
-                    <div>
-                        <div><span>账号：</span><input type="text"></div>
-                        <div><span>姓名：</span><input type="text"></div>
-                        <div><span>手机：</span><input type="text"></div>
-                        <div><span>邮箱：</span><input type="text"></div>
+                    <div ziliao_footer_01>
+                        <div><span>账号：</span><input type="text" name="userid_re" readonly="readonly"></div>
+                        <div class="ziliao_01"><span>姓名：</span><input type="text" name="fullname_re"><i style="color:#e4393c;margin:0 0 0 3px"></i></div>
+                        <div class="ziliao_02"><span>手机：</span><input type="text" name="iphone_re"><i style="color:#e4393c;margin:0 0 0 3px"></i></div>
+                        <div class="ziliao_03"><span>邮箱：</span><input type="text" name="email_re"><i style="color:#e4393c;margin:0 0 0 3px"></i></div>
                     </div>
                     <div class="update_psd">
                         <p>修改密码</p>
-                        <div><span>旧密码：</span><input  type="password"></div>
-                        <div><span>新密码：</span><input type="password"></div>
-                        <div><span>确认密码：</span><input  type="password"></div>
+                        <div><span>旧密码：</span><input  type="password" name="old_password"><i id="i_01"></i></div>
+                        <div><span>新密码：</span><input type="password" name="new_password"><i id="i_02"></i></div>
+                        <div><span>确认密码：</span><input  type="password"name="confirm_password"><i id="i_03"></i></div>
                         <div>
                             <p class="psd_quxiao">取  消</p>
-                            <p>保  存</p>
+                            <p class="baocun_01">保  存</p>
                         </div>
                     </div>
                 </div>
                 <div class="content_footer_right3" style="display: none">
                     <div class="content_footer_right3_top">
-                        <div>启用中</div>
-                        <div>已停用</div>
+                        <div class="user_start_using">启   用</div>
+                        <div class="user_forbid">禁   用</div>
                         <div><span>+</span> 添加账户</div>
                     </div>
                     <table class="user_list">
@@ -152,7 +151,7 @@
                     <!--添加账户-->
                     <div class="tip_add_user show">
                         <p>新增用户</p>
-                        <div class="tip_add_user_content">
+                        <div class="tip_add_user_content add_11">
                             <div class="tip_add_user_left">
                                 <div class="tip_add_user1">
                                     <span>用户名</span>
@@ -220,12 +219,12 @@
                     <!--编辑用户-->
                     <div class="tip_update_user show1" style="display:none">
                         <p>编辑用户</p>
-                        <div class="tip_add_user_content">
+                        <div class="tip_add_user_content bianji_11">
                             <div class="tip_add_user_left">
-                                <!--<div>
+                                <div>
                                     <span>用户名</span>
                                     <input type="text" name="update_username">
-                                </div>-->
+                                </div>
                                 <div>
                                     <span>姓名</span>
                                     <input type="text" name="update_full_name">
@@ -498,9 +497,7 @@
             </div>
         </div>
     </div>
-
 </div>
-
 </body>
 <script src="./js/jquery-1.11.3.min.js"></script>
 <script src="js/jquery.cookie.js"></script>

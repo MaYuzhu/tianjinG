@@ -36,7 +36,7 @@ let pages = 0; //总页数
     getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
     
     // 获取车辆实时位置信息
-    var data = {'vehicleId':[1,2]};
+    var data = {'vehiclesId':[1,2]};
     getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
    
     //获取部门添加到select里
@@ -193,7 +193,7 @@ function rltCarState(json){
 	    }
 	    $('.itemCar').on('click',function () {
             let getCarData = {
-                vehicleId:$(this).attr('value')
+                vehiclesId:$(this).attr('value')
             }
             getAjaxRequest("GET", interface_url+"location/realtime", getCarData, thisCarState, null);
             function thisCarState (json){
@@ -245,11 +245,11 @@ var tmp ;
 var data = {};
 $('.button_gen').click(btnFlush);
 function btnFlush() {
-    data.vehicleId = []
+    data.vehicleIds = []
     $.each($('.list_che .myCheck:checked'),function () {
-        data.vehicleId.push($(this).val())
+        data.vehiclesId.push($(this).val())
     })
-    if(data.vehicleId.length<1){
+    if(data.vehiclesId.length<1){
         alert('请选择车辆...')
         return false
     }
@@ -294,6 +294,7 @@ function realTimeCarData(json){
 	}
 }
 
+//電子圍欄顯示
 var fenceFeature;
 var fenceFeatures = [];
 var fenceSource;
@@ -316,6 +317,17 @@ $(".dianzi").click(function () {
 
 });
 
+
+$(".dianzi").click(function () {
+    if($(".myCheck").is(':checked')){
+        if(fenceLayer){
+            map.removeLayer(fenceLayer);
+        }
+        return true;
+    }
+    var data = {'page.size':100};
+    getAjaxRequest("GET", interface_url+"electronic-fence/search", data, eleFenceData, null);
+});
 //地图上加载电子围栏数据
 function eleFenceData(json){
 	if(json.head.status.code == 200){
@@ -330,15 +342,14 @@ function eleFenceData(json){
 	    		fenceFeatures.push(fenceFeature);
 	    	}
 	    	if(db[i].shape == "2"){ //Polygon
-	    		 var wkt = 'POLYGON((';
+                wkt = 'POLYGON((';
 	    		 for(let j=0; j<lonlat.length; j++){
 	    			 wkt += lonlat[j];
 	    			 if (lonlat.length != j + 1) {
-		                 wkt += ",";
+		                 wkt += ", ";
 		             }
 	    		 }
 	    		 wkt += '))';
-	    		 //console.log(wkt);
 	    		 var format = new ol.format.WKT();
 		         fenceFeature = format.readFeature(wkt);
 		         fenceFeatures.push(fenceFeature);

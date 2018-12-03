@@ -171,7 +171,7 @@ footer div:last-child{
 .page_on{
     background-color: #0d0d30;
 }
-.page_on_not{
+.page_on_not,input[name='update_username']{
     cursor: not-allowed;
 }
 
@@ -217,7 +217,7 @@ footer div:last-child{
 }
 /*资料重设*/
 .content_footer_right2>div{
-    width: 290px;
+    width: 500px;
     height: 130px;
     margin: 30px;
 }
@@ -258,6 +258,7 @@ footer div:last-child{
     display: flex;
     justify-content: space-around;
     padding: 30px;
+    width:290px;
 }
 
 
@@ -319,6 +320,19 @@ footer div:last-child{
     vertical-align: middle;
     line-height: 14px;
     margin: 0 6px 0 0;
+}
+.user_list label span::before{
+    content: '';
+}
+
+.user_list label span{
+    color:#e3e3e3;
+    background-color:#2b5f89;
+    border:1px solid #848485;
+    border-radius:3px;
+    padding:1px 3px;
+    font-weight:normal;
+    font-size:4px;
 }
 .tip_add_user_right .check_juese{
     display: none;
@@ -538,4 +552,13 @@ footer div:last-child{
     display: flex;
     align-items: center;
     width: 76px;
+}
+/*修改密码*/
+.content_footer .content_footer_right .content_footer_right2 .update_psd{
+    width:550px;
+}
+.content_footer .content_footer_right .content_footer_right2 .update_psd i{
+    font-size:13px;
+    color:#e4393c;
+    margin-left:5px;
 }

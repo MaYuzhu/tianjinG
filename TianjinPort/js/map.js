@@ -243,9 +243,9 @@ function selectVehTrack(){
 
     setTimeout(function () {
         $(".play").css({ display: 'block' });
-    }, 3000);
+    }, 4000);
 
-	var data = {'vehicleId':vehicleId, 'startTime':startTime , 'endTime':endTime};
+	var data = {'vehiclesId':vehicleId, 'startTime':startTime , 'endTime':endTime};
 	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
 		if(json.head.status.code == 200){
 			trackData = json.body[0].packet_data;

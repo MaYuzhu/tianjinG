@@ -242,6 +242,9 @@ footer div:last-child{
 footer .alarm_on,footer .trailer_on,footer .trail_on{
     background-color: #2a2c45;
 }
+footer .trailer_on_not{
+    cursor:not-allowed;
+}
 /*行驶轨迹时间选择input*/
 .guiji_time{
     background: #15152b url("../images/css_sprites.png") 40px -3px;
@@ -261,7 +264,7 @@ footer .alarm_on,footer .trailer_on,footer .trail_on{
     position: absolute;
     top:20%;
     left: 50%;
-    z-index: 120;
+    z-index: 20;
     box-shadow: 0px 0px 18px 4px #0c0c19;
     cursor: move;
     color: #eee;
@@ -270,7 +273,7 @@ footer .alarm_on,footer .trailer_on,footer .trail_on{
     color: #eee;
     text-align: center;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     height: 36px;
     line-height: 36px;
 }

@@ -586,7 +586,7 @@ Array.prototype.remove = function(val) {
             if (r == true){
                 areaId = $(this).attr('value')
                 getAjaxRequest("GET",interface_url+'electronic-fence/remove',
-                    {areaId:areaId},succDelFence,errorFunc)
+                    {areasId:areaId},succDelFence,errorFunc)
             }
 
         })

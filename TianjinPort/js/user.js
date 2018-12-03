@@ -1,7 +1,5 @@
 
 (function (w) {
-    //const url = 'http://192.168.20.18:8080'
-    const url = 'http://36.110.66.218:8080'
     //table切换
     let $tab = $('.content_footer_left>li')
     $tab.on('click',(function() {
@@ -10,21 +8,6 @@
             $('.content_footer_right>div').eq(i).show().siblings().hide();
         })
     );
-    //翻页三角
-    $('.footer1').on('click',function (ev) {
-        var $target = $(ev.target);
-        if($target.prop("nodeName") == "DIV"){
-            $('.footer1>div').removeClass('on4')
-            $target.addClass("on4");
-        }
-    })
-    $('.footer2').on('click',function (ev) {
-        var $target = $(ev.target);
-        if($target.prop("nodeName") == "DIV"){
-            $('.footer2>div').removeClass('on5')
-            $target.addClass("on5");
-        }
-    })
 
     //拖动
     function _move(dom,e) {
@@ -87,28 +70,203 @@
         event.stopPropagation();
     });
 
+    //资料重设页面
+    let userId_re = sessionStorage.customerId;
+    // console.log(userId_re);
+    //回显
+    $('.Data_reset').on('click',function () {
+        $('.content_footer_right2 input[type="checkbox"]').attr("checked", false);
+        getAjaxRequest("GET", interface_url+'user/get', {userId:userId_re}, getEditUser, errorFunc);
+        function getEditUser(json){
+            //console.log(json)
+            $('.content_footer_right2 input[name="userid_re"]').val(json.body.username);
+            $('.content_footer_right2 input[name="fullname_re"]').val(json.body.full_name);
+            $('.content_footer_right2 input[name="iphone_re"]').val(json.body.mobile_phone);
+            $('.content_footer_right2 input[name="email_re"]').val(json.body.email);
+        }
+    });
+    //恢复
+    $('.Data_reset').on('click',function () {
+        var input = $(".update_psd input");
+        for(var i=0;i<input.length;i++){input[i].value="";}
+        $('#i_01').html("");
+        $('#i_02').html("");
+        $('#i_03').html("");
+        $('.ziliao_01 i').html("");
+        $('.ziliao_02 i').html("");
+        $('.ziliao_03 i').html("");
+    });
+    //旧密码
+    $('.content_footer_right2 input[name="old_password"]').blur(function(){
+        let old_password = $('input[name="old_password"]').val();
+        getAjaxRequest("GET", interface_url+'user/verify-password', {userId:userId_re,oldPassword:old_password}, oldPassword, errorFunc);
+        function oldPassword(json){
+            if(json.head.status.code == 200){
+                if(json.body.code == 1){
+                    $('#i_01').html("");
+                }
+                else{
+                    if(json.body.message == "原密码错误"){
+                        $('#i_01').html("您输入的旧密码不正确，请重新输入！");
+                        }
+                    else{
+                        $('#i_01').html("旧密码不能为空！");
+                        }
+                    return;
+                }
+                return;
+            }
+        }
+    });
+    //新密码
+    $('.content_footer_right2 input[name="new_password"]').blur(function(){
+        let new_password = $("input[name='new_password']").val();
+        getAjaxRequest("GET", interface_url+'user/verify-password', {userId:userId_re,password:new_password}, newPassword, errorFunc);
+        function newPassword(json) {
+            if(json.head.status.code == 200){
+
+                if(json.body.code== 1){
+
+                    $('#i_02').html("");
+                }else{
+                    if(json.body.message=="新密码与旧密码相同"){
+                        $('#i_02').html("新密码不能和旧密码相同！");
+                    }else{
+                        $('#i_02').html("新密码不能为空！");
+                    }
+                    return;
+                }
+                return;
+            }
+        }
+    });
+    //新密码确认
+    $('.content_footer_right2 input[name="confirm_password"]').blur(function(){
+        var new_password = $("input[name='new_password']").val();
+        var confirm_password = $("input[name='confirm_password']").val();
+        if(confirm_password== ""){
+            $('#i_03').html("请输入确认密码！");
+        }else if(new_password==confirm_password){
+            $('#i_03').html("");
+        }else if(new_password!==confirm_password){
+            $('#i_03').html("两次不一致！请重新输入！");
+        }
+    });
+    //提交
+    $('.baocun_01').on('click',function(){
+        var username = $("input[name='userid_re']").val();
+        var xingming = $("input[name='fullname_re']").val();
+        var shouji = $("input[name='iphone_re']").val();
+        var youxiang = $("input[name='email_re']").val();
+
+        var password = $("input[name='confirm_password']").val();
+        var i_01 =$('.content_footer_right i').text();
+
+        if(i_01==''){
+            getAjaxRequest("GET", interface_url+'user/edit', {userId:userId_re,username: username, fullName: xingming, password: password, mobilePhone: shouji, email: youxiang}, submitPassword, errorFunc);
+            function submitPassword(json) {
+                if (json.head.status.code == 200) {
+                 alert('修改成功');
+                } else {
+                 alert(`${json.head.status.code}错误,${json.head.status.message}`);
+                }
+            }
+        }else{
+            //不提交
+            return false
+        }
+    });
+    //取消
+    $('.psd_quxiao').on('click',function(){
+        var input = $(".update_psd input");
+        //console.log(input);
+        for(var i=0;i<input.length;i++){
+            input[i].value="";
+        }
+        //取消
+        $('#i_01').html("");
+        $('#i_02').html("");
+        $('#i_03').html("");
+        $('.ziliao_01 i').html("");
+        $('.ziliao_02 i').html("");
+        $('.ziliao_03 i').html("");
+        getAjaxRequest("GET", interface_url+'user/get', {userId:userId_re}, getEditUser, errorFunc);
+        function getEditUser(json){
+            //console.log(json)
+            $('.content_footer_right2 input[name="userid_re"]').val(json.body.username)
+            $('.content_footer_right2 input[name="fullname_re"]').val(json.body.full_name)
+            $('.content_footer_right2 input[name="iphone_re"]').val(json.body.mobile_phone)
+            $('.content_footer_right2 input[name="email_re"]').val(json.body.email)
+
+        }
+    });
+
+    //验证名字(资料重设)
+    $("input[name='fullname_re']").change(function () {
+        let name = $("input[name='fullname_re']").val()
+        if ($.trim(name) == '') {
+            $('.ziliao_01 i').text('请输入名字')
+            return false
+        }
+        else{
+            $('.ziliao_01 i').text('')
+        }
+    });
+    //验证电话(资料重设)
+    $("input[name='iphone_re']").change(function () {
+        let telephone = $("input[name='iphone_re']").val()
+        if ($.trim(telephone) == '') {
+            $('.ziliao_02 i').text('请输入电话号码')
+            return false
+        }
+        else {
+            if (checkTel(telephone) == false) {
+                $('.ziliao_02 i').text('请输入正确的电话号码')
+                return false
+            }else {
+                $('.ziliao_02 i').text('')
+            }
+        }
+    });
+    //验证邮箱(资料重设)
+    $("input[name='email_re']").change(function () {
+        let email = $("input[name='email_re']").val()
+        if ($.trim(email) == '') {
+            $('.ziliao_03 i').text('请输入电子邮箱')
+            return false
+        }
+        else {
+            if (checkEmail(email) == false) {
+                $('.ziliao_03 i').text('请填写有效的邮箱地址')
+                return false
+            }else {
+                $('.ziliao_03 i').text('')
+            }
+        }
+    });
+
     //获取用户列表
-    let pageNumber = 1
-    let pageCount
-    let username = $.cookie('username')
-    let userId
+    let pageNumber = 1;
+    let pageCount;
+    let username = $.cookie('username');
+    let userId;
     let getUserListData = {
         'page.number':pageNumber,
         'page.size':8,
         /*'username':username*/
-    }
-    getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
-        false, succFuncGetUserList, errorFunc)
+    };
+
+    // getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
+
     $('.footer2>:nth-child(1)').on('click',function () {
         if(pageNumber>1){
             $('.footer2>:nth-child(2)').addClass('page_on').removeClass('page_on_not')
             pageNumber --
-            getUserListData['page.number'] = pageNumber
-            getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
-                false, succFuncGetUserList, errorFunc)
-            if(pageNumber==1){
-                $('.footer2>:nth-child(1)').removeClass('page_on').addClass('page_on_not')
-            }
+            getUserListData['page.number'] = pageNumber;
+            getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc)
+        }
+        if(pageNumber==1){
+            $('.footer2>:nth-child(1)').removeClass('page_on').addClass('page_on_not')
         }
 
     })
@@ -118,20 +276,27 @@
             $('.footer2>:nth-child(1)').addClass('page_on').removeClass('page_on_not')
             pageNumber ++
             getUserListData['page.number'] = pageNumber
-            getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
+            getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData,
                 false, succFuncGetUserList, errorFunc)
-            if(pageNumber==pageCount){
-                $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
-            }
+        }
+        if(pageNumber==pageCount){
+            $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
         }
 
     })
+    //账户管理
+    const $_accountManagement = $('.content_footer_left>:nth-child(3)');
+    $_accountManagement.on('click',function () {
+        getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
+    });
 
-    //添加账户按钮
-    const $_addUser = $('.content_footer_right3_top>:nth-child(3)')
-    $_addUser.on('click',function () {
-        $(".show").css('display','block')
-    })
+    //角色管理按钮
+    const $_roleManagement = $('.content_footer_left>:nth-child(4)');
+    $_roleManagement.on('click',function () {
+        getAsyncAjaxRequest("GET", interface_url+'role/search', getRoleListData, false, getRoleList, errorFunc);
+    });
+
+
     //验证用户名是否存在 或 为空
     let adduserData = {}
     $("input[name='add_username']").blur(function () {
@@ -214,19 +379,19 @@
         return e_mail.test(email)
     }
 
-
     //保存新添加的账户
     $('.adduser_commit').on('click',function () {
         adduserData.username = $("input[name='add_username']").val()
         adduserData.password = $("input[name='add_password']").val()
+        adduserData.fullName = $("input[name='update_fullname']").val();
         adduserData.mobilePhone = $("input[name='add_mobilePhone']").val()
-        adduserData.add_email = $("input[name='add_email']").val()
+        adduserData.email = $("input[name='add_email']").val()
         adduserData.locked = $("#add_user_select1").val()
         adduserData.disable = $("#add_user_select2").val()
         adduserData.roleId = []
         $.each($('.check_juese:checked'),function () {
             adduserData.roleId.push($(this).val())
-        })
+        });
         if(!adduserData.username){
             alert("请填写用户名...")
             return
@@ -239,27 +404,40 @@
             alert("请选择角色...")
             return
         }
-
-        getAjaxRequest("POST", interface_url+"user/add", adduserData, addUser, errorFunc)
-        function addUser(json) {
-            if(json.head.status.code==200){
-                alert('新添加账户成功！')
-                $('.adduser_quxiao').click()
-                getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData,
-                    false, succFuncGetUserList, errorFunc)
-            }else{
-                alert("添加失败，"+json.head.status.message)
-                $('.adduser_quxiao').click()
+        var p_add_user = $('.show p').text();
+        if(p_add_user==''){
+            getAjaxRequest("POST", interface_url+"user/add", adduserData, addUser, errorFunc)
+            function addUser(json) {
+                if(json.head.status.code==200){
+                    $('.show').css('display','none');
+                    /*新增后为最后一页时
+                    let getUserListData_1 = {
+                        'page.number':pageCount,
+                        'page.size':8,
+                    };*/
+                    let getUserListData_1 = {
+                        'page.number':1,
+                        'page.size':8,
+                    };
+                    getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData_1,
+                        false, succFuncGetUserList, errorFunc)
+                    alert('新添加账户成功！');
+                }else{
+                    alert("添加失败，"+json.head.status.message)
+                    $('.adduser_quxiao').click()
+                }
             }
+        }else{
+            return false;
         }
 
-    })
-    $('.adduser_quxiao').on('click',function () {
-        $(".show").css('display','none')
-    })
+
+    });
+
 
     //增加角色按钮
     $('.content_footer_right4_top div').on('click',function () {
+        getAjaxRequest("GET", interface_url+'resource/list', null, resourceListFunc, errorFunc)
         $('.tip_add_juese').css('display','block')
         $('.show2 input[type="text"]').val('')
         $('.show2 input[type="checkbox"]').attr("checked", false)
@@ -314,43 +492,82 @@
 
     function succFuncGetUserList(json){
         if(json.head.status.code == 200){
-            pageCount = Math.ceil(json.body.total/getUserListData["page.size"])
+            // pageCount = Math.ceil(json.body.total/getUserListData["page.size"])
+            pageCount= json.body.pages;
             if(pageCount<2){
                 $('.footer2>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
             }
             $('.user_list').html(`<tr>
-                   <th>序号</th>
+                    <th style="width:41px;">
+                        <label for="checkItems">
+                            <input style="margin-top:4px;margin-left:-17px;display:none;"  type="checkbox" name="checkItems" id="checkItems" value="全选/全不选" >
+                            <span>全选</span>
+                        </label></th>
+                    <th>序号</th>
                     <th>用户名</th>
                     <th>姓名</th>
                     <th>邮箱</th>
-                    <th>所属单位</th>
-                    <th>创建时间</th>
+                    <!--<th>所属单位</th>-->
+                    <!--<th>创建时间</th>-->
                     <th>联系电话</th>
+                    <th>权限</th>
                     <th>操作</th>
                 </tr>`)
             for(let i=0;i<json.body.list.length;i++){
                 $('.user_list').append(`<tr>
+                    <td><input style="margin-top:1px;" value=${json.body.list[i].user_id} id="" type="checkbox" name="items" class="ccc"/></td>
                     <td>${i+1+getUserListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].username}</td>
                     <td>${json.body.list[i].full_name}</td>
                     <td>${json.body.list[i].email}</td>
-                    <td onclick="aaa()">XXX</td>
-                    <td>2018.09.26</td>
+                    <!--<td onclick="aaa()">XXX</td>-->
+                    <!--<td>2018.09.26</td>-->
                     <td>${json.body.list[i].mobile_phone}</td>
+                    <td class="quan_xian_01" id="quan_xian_${i+1}">中级管理员</td>
                     <td>
                         <a class="update_user" value=${json.body.list[i].user_id} href="javascript:;">编辑</a>
                         <a class="del_user" value=${json.body.list[i].user_id} href="javascript:;">删除</a>
                     </td>
                 </tr>`)
+
+                var disable_01 = json.body.list[i].disable;
+                // console.log(disable_01);
+                if(disable_01==0){
+                    $(`#quan_xian_${i+1}`).html("启用中");
+                }else{
+                    $(`#quan_xian_${i+1}`).html("禁用中").css('color','#e4393c');
+
+                }
             }
+            document.getElementById('checkItems').onclick=function()
+            {
+                // 获取所有的复选框
+                var checkElements=document.getElementsByName('items');
+                if (this.checked) {
+                    for(var i=0;i<checkElements.length;i++){
+                        var checkElement=checkElements[i];
+                        checkElement.checked="checked";
+                    }
+                }
+                else{
+                    for(var i=0;i<checkElements.length;i++){
+                        var checkElement=checkElements[i];
+                        checkElement.checked=null;
+                    }
+                }
+            };
+
             //用户列表的编辑按钮
             $('.update_user').on('click',function () {
-                $('.show1').css('display','block')
+                $('.show1').css('display','block');
+                //清空原有提示
+                $('.bianji_11 p').text('');
                 userId = $(this).attr('value')
                 $('.show1 input[type="checkbox"]').attr("checked", false)
                 getAjaxRequest("GET", interface_url+'user/get', {userId:userId}, getEditUser, errorFunc)
                 function getEditUser(json){
                     //console.log(json)
+                    $('.show1 input[name="update_username"]').val(json.body.username);
                     $('.show1 input[name="update_full_name"]').val(json.body.full_name)
                     $('.show1 input[name="update_mobilePhone"]').val(json.body.mobile_phone)
                     $('.show1 input[name="update_email"]').val(json.body.email)
@@ -375,6 +592,7 @@
                     function removeUserFunc(json){
                         if(json.head.status.code == 200){
                             alert('删除成功!')
+                            getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
                         }else {
                             alert(`${json.head.status.message}`)
                         }
@@ -388,6 +606,70 @@
         }
 
     }
+
+    $('.user_start_using').on('click',function (qiyong_id) {
+        var qiyong_id = [];
+        $.each($('.ccc:checked'),function () {
+            qiyong_id.push($(this).val());
+        });
+        // console.log(qiyong_id.length);
+        if(qiyong_id.length<1){
+            alert("您未勾选，请勾选！");
+            return;
+        }else{
+            if (confirm("确认要启用吗？")){
+                window.event.returnValue = true;
+            }else{
+                window.event.returnValue = false;
+            }
+        }
+        if(window.event.returnValue == true){
+            getAjaxRequest("POST", interface_url+"user/disable", {userId:qiyong_id,
+                disable:0}, startUser, errorFunc)
+            function startUser(json){
+                if (json.head.status.code == 200) {
+                    getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
+                } else {
+                    alert(`启用失败！${json.head.status.code}错误`)
+                }
+            }
+
+        }
+    });
+
+    $('.user_forbid').on('click',function (jinyong_id) {
+        var jinyong_id = [];
+        $.each($('.ccc:checked'),function () {
+            jinyong_id.push($(this).val());
+        });
+        // console.log(jinyong_id.length);
+        if(jinyong_id.length<1){
+            alert("您未勾选，请勾选！");
+            return;
+        }else{
+            if (confirm("确认要禁用吗？")){
+                window.event.returnValue = true;
+            }else{
+                window.event.returnValue = false;
+            }
+        }
+        if(window.event.returnValue == true){
+
+            getAjaxRequest("POST", interface_url+"user/disable", {userId:jinyong_id,
+                disable:1}, endUser, errorFunc)
+
+            function endUser(json){
+                if (json.head.status.code == 200) {
+                    getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
+                } else {
+                    alert(`启用失败！${json.head.status.code}错误`)
+                }
+            }
+
+        }
+    });
+
+
 
     //编辑用户的一些格式验证
     $("input[name='update_mobilePhone']").change(function () {
@@ -443,18 +725,30 @@
             alert("请选择角色...")
             return
         }
-        getAjaxRequest("POST", interface_url+'user/edit', updateUserData, editUserFunc, errorFunc)
-        function editUserFunc(json){
-            if(json.head.status.code == 200){
-                alert('修改成功！')
-                $('.show1').css('display','none')
-                getAsyncAjaxRequest("GET", interface_url+'/user/search', getUserListData,
-                    false, succFuncGetUserList, errorFunc)
-            }else {
-                alert(`修改失败！${json.head.status.message}`)
+        var p_edit_user = $('.bianji_11 p').text();
+        // console.log(p_edit_user);
+        if(p_edit_user == ''){
+            getAjaxRequest("POST", interface_url+'user/edit', updateUserData, editUserFunc, errorFunc)
+            function editUserFunc(json){
+                if(json.head.status.code == 200){
+                    alert('修改成功！')
+                    $('.show1').css('display','none')
+                    getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData,
+                        false, succFuncGetUserList, errorFunc)
+                }else {
+                    // alert(`修改失败！${json.head.status.message}`)
+                    if(json.head.status.message=="用户(userId[1])不允许编辑"){
+                        alert("不允许编辑");
+                    }else{
+                        alert("编辑失败");
+                    }
+                }
             }
+        }else{
+            return false
         }
-    })
+
+    });
     $('.update_user_quxiao').on('click',function () {
         $('.show1').css('display','none')
     })
@@ -471,7 +765,37 @@
                                 </label>
                             </li>`)
         }
+         //roles
+         add_clear_input_2 = $(".show .tip_add_user_right input[type='checkbox']");
+         // console.log(add_clear_input_2);
     }
+
+    let add_clear_input_2;
+
+    //添加账户按钮
+    const $_addUser = $('.content_footer_right3_top>:nth-child(3)')
+    $_addUser.on('click',function () {
+        $(".show").css('display','block');
+        add_clear();
+        //选择的角色
+        getAjaxRequest("GET", interface_url+'role/search', {'page.size':100,}, userRoleList, errorFunc)
+    });
+    //取消
+    $('.adduser_quxiao').on('click',function () {
+        // add_clear();//只在添加按钮上绑定就可以了
+        $(".show").css('display','none')
+    });
+    //新增-取消
+    function add_clear(){
+        var add_clear_input_1 = $(".show .tip_add_user_left input");
+        for(var i=0;i<add_clear_input_1.length;i++){
+            add_clear_input_1[i].value='';
+        }
+        add_clear_input_2.attr("checked",false);
+        $(".show .tip_add_user_left p").text('');
+    }
+
+
 
     //获取角色列表
     let rolePageNumber = 1
@@ -479,10 +803,10 @@
     let roleId
     let getRoleListData = {
         'page.number':rolePageNumber,
-        'page.size':4,
+        'page.size':8,
         /*'username':username*/
     }
-    getAsyncAjaxRequest("GET", interface_url+'role/search', getRoleListData, false, getRoleList, errorFunc)
+
     $('.juese_list_paging>:nth-child(1)').on('click',function () {
         if(rolePageNumber>1){
             $('.juese_list_paging>:nth-child(2)').addClass('page_on').removeClass('page_on_not')
@@ -559,13 +883,13 @@
             var r = confirm("确定删除此角色？");
             if (r == true){
                 roleId = $(this).attr('value')
-                getAjaxRequest("POST", interface_url+'role/disable', {roleId:roleId}, delRoleFunc, errorFunc)
+                getAjaxRequest("POST", interface_url+'role/remove', {roleId:roleId}, delRoleFunc, errorFunc)
                 function delRoleFunc(json) {
                     if(json.head.status.code == 200){
                         alert('删除成功！')
-                        location.reload()
-                        /*getAjaxRequest("GET", interface_url+'role/search',
-                            getRoleListData, getRoleList, errorFunc)*/
+                        //location.reload()
+                        getAjaxRequest("GET", interface_url+'role/search',
+                            getRoleListData, getRoleList, errorFunc)
                     }else {
                         alert(json.head.status.message)
                     }
@@ -599,9 +923,9 @@
             if(json.head.status.code == 200){
                 alert('修改成功！')
                 $('.show3').css('display','none')
-                location.reload()
-                /*getAjaxRequest("GET", interface_url+'role/search',
-                    getRoleListData, getRoleList, errorFunc)*/
+                //location.reload()
+                getAjaxRequest("GET", interface_url+'role/search',
+                    getRoleListData, getRoleList, errorFunc)
             }else {
                 alert(`修改失败！${json.head.status.message}`)
             }
@@ -636,9 +960,9 @@
             if(json.head.status.code == 200){
                 alert('新增成功！')
                 $('.show2').css('display','none')
-                location.reload()
-                /*getAjaxRequest("GET", interface_url+'role/search', getRoleListData,
-                    getRoleList, errorFunc)*/
+                // location.reload()
+                getAjaxRequest("GET", interface_url+'role/search', getRoleListData,
+                    getRoleList, errorFunc)
             }else {
                 alert(`提交失败！${json.head.status.message}`)
             }
@@ -733,6 +1057,6 @@
         console.log('file')
     }
 
-})(window)
+})(window);
 
 
