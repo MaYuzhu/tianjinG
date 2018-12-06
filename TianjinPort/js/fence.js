@@ -43,7 +43,7 @@ Array.prototype.remove = function(val) {
 
     //添加围栏>添加车辆表格
     let carlistPageNumber = 1 ; //当前页数
-    let carlistPageSize = 2; //每页显示条数
+    let carlistPageSize = 8; //每页显示条数
     let carlistPages = 0; //总页数
     var getCarData = {
         //'state':Number($('select[name=add_fence_carlist_state]').val()),
@@ -100,7 +100,7 @@ Array.prototype.remove = function(val) {
                 $('.add_fence_car_list').append(`<tr>
                             <td>
                                 <input class="add_fence_car_item" id=${cars[i].vehicle_id}+'' type="checkbox" 
-                                       value=${cars[i].vehicle_id}  name=拖车${cars[i].plate_number}>
+                                       value=${cars[i].vehicle_id}  name=${cars[i].plate_number}>
                                 <label for=${cars[i].vehicle_id}+'' class="add_fence_car_label"></label>
                             </td>
                             <td>${cars[i].vehicle_id}</td>
@@ -258,7 +258,7 @@ Array.prototype.remove = function(val) {
         for(let i=0;i<arrAddCarName.length;i++){
             $('#add_car_message').append(`<p>${arrAddCarName[i]}</p>`)
         }
-        fenceAddDate.vehicleId = arrAddCar
+        fenceAddDate.vehiclesId = arrAddCar
         //console.log(fenceAddDate)
         $('.add_right_2').css('display','none')
         $('.add_right').css('display','none')
@@ -449,9 +449,10 @@ Array.prototype.remove = function(val) {
 
 
     function succGetFenceList(json) {
+        //console.log(json)
         if(json.head.status.code == 200){
             fencePageCount = Math.ceil(json.body.total/getFenceListData["page.size"])
-            if(json.body.list<1){
+            if(json.body.results<1){
                 alert('没有围栏符合该时间...')
                 return
             }
@@ -471,17 +472,17 @@ Array.prototype.remove = function(val) {
                         <th>围栏类型</th>
                         <th>操作</th>
                     </tr>`)
-            for(let i=0;i<json.body.list.length;i++){
+            for(let i=0;i<json.body.results.length;i++){
                 $('.electronic_fence_table').append(`<tr>
-                    <td>${json.body.list[i].area_id}</td>
-                    <td>${json.body.list[i].area_name}</td>
-                    <td>${json.body.list[i].state==1?'有效':'失效'}</td>
-                    <td>${json.body.list[i].start_time}</td>
-                    <td>${json.body.list[i].end_time}</td>
-                    <td>${json.body.list[i].area_type==1?'可进不可出':json.body.list[i].area_type==2?'可出不可进':'不可进不可出'}</td>
+                    <td>${json.body.results[i].area_id}</td>
+                    <td>${json.body.results[i].area_name}</td>
+                    <td>${json.body.results[i].state==1?'有效':'失效'}</td>
+                    <td>${json.body.results[i].start_time}</td>
+                    <td>${json.body.results[i].end_time}</td>
+                    <td>${json.body.results[i].area_type==1?'可进不可出':json.body.results[i].area_type==2?'可出不可进':'不可进不可出'}</td>
                     <td>
-                    <a class="update_fence" href="javascript:;" value=${json.body.list[i].area_id}>编辑</a>
-                    <a class="del_fence" href="javascript:;" value=${json.body.list[i].area_id}>删除</a>
+                    <a class="update_fence" href="javascript:;" value=${json.body.results[i].area_id}>编辑</a>
+                    <a class="del_fence" href="javascript:;" value=${json.body.results[i].area_id}>删除</a>
                     </td>
                 </tr>`)
             }
@@ -490,7 +491,7 @@ Array.prototype.remove = function(val) {
         let editCarlistPages = 0; //总页数
         let editGetCarData = {
             'page.number':1,
-            'page.size':2
+            'page.size':8
         };
         //围栏列表编辑按钮
         $('.update_fence').on('click',function () {
@@ -553,7 +554,7 @@ Array.prototype.remove = function(val) {
                                 <label for=${cars[i].vehicle_id} class="editCarListLabel" 
                                             value=${cars[i].vehicle_id}></label>
                                 <span>${cars[i].vehicle_id}</span>
-                                <span>拖车${cars[i].plate_number}</span>
+                                <span>${cars[i].plate_number}</span>
                                 <span>${cars[i].state==1?"忙碌":cars[i].state==0?"空闲":"离线"}</span>
                             </li>`)
                 }
@@ -593,7 +594,9 @@ Array.prototype.remove = function(val) {
         function succDelFence(json){
             if(json.head.status.code == 200){
                 alert('删除成功!')
-                location.reload()
+                //location.reload()
+                getAsyncAjaxRequest("GET", interface_url+"electronic-fence/search", getFenceListData,
+                    false, succGetFenceList, null)
             }else {
                 alert(`删除失败${json.head.status.message}`)
             }
@@ -616,7 +619,7 @@ Array.prototype.remove = function(val) {
             areaType:$('#editAreaType').val(),
             memo:$('input[name=editAreaMemo]').val(),
             state:$('select[name=editAreaDisable]').val(),
-            vehicleId:editFenceData.vehicleId
+            vehiclesId:editFenceData.vehicleId
         }
         //console.log(editFenceData)
         getAjaxRequest('POST', interface_url+'electronic-fence/edit', editFenceData,
@@ -641,7 +644,9 @@ Array.prototype.remove = function(val) {
         if(json.head.status.code == 200){
             alert('修改围栏成功！')
             $('.fence_edit').css('display','none')
-            location.reload()
+            //location.reload()
+            getAsyncAjaxRequest("GET", interface_url+"electronic-fence/search", getFenceListData,
+                false, succGetFenceList, null)
         }else{
             alert(json.head.status.message);
         }

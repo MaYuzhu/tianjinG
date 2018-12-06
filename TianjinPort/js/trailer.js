@@ -112,6 +112,7 @@ $(function () {
                 <th>车辆状态</th>
                 <th>单位部门</th>
                 <th>联系人</th>
+                <th>权限</th>
                 <th>出厂时间</th>
                 <th>操作</th>
             </tr>`);
@@ -127,6 +128,7 @@ $(function () {
                 <td>${vehicleList[i].state==2?'忙碌':vehicleList[i].state==1?'空闲':'离线'}</td>
                 <td>XXX</td>
                 <td>未知</td>
+                <td>启用中</td>
                 <td>2018年07月</td>
                 <td>
                     <a  class="edit_car" value=${json.body.results[i].vehicle_id}>修改</a>
@@ -154,7 +156,7 @@ $(function () {
                 var r = confirm("确定删除此车辆？");
                 if (r == true){
                     let deleteCar_id = $(this).attr('value');
-                    getAjaxRequest("POST", interface_url+'vehicle/disable', {vehicleId:deleteCar_id}, delCarFunc, errorFunc)
+                    getAjaxRequest("POST", interface_url+'vehicle/remove', {vehiclesId:deleteCar_id}, delCarFunc, errorFunc)
                     function delCarFunc(json) {
                         if(json.head.status.code == 200){
                             alert('删除成功！')
@@ -175,7 +177,7 @@ $(function () {
         $('#select1').html('');
         for(let i = 0;i<json.body.results.length;i++){
             $('#select1').append(`
-                                <option value="${json.body.results[i].department_id}" class="add_option_bumen">
+                                <option value="${json.body.results[i].department_id}" class="add_option_department">
                                     ${json.body.results[i].identity_name}
                                 </option>
                                 `);
@@ -184,7 +186,7 @@ $(function () {
 
     //新增
       //校验
-    function isLicensePlate(licence) {
+      function isLicensePlate(licence) {
         let lic = /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/;
         return lic.test(licence);
     }
@@ -218,14 +220,15 @@ $(function () {
         }
     });
       //提交
-      $('.add_car_tijiao').on('click',function(){
+      $('.add_car_commit').on('click',function(){
         let addcarData = {};
         //车辆编号
         addcarData.plateNumber = $("input[name='add_numberPlate']").val();
         //部门ID
-        addcarData.departmentId = $('.add_option_bumen').val();
+        addcarData.departmentId = $('.add_option_department').val();
         if(!addcarData.plateNumber){
-            $('.add_truck_licence + h6').text("请填写车牌号");
+            // $('.add_truck_licence + h6').text("请填写车牌号");
+            alert("请填写车牌号");
             return
         }
         var h6_add_car = $('.show h6').text();
@@ -234,7 +237,7 @@ $(function () {
             function addCar(json) {
                 if (json.head.status.code == 200) {
                     alert("新增车辆成功！");
-                    $('.tip_add_truck').css('display','none');
+                    $('.show').css('display','none');
                     getAjaxRequest("GET", interface_url + 'vehicle/search', {'page.number': pageNumber, 'page.size': pageSize}, getVehicleList, errorFunc);
                 } else {
                     alert("添加失败，" + json.head.status.message);
@@ -274,24 +277,26 @@ $(function () {
 
             }
         }
-    });
+      });
       //通过回显拿到修改
       let vehicle_echo;
       let amend_licence;
       //提交
       $('.update_car_commit').on('click',function(){
         let updateCarData = {};
+        //车辆ID
         updateCarData.vehicleId=vehicle_echo;
+        //车辆编号
         updateCarData.plateNumber=$("input[name='carEcho_numberPlate']").val();
         updateCarData.disable=$('#edit_car_select2').val();
-        updateCarData.state=$('#edit_car_select1').val();
+        // updateCarData.state=$('#edit_car_select1').val();车辆状态
 
         if(!updateCarData.plateNumber){
             $('.amend_truck_licence + h6').text("请填写车牌号");
             return
         }
         if (isLicensePlate(amend_licence) == false) {
-            $('.amend_truck_licence + h6').text('请输入正确的车牌号')
+            $('.amend_truck_licence + h6').text('请输入正确的车牌号。')
             return
         }
         var h6_amend_car = $('.show_01 h6').text();
@@ -310,7 +315,7 @@ $(function () {
         }else{
             return false
         }
-    });
+      });
     //所有请求失败的回调
     function errorFunc() {
         alert("请求失败,请检查您的网络是否通畅...")

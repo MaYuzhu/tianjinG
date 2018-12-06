@@ -1,7 +1,7 @@
 //version=1.0.0所有请求公用参数
 
 let pageNumber = 1 ; //当前页数
-let pageSize = 2; //每页显示条数
+let pageSize = 8; //每页显示条数
 let pages = 0; //总页数
 
 (function (w) {
@@ -42,9 +42,9 @@ let pages = 0; //总页数
     //获取部门添加到select里
     let getVehicleData = {
         'page.number':1,
-        'page.size':3,
+        'page.size':6,
         pages:0,
-        departmentId:1
+        departmentId:2
     }
     getAjaxRequest("GET", interface_url+"department/search", null, getDepartment, null);
     function getDepartment (json) {
@@ -54,37 +54,39 @@ let pages = 0; //总页数
                 $('#a2').append(`<option value=${json.body.list[i].department_id}>
                                     ${json.body.list[i].identity_name}</option>`)
             }
-            //轨迹查询选择车辆列表
-            getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
-            //按部门查找
-            $('#a2').on('change',function () {
-                getVehicleData.departmentId = $('#a2').val()
-                getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
-            })
-            //翻页
-            $('.next_wrap3>:first-child').on('click', function () {
-                if(getVehicleData['page.number']>1){
-                    $('.next_wrap3>:last-child').addClass('page_on').removeClass('page_on_not')
-                    getVehicleData['page.number']--
-                    getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
-                    if(getVehicleData['page.number']==1){
-                        $('.next_wrap3>:first-child').removeClass('page_on').addClass('page_on_not')
-                    }
-                }
-            })
-            $('.next_wrap3>:last-child').on('click', function () {
-                if(getVehicleData['page.number']<getVehicleData.pages){
-                    $('.next_wrap3>:first-child').addClass('page_on').removeClass('page_on_not')
-                    getVehicleData['page.number']++
-                    getAsyncAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, false, getVehicleList, null);
-                    if(getVehicleData['page.number']==getVehicleData.pages){
-                        $('.next_wrap3>:last-child').removeClass('page_on').addClass('page_on_not')
-                    }
-                }
-            })
         }
 
     }
+
+    //轨迹查询选择车辆列表
+    getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+    //按部门查找
+    $('#a2').on('change',function () {
+        $('.next_wrap3>:last-child').addClass('page_on').removeClass('page_on_not')
+        getVehicleData.departmentId = $('#a2').val()
+        getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+    })
+    //翻页
+    $('.next_wrap3>:first-child').on('click', function () {
+        if(getVehicleData['page.number']>1){
+            $('.next_wrap3>:last-child').addClass('page_on').removeClass('page_on_not')
+            getVehicleData['page.number']--
+            getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+            if(getVehicleData['page.number']==1){
+                $('.next_wrap3>:first-child').removeClass('page_on').addClass('page_on_not')
+            }
+        }
+    })
+    $('.next_wrap3>:last-child').on('click', function () {
+        if(getVehicleData['page.number']<getVehicleData.pages){
+            $('.next_wrap3>:first-child').addClass('page_on').removeClass('page_on_not')
+            getVehicleData['page.number']++
+            getAsyncAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, false, getVehicleList, null);
+            if(getVehicleData['page.number']==getVehicleData.pages){
+                $('.next_wrap3>:last-child').removeClass('page_on').addClass('page_on_not')
+            }
+        }
+    })
 
     function getVehicleList (json) {
         //console.log(json)
@@ -95,16 +97,17 @@ let pages = 0; //总页数
                 $('.next_wrap3>:first-child').removeClass('page_on').addClass('page_on_not')
             }else {
                 $('.next_wrap3>:last-child').removeClass('page_on_not').addClass('page_on')
+                $('.next_wrap3>:first-child').removeClass('page_on').addClass('page_on_not')
             }
             $('.list_che2').empty()
-            for (let i = 0; i < json.body.list.length; i++) {
+            for (let i = 0; i < json.body.results.length; i++) {
                 $('.list_che2').append(`<li>
                                 <input name="vehicle_radio" type="radio" 
-                                    value=${json.body.list[i].vehicle_id} id="myCheck2${i}" class="myCheck">
+                                    value=${json.body.results[i].vehicle_id} id="myCheck2${i}" class="myCheck">
                                 <label for="myCheck2${i}" class="vehicle_radio_label"></label>
-                                <p>拖车${json.body.list[i].plate_number}</p>
-                                <div class=${json.body.list[i].state==2?'red_ball':
-                                json.body.list[i].state==1?'green_ball':'gray_ball'}></div>
+                                <p>${json.body.results[i].plate_number}</p>
+                                <div class=${json.body.results[i].state==2?'red_ball':
+                                json.body.results[i].state==1?'green_ball':'gray_ball'}></div>
                             </li>`)
             }
             $('input[name="vehicle_radio"][value="1"]').attr('checked',true)
@@ -169,6 +172,7 @@ let pages = 0; //总页数
 
 
 $("#state_car").change(function () {
+    $('.lst').addClass('page_on').removeClass('page_on_not')
     var vehicleData = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
 	getAjaxRequest("GET", interface_url+"vehicle/search", vehicleData, rltCarState, null);
 });
@@ -177,18 +181,18 @@ $("#state_car").change(function () {
 function rltCarState(json){
 	if(json.head.status.code == 200){
 		$('.list_che').empty();
-		var cars = json.body.list;
+		var cars = json.body.results;
 		pages = json.body.pages;
 		if(pages < 2){
-            $('.lst,.fst').addClass('page_on_not').removeClass('page_on')
+            $('.lst').addClass('page_on_not').removeClass('page_on')
         }
 		for (var i = 0; i < cars.length; i++) {
 			 $('.list_che').append(`<li>
                      <input type="checkbox" value=${cars[i].vehicle_id} id="myCheck2+${i}" class="myCheck">
                      <label for="myCheck2+${i}"></label>
                      <p class="itemCar" value=${cars[i].vehicle_id}>${cars[i].plate_number}</p>
-                     <div class=${json.body.list[i].state==2?'red_ball':
-                        json.body.list[i].state==1?'green_ball':'gray_ball'}></div>
+                     <div class=${cars[i].state==2?'red_ball':
+                            cars[i].state==1?'green_ball':'gray_ball'}></div>
                  </li>`)   
 	    }
 	    $('.itemCar').on('click',function () {
@@ -219,7 +223,7 @@ $('.fst').click(function () {
 		pageNumber--;
 		var data = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
 		getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
-        if(pageNumber = 1){
+        if(pageNumber == 1){
             $('.fst').addClass('page_on_not').removeClass('page_on')
         }
 	}
@@ -235,8 +239,7 @@ $('.lst').click(function () {
 		if(pageNumber == pages){
             $('.lst').addClass('page_on_not').removeClass('page_on')
         }
-
-	}
+    }
 });
 
 //跟踪按钮-事件处理

@@ -388,9 +388,10 @@
         adduserData.email = $("input[name='add_email']").val()
         adduserData.locked = $("#add_user_select1").val()
         adduserData.disable = $("#add_user_select2").val()
-        adduserData.roleId = []
+        adduserData.rolesId = []
+
         $.each($('.check_juese:checked'),function () {
-            adduserData.roleId.push($(this).val())
+            adduserData.rolesId.push($(this).val())
         });
         if(!adduserData.username){
             alert("请填写用户名...")
@@ -400,11 +401,11 @@
             alert("请填写密码...")
             return
         }
-        if(adduserData.roleId.length<1){
+        if(adduserData.rolesId.length<1){
             alert("请选择角色...")
             return
         }
-        var p_add_user = $('.show p').text();
+        var p_add_user = $('.bianji_11 p').text();
         if(p_add_user==''){
             getAjaxRequest("POST", interface_url+"user/add", adduserData, addUser, errorFunc)
             function addUser(json) {
@@ -588,7 +589,7 @@
                 var r = confirm("确定删除此账户？");
                 if (r == true){
                     userId = $(this).attr('value')
-                    getAjaxRequest("POST", interface_url+'user/remove', {userId:userId}, removeUserFunc, errorFunc)
+                    getAjaxRequest("POST", interface_url+'user/remove', {usersId:userId}, removeUserFunc, errorFunc)
                     function removeUserFunc(json){
                         if(json.head.status.code == 200){
                             alert('删除成功!')
@@ -624,7 +625,7 @@
             }
         }
         if(window.event.returnValue == true){
-            getAjaxRequest("POST", interface_url+"user/disable", {userId:qiyong_id,
+            getAjaxRequest("POST", interface_url+"user/disable", {usersId:qiyong_id,
                 disable:0}, startUser, errorFunc)
             function startUser(json){
                 if (json.head.status.code == 200) {
@@ -655,7 +656,7 @@
         }
         if(window.event.returnValue == true){
 
-            getAjaxRequest("POST", interface_url+"user/disable", {userId:jinyong_id,
+            getAjaxRequest("POST", interface_url+"user/disable", {usersId:jinyong_id,
                 disable:1}, endUser, errorFunc)
 
             function endUser(json){
@@ -712,16 +713,16 @@
         updateUserData.email = $("input[name='update_email']").val()
         updateUserData.locked = $('#update_user_select1').val()
         updateUserData.disable = $('#update_user_select2').val()
-        updateUserData.roleId = []
+        updateUserData.rolesId = []
         $.each($('.check_juese:checked'),function () {
-            updateUserData.roleId.push($(this).val())
+            updateUserData.rolesId.push($(this).val())
         })
         //console.log(updateUserData)
         if(!updateUserData.fullName){
             alert("请填写姓名...")
             return
         }
-        if(updateUserData.roleId.length<1){
+        if(updateUserData.rolesId.length<1){
             alert("请选择角色...")
             return
         }
@@ -803,7 +804,7 @@
     let roleId
     let getRoleListData = {
         'page.number':rolePageNumber,
-        'page.size':8,
+        'page.size':4,
         /*'username':username*/
     }
 
@@ -863,6 +864,7 @@
             getAjaxRequest("GET", interface_url+"role/get", {roleId:roleId}, getRoleDisplay, errorFunc)
             function getRoleDisplay(json){
                 if(json.head.status.code == 200){
+                    //console.log(json)
                     $('.show3 input[name="updateIdentityName"]').val(json.body.identity_name)
                     $('.show3 input[name="updateRemarks"]').val(json.body.memo)
                     $('#update_juese_select2').val(json.body.disable)
@@ -883,7 +885,7 @@
             var r = confirm("确定删除此角色？");
             if (r == true){
                 roleId = $(this).attr('value')
-                getAjaxRequest("POST", interface_url+'role/remove', {roleId:roleId}, delRoleFunc, errorFunc)
+                getAjaxRequest("POST", interface_url+'role/remove', {rolesId:roleId}, delRoleFunc, errorFunc)
                 function delRoleFunc(json) {
                     if(json.head.status.code == 200){
                         alert('删除成功！')
@@ -906,11 +908,11 @@
         updateRoleData.identityName = $("input[name='updateIdentityName']").val()
         updateRoleData.disable = $('#update_juese_select2').val()
         updateRoleData.memo = $('input[name="updateRemarks"]').val()
-        updateRoleData.resourceId = []
+        updateRoleData.resourcesId = []
         $.each($('.update_role_lv3Checks:checked'),function () {
-            updateRoleData.resourceId.push($(this).val())
+            updateRoleData.resourcesId.push($(this).val())
         })
-        if(updateRoleData.resourceId<1){
+        if(updateRoleData.resourcesId<1){
             alert("请选择角色权限...")
             return
         }
@@ -941,17 +943,17 @@
         addRoleData.identityName = $("input[name='addIdentityName']").val()
         addRoleData.disable = $('#add_juese_select2').val()
         addRoleData.memo = $('input[name="remarks"]').val()
-        addRoleData.resourceId = []
+        addRoleData.resourcesId = []
         $.each($('.lv3Checks:checked'),function () {
             //console.log(index + '个' + $(this).val())
-            addRoleData.resourceId.push($(this).val())
+            addRoleData.resourcesId.push($(this).val())
         })
         //console.log(addRoleData)
         if(!addRoleData.identityName){
             alert('请输入角色名称...')
             return
         }
-        if(addRoleData.resourceId.length<1){
+        if(addRoleData.resourcesId.length<1){
             alert('请选择角色权限...')
             return
         }
