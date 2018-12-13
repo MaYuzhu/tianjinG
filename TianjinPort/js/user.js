@@ -437,7 +437,7 @@
 
 
     //增加角色按钮
-    $('.content_footer_right4_top div').on('click',function () {
+    $('.content_footer_right4_top>:nth-child(3)').on('click',function () {
         getAjaxRequest("GET", interface_url+'resource/list', null, resourceListFunc, errorFunc)
         $('.tip_add_juese').css('display','block')
         $('.show2 input[type="text"]').val('')
@@ -503,7 +503,8 @@
                         <label for="checkItems">
                             <input style="margin-top:4px;margin-left:-17px;display:none;"  type="checkbox" name="checkItems" id="checkItems" value="全选/全不选" >
                             <span>全选</span>
-                        </label></th>
+                        </label>
+                    </th>
                     <th>序号</th>
                     <th>用户名</th>
                     <th>姓名</th>
@@ -804,7 +805,7 @@
     let roleId
     let getRoleListData = {
         'page.number':rolePageNumber,
-        'page.size':4,
+        'page.size':8,
         /*'username':username*/
     }
 
@@ -837,6 +838,13 @@
             $('.juese_list_paging>:nth-child(2)').removeClass('page_on').addClass('page_on_not')
         }
         $('.juese_list').html(`<tr>
+                    <th>
+                        <label for="checkItemsRole">
+                            <input style="display:none;" type="checkbox" 
+                                            id="checkItemsRole" value="全选/全不选" >
+                            <span>全选</span>
+                        </label>
+                    </th>
                     <th>序号</th>
                     <th>角色名称</th>
                     <th>状态</th>
@@ -845,9 +853,13 @@
                 </tr>`)
         for(let i=0;i<json.body.list.length;i++){
             $('.juese_list').append(`<tr>
+                    <td>
+                        <input type="checkbox" name="checkItemsRole" 
+                                class="role_check"value=${json.body.list[i].role_id}>
+                    </td>
                     <td>${i+1+getRoleListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].identity_name}</td>
-                    <td>${json.body.list[i].disable==0?'启用':'禁用'}</td>
+                    <td>${json.body.list[i].disable==0?'启用中':'已禁用'}</td>
                     <td>${json.body.list[i].memo==''?'暂无描述':json.body.list[i].memo}</td>
                     <td>
                     <a class="update_role" href="javascript:;" value=${json.body.list[i].role_id}>编辑</a>
@@ -899,6 +911,24 @@
             }
 
         })
+
+        //角色禁用功能_全选
+        $('#checkItemsRole').on('click',function () {
+            var $checkElements = $('input[name=checkItemsRole]');
+            if (this.checked) {
+                for(var i=0;i<$checkElements.length;i++){
+                    var checkElement=$checkElements[i];
+                    checkElement.checked="checked";
+                }
+            }
+            else{
+                for(var i=0;i<$checkElements.length;i++){
+                    var checkElement = $checkElements[i];
+                    checkElement.checked=null;
+                }
+            }
+        })
+
     }
 
     //编辑角色后提交结果
@@ -971,6 +1001,63 @@
         }
     })
 
+    //角色禁用功能_禁用
+    //启用按钮
+    $('.role_start_using').on('click',function () {
+        var start_using_id = [];
+        $.each($('.role_check:checked'),function () {
+            start_using_id.push($(this).val());
+        });
+        if(start_using_id.length<1){
+            alert("您未勾选，请勾选！");
+            return;
+        }else{
+            if (confirm("确认要启用吗？")){
+                window.event.returnValue = true;
+            }else{
+                window.event.returnValue = false;
+            }
+        }
+        if(window.event.returnValue == true){
+            getAjaxRequest("POST", interface_url+"role/disable", {rolesId:start_using_id,
+                disable:0}, roleStart, errorFunc)
+        }
+    })
+    //禁用按钮
+    $('.role_forbid').on('click',function () {
+        var start_using_id = [];
+        $.each($('.role_check:checked'),function () {
+            start_using_id.push($(this).val());
+        });
+        if(start_using_id.length<1){
+            alert("您未勾选，请勾选！");
+            return;
+        }else{
+            if (confirm("确认要禁用吗？")){
+                window.event.returnValue = true;
+            }else{
+                window.event.returnValue = false;
+            }
+        }
+        if(window.event.returnValue == true){
+            getAjaxRequest("POST", interface_url+"role/disable", {rolesId:start_using_id,
+                disable:1}, roleDisable, errorFunc)
+        }
+    })
+    function roleStart(json){
+        if (json.head.status.code == 200) {
+            $_roleManagement.click()
+        } else {
+            alert(`启用失败！${json.head.status.message}`)
+        }
+    }
+    function roleDisable(json){
+        if (json.head.status.code == 200) {
+            $_roleManagement.click()
+            } else {
+            alert(`禁用失败！${json.head.status.message}`)
+        }
+    }
     //获取资源列表树结构
     getAjaxRequest("GET", interface_url+'resource/list', null, resourceListFunc, errorFunc)
     function resourceListFunc(json){

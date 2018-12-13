@@ -241,13 +241,18 @@ function selectVehTrack(){
         return false
     }
 
-    setTimeout(function () {
+    /*setTimeout(function () {
         $(".play").css({ display: 'block' });
-    }, 4000);
+    }, 4000);*/
 
 	var data = {'vehiclesId':vehicleId, 'startTime':startTime , 'endTime':endTime};
 	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
 		if(json.head.status.code == 200){
+		    if(json.body[0].packet_data.length < 1){
+		        alert('当前时间范围内没有数据')
+                return false
+            }
+            $(".play").css({ display: 'block' })
 			trackData = json.body[0].packet_data;
 			// 折线
 	        var lineArray = [];

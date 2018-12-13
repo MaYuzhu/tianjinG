@@ -180,7 +180,8 @@ footer div:last-child{
     line-height: 42px;
     background: rgba(25, 32, 65, 0.9);
 }
-.content_footer_right3_top>:nth-child(1),.content_footer_right3_top>:nth-child(2){
+.content_footer_right3_top>:nth-child(1),.content_footer_right3_top>:nth-child(2),
+.content_footer_right4_top>:nth-child(1),.content_footer_right4_top>:nth-child(2){
     float: left;
     width: 90px;
     /*height: 32px;*/
@@ -194,14 +195,14 @@ footer div:last-child{
     color: #e3e3e3;
     margin: auto 10px;
 }
-.content_footer_right3_top>:nth-child(3),.content_footer_right4_top>:nth-child(1){
+.content_footer_right3_top>:nth-child(3),.content_footer_right4_top>:nth-child(3){
     float: right;
     font-size: 14px;
     color: #eeeeee;
     cursor: pointer;
     padding-right: 20px;
 }
-.content_footer_right3_top>:nth-child(3)>span,.content_footer_right4_top>:nth-child(1)>span{
+.content_footer_right3_top>:nth-child(3)>span,.content_footer_right4_top>:nth-child(3)>span{
     display: inline-block;
     width: 13px;
     height: 13px;
@@ -325,7 +326,7 @@ footer div:last-child{
     content: '';
 }
 
-.user_list label span{
+.user_list label span,.juese_list label span{
     color:#e3e3e3;
     background-color:#2b5f89;
     border:1px solid #848485;

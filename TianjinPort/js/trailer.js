@@ -59,8 +59,8 @@ $(function () {
     });
 
     let pageNumber = 1;//当前页数
-    let pageCount;//总页面
-    let pageSize = 8 //每页显示条数
+    let pageCount;//总页数
+    let pageSize = 8; //每页显示条数
 
     getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
 
@@ -104,6 +104,12 @@ $(function () {
                 $('.trailer_footer>:nth-child(2)').removeClass('trailer_on').addClass('trailer_on_not')
             }
             $('.vehicleList').html(`<tr>
+                <th style="width:41px;">
+                        <label for="checkItems">
+                            <input style="margin-top:4px;margin-left:-17px;display:none;"  type="checkbox" name="checkItems" id="checkItems" value="" >
+                            <span>全选</span>
+                        </label>
+                </th>
                 <th>序号</th>
                 <th>车辆编号</th>
                 <!--<th>品牌型号</th>-->
@@ -120,6 +126,9 @@ $(function () {
                 for(let i=0;i<vehicleList.length;i++){
                     $('.vehicleList').append(`<tr>
                 <!--<td>${vehicleList[i].vehicle_id}</td>-->
+                <td>
+                    <input style="margin-top:1px;" value=${json.body.results[i].vehicle_id} id="" type="checkbox" name="items" class="ccc"/>
+                </td>
                 <td>${i+1+(json.body.number-1)*(json.body.size)}</td>
                 <td>${vehicleList[i].plate_number}</td>
                 <!--<td>-</td>-->
@@ -128,17 +137,49 @@ $(function () {
                 <td>${vehicleList[i].state==2?'忙碌':vehicleList[i].state==1?'空闲':'离线'}</td>
                 <td>XXX</td>
                 <td>未知</td>
-                <td>启用中</td>
+                <td class="quan_xian_01" id="quan_xian_${i+1}">启用中</td>
                 <td>2018年07月</td>
                 <td>
                     <a  class="edit_car" value=${json.body.results[i].vehicle_id}>修改</a>
-                    <a  class="jinyong_car">禁用</a>
+                    <!--<a  class="jinyong_car">禁用</a>-->
+                    <!--<a  class="qiyong_car">启用</a>-->
                     <a  class="delete_car" value=${json.body.results[i].vehicle_id}>删除</a>
                 </td>
-            </tr>`)}
+            </tr>`)
+
+                    var disable_01 = json.body.list[i].disable;
+                    // console.log(disable_01);
+                    if(disable_01==0){
+                        $(`#quan_xian_${i+1}`).html("启用中");
+                    }else{
+                        $(`#quan_xian_${i+1}`).html("禁用中").css('color','#e4393c');
+
+                    }
+
+                }
+            //全选
+            document.getElementById('checkItems').onclick=function()
+            {
+                // 获取所有的复选框
+                var checkElements=document.getElementsByName('items');
+                if (this.checked) {
+                    for(var i=0;i<checkElements.length;i++){
+                        var checkElement=checkElements[i];
+                        checkElement.checked="checked";
+                    }
+                }
+                else{
+                    for(var i=0;i<checkElements.length;i++){
+                        var checkElement=checkElements[i];
+                        checkElement.checked=null;
+                    }
+                }
+            };
             //修改弹出
             $('.edit_car').on('click',function () {
                 $('.show_01').css('display','block');
+                //修改车辆弹窗需要的部门列表
+                getAjaxRequest("GET",interface_url+'department/search',null,car_departmentList_edit,errorFunc);
                 $('input').val('');
                 $('h6').text('');
                 vehicle_echo =$(this).attr("value");
@@ -146,8 +187,10 @@ $(function () {
                 getAjaxRequest("GET",interface_url+'vehicle/get',{vehicleId:vehicle_echo},carEcho,errorFunc);
                 function carEcho(json) {
                     $('.show_01 input[name="carEcho_numberPlate"]').val(json.body.plate_number);
+                    $('.show_01 input[name="travel_time"]').val(json.body.travel_time);
                     $(`#edit_car_select1 option[value=${json.body.state}]`).prop("selected",true);
                     $(`#edit_car_select2 option[value=${json.body.disable}]`).prop("selected",true);
+                    $(`#select2 option[value=${json.body.department.department_id}]`).prop("selected",true);
                 }
             });
             //删除
@@ -170,6 +213,77 @@ $(function () {
         }
 
     }
+    //启用
+    $('.car_start_using').on('click',function (qiyong_id) {
+
+        var qiyong_id = [];
+
+        $.each($('.ccc:checked'),function () {
+            qiyong_id.push($(this).val());
+        });
+
+
+        // var qiyong_id = $('.css:checked').val();
+
+        console.log(qiyong_id);
+        // console.log(qiyong_id.length);
+        if(qiyong_id.length<1){
+            alert("您未勾选，请勾选！");
+            return;
+        }else{
+            if (confirm("确认要启用吗？")){
+                window.event.returnValue = true;
+            }else{
+                window.event.returnValue = false;
+            }
+        }
+        if(window.event.returnValue == true){
+            getAjaxRequest("POST", interface_url+"vehicle/disable", {vehiclesId:qiyong_id,
+                disable:0}, startCar, errorFunc)
+            function startCar(json){
+                if (json.head.status.code == 200) {
+                    getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
+                } else {
+                    alert(`启用失败！${json.head.status.code}错误`)
+                }
+            }
+
+        }
+    });
+    //禁用
+    $('.car_forbid').on('click',function (jinyong_id) {
+        var jinyong_id = [];
+        $.each($('.ccc:checked'),function () {
+            jinyong_id.push($(this).val());
+            console.log($(this).val());
+        });
+        console.log(jinyong_id);
+        // console.log(jinyong_id.length);
+        if(jinyong_id.length<1){
+            alert("您未勾选，请勾选！");
+            return;
+        }else{
+            if (confirm("确认要禁用吗？")){
+                window.event.returnValue = true;
+            }else{
+                window.event.returnValue = false;
+            }
+        }
+        if(window.event.returnValue == true){
+
+            getAjaxRequest("POST", interface_url+"vehicle/disable", {vehiclesId:jinyong_id,
+                disable:1}, endUser, errorFunc)
+
+            function endUser(json){
+                if (json.head.status.code == 200) {
+                    getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
+                } else {
+                    alert(`启用失败！${json.head.status.code}错误`)
+                }
+            }
+
+        }
+    });
 
     //部门数据
     function car_departmentList(json) {
@@ -177,6 +291,17 @@ $(function () {
         $('#select1').html('');
         for(let i = 0;i<json.body.results.length;i++){
             $('#select1').append(`
+                                <option value="${json.body.results[i].department_id}" class="add_option_department">
+                                    ${json.body.results[i].identity_name}
+                                </option>
+                                `);
+        }
+    }
+    function car_departmentList_edit(json) {
+        // console.log(json);
+        $('#select2').html('');
+        for(let i = 0;i<json.body.results.length;i++){
+            $('#select2').append(`
                                 <option value="${json.body.results[i].department_id}" class="add_option_department">
                                     ${json.body.results[i].identity_name}
                                 </option>
@@ -289,6 +414,7 @@ $(function () {
         //车辆编号
         updateCarData.plateNumber=$("input[name='carEcho_numberPlate']").val();
         updateCarData.disable=$('#edit_car_select2').val();
+        updateCarData.departmentId=$('#select2').val();
         // updateCarData.state=$('#edit_car_select1').val();车辆状态
 
         if(!updateCarData.plateNumber){
@@ -301,6 +427,8 @@ $(function () {
         }
         var h6_amend_car = $('.show_01 h6').text();
         if(h6_amend_car==''){
+            //修改车辆弹窗需要的部门列表
+            getAjaxRequest("GET",interface_url+'department/search',null,car_departmentList_edit,errorFunc);
             getAjaxRequest("POST", interface_url+'vehicle/edit', updateCarData, editCarFunc, errorFunc)
             function editCarFunc(json){
                 // console.log(json);

@@ -36,8 +36,19 @@ let pages = 0; //总页数
     getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
     
     // 获取车辆实时位置信息
-    var data = {'vehiclesId':[1,2]};
-    getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
+    var vehiclesId = []
+    getAjaxRequest("GET", interface_url+"vehicle/search", {state:2}, getVehicleBusy, null);
+    function  getVehicleBusy (json){
+        if(json.head.status.code == 200){
+            var vehicleList = json.body.results
+            for(var i=0;i<vehicleList.length;i++){
+                vehiclesId.push(vehicleList[i].vehicle_id)
+            }
+        }
+        var data = {'vehiclesId':vehiclesId};
+        getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
+    }
+
    
     //获取部门添加到select里
     let getVehicleData = {
@@ -173,7 +184,8 @@ let pages = 0; //总页数
 
 $("#state_car").change(function () {
     $('.lst').addClass('page_on').removeClass('page_on_not')
-    var vehicleData = {state: $("#state_car").val(), 'page.number':pageNumber, 'page.size':pageSize} ;
+    $('.fst').addClass('page_on_not').removeClass('page_on')
+    var vehicleData = {state: $("#state_car").val(), 'page.number':1, 'page.size':pageSize} ;
 	getAjaxRequest("GET", interface_url+"vehicle/search", vehicleData, rltCarState, null);
 });
 
@@ -248,7 +260,7 @@ var tmp ;
 var data = {};
 $('.button_gen').click(btnFlush);
 function btnFlush() {
-    data.vehicleIds = []
+    data.vehiclesId = []
     $.each($('.list_che .myCheck:checked'),function () {
         data.vehiclesId.push($(this).val())
     })
@@ -385,12 +397,17 @@ function eleFenceData(json){
 
 
 $(function () {
+    //查询历史轨迹时间选择点击
+    /*$('#one_guiji').on('click',function () {
+        $(".play").css({ display: 'none' })
+    })*/
+
+
     $(".button_cha").click(function () {
         selectVehTrack();
         /*setTimeout(function () {
             $(".play").css({ display: 'block' });
         }, 3000);*/
-
     });
     //播放按钮
     /*$("#play_2").click(function () {
