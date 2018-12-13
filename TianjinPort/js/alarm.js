@@ -34,6 +34,27 @@
     /*$('.table1 a').on('click',function () {
         $('.show').css('display','block')
     })*/
+
+    //？why12.13MA
+    var tr_index = 0
+    w._alarm = function (i) {
+        $('.edit_alert').css('display','block')
+        var alarm_car = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(2)`).text()
+        var alarm_time = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(4)`).text()
+        var alarm_reason = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(5)`).text()
+        var chuli_time = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(7)`).text()
+        var alarm_bumen = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(3)`).text()
+        var alarm_chuzhi = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(6)`).text()
+        //console.log(alarm_bumen)
+        $('.tip_add_truck .alarm_car').val(alarm_car)
+        $('.tip_add_truck #alarm_time').val(alarm_time)
+        $('.tip_add_truck .alarm_reason').val(alarm_reason)
+        $('.tip_add_truck #chuli_time').val(chuli_time)
+        $('.tip_add_truck .alarm_bumen').val('1')
+        $('.tip_add_truck .alarm_chuzhi').val('2')
+        tr_index = i
+    }
+
     $('.alarm_quxiao').on('click',function () {
         $('.show').css('display','none')
     })
@@ -90,21 +111,4 @@
         event.stopPropagation();
     });
 })(window)
-var tr_index = 0
-function _alarm(i) {
-    $('.show').css('display','block')
-    var alarm_car = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(2)`).text()
-    var alarm_time = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(4)`).text()
-    var alarm_reason = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(5)`).text()
-    var chuli_time = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(7)`).text()
-    var alarm_bumen = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(3)`).text()
-    var alarm_chuzhi = $(`.table1>:nth-child(1)>:nth-child(${i+1})>:nth-child(6)`).text()
-    //console.log(alarm_bumen)
-    $('.tip_add_truck .alarm_car').val(alarm_car)
-    $('.tip_add_truck #alarm_time').val(alarm_time)
-    $('.tip_add_truck .alarm_reason').val(alarm_reason)
-    $('.tip_add_truck #chuli_time').val(chuli_time)
-    $('.tip_add_truck .alarm_bumen').val('1')
-    $('.tip_add_truck .alarm_chuzhi').val('2')
-    tr_index = i
-}
+

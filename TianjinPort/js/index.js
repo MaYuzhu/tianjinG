@@ -5,6 +5,13 @@ let pageSize = 8; //每页显示条数
 let pages = 0; //总页数
 
 (function (w) {
+    //判断用户是否登录 请求数据接口已经判断过了
+    /*const customerId = sessionStorage.customerId
+    if(!customerId){
+        alert('您尚未登录，请登录')
+        location.href="./login.html"
+    }*/
+
     //在线监测与轨迹切换
     let $tab = $('.right_content>:nth-child(1)>p')
     $tab.on('click', (function () {
@@ -27,17 +34,18 @@ let pages = 0; //总页数
                     map.removeLayer(lineLayer)
                 }
                 $('.play').css('display','none')
+                $('.play_text').css('display','none')
             }
 	    })
-    );
+    )
     
     // 获取车辆实时状态
-    var data = {'state': 2, 'page.number':pageNumber, 'page.size':pageSize} ;
-    getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null);
+    var data = {'state': 2, 'page.number':pageNumber, 'page.size':pageSize}
+    getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null)
     
     // 获取车辆实时位置信息
     var vehiclesId = []
-    getAjaxRequest("GET", interface_url+"vehicle/search", {state:2}, getVehicleBusy, null);
+    getAjaxRequest("GET", interface_url+"vehicle/search", {state:2}, getVehicleBusy, null)
     function  getVehicleBusy (json){
         if(json.head.status.code == 200){
             var vehicleList = json.body.results
@@ -70,12 +78,12 @@ let pages = 0; //总页数
     }
 
     //轨迹查询选择车辆列表
-    getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+    getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null)
     //按部门查找
     $('#a2').on('change',function () {
         $('.next_wrap3>:last-child').addClass('page_on').removeClass('page_on_not')
         getVehicleData.departmentId = $('#a2').val()
-        getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null);
+        getAjaxRequest("GET", interface_url+"vehicle/search", getVehicleData, getVehicleList, null)
     })
     //翻页
     $('.next_wrap3>:first-child').on('click', function () {
@@ -121,7 +129,7 @@ let pages = 0; //总页数
                                 json.body.results[i].state==1?'green_ball':'gray_ball'}></div>
                             </li>`)
             }
-            $('input[name="vehicle_radio"][value="1"]').attr('checked',true)
+            //$('input[name="vehicle_radio"][value="1"]').attr('checked',true)
         }
     }
 
@@ -137,9 +145,12 @@ let pages = 0; //总页数
     laydate.render({
         elem: '#one_guiji'
         , type: 'datetime'
-        , range: '~'
         //, format: 'M/d/H:m'
-    });
+    })
+    laydate.render({
+        elem: '#one_guiji1'
+        , type: 'datetime'
+    })
     /*laydate.render({
         elem: '#test16'
         ,type: 'datetime'
@@ -207,6 +218,7 @@ function rltCarState(json){
                             cars[i].state==1?'green_ball':'gray_ball'}></div>
                  </li>`)   
 	    }
+	    //地图平移到车的位置，还未实现
 	    $('.itemCar').on('click',function () {
             let getCarData = {
                 vehiclesId:$(this).attr('value')
@@ -214,8 +226,8 @@ function rltCarState(json){
             getAjaxRequest("GET", interface_url+"location/realtime", getCarData, thisCarState, null);
             function thisCarState (json){
                 if(json.head.status.code == 200){
-                    let lon = json.body[0].packet_data[0].data.longitude
-                    let lat = json.body[0].packet_data[0].data.latitude
+                    let lon = json.body[0].data[0].data.longitude
+                    let lat = json.body[0].data[0].data.latitude
                     //setMapView(13110795.607205058,4719031.500290665)
                     console.log(lon*100000,lat*100000)
                     //setMapView(13110895.607205058,4719131.500290665)
@@ -278,7 +290,6 @@ function btnFlush() {
 }
 function getCurData(){
 	//var data = {'vehicleId':[1,2]};
-
     getAjaxRequest("GET", interface_url+"location/realtime", data, realTimeCarData, null);
 }
 
@@ -292,16 +303,17 @@ function realTimeCarData(json){
 			source.clear();
 			features = []
 		}
-		var curDatas = json.body;
+		var curDatas = json.body
 		for (var i = 0; i < curDatas.length; i++) {
-			var vid = curDatas[i].vehicle_id;
-			var vdata = curDatas[i].packet_data[0].data;
-			var vtime = curDatas[i].packet_data[0].time;
-			insertMapPoint(features, vdata, vid);
+			var vid = curDatas[i].vehicle_id
+			var vdata = curDatas[i].data[0].values
+			var vtime = curDatas[i].data[0].time
+			insertMapPoint(features, vdata, vid)
 	    }
+	    //console.log(curDatas[0].packet_data[0].values.direction)
 		//增加新的坐标点，并更新地图
 		source.addFeatures(features)
-	    map.updateSize();
+	    map.updateSize()
 		//map.getView().fit(source.getExtent(), map.getSize());
 	}else{
 		//alert(json.head.status.message);
@@ -471,6 +483,7 @@ $(function () {
             map.removeLayer(lineLayer)
         }
         $('.play').css('display','none')
+        $('.play_text').css('display','none')
     })
 })
 

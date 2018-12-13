@@ -64,7 +64,7 @@ function insertMapPoint(features, vdata, fid){
 	feature.setStyle(
 		new ol.style.Style({
 	       image:new ol.style.Icon({
-	    	   rotation: Number(vdata.direction),
+               rotation: Math.PI/180 * Number(vdata.direction),
 	    	   color: "white",
 	    	   src:'/img/icon/1.png'
 	       })

@@ -46,7 +46,7 @@ Array.prototype.remove = function(val) {
     let carlistPageSize = 8; //每页显示条数
     let carlistPages = 0; //总页数
     var getCarData = {
-        //'state':Number($('select[name=add_fence_carlist_state]').val()),
+        'state':Number($('select[name=add_fence_carlist_state]').val()),
         'page.number':carlistPageNumber,
         'page.size':carlistPageSize
     };

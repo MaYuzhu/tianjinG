@@ -490,7 +490,7 @@ html,body{
 }
 .list_che,.list_che2{
     margin-top: 10px;
-    height: 260px;
+    height: 230px;
 }
 .list_che>li,.list_che2>li{
     display: flex;

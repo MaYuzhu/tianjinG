@@ -129,10 +129,10 @@ map.on('click', function(e) {
                 //设置弹出框内容，可以HTML自定义
                 $('#popup-content').html(`<p><span>车辆：</span><span>${info.plate_number}</span></p>
                                             <p><span>部门：</span><span>${info.department.identity_name}</span></p>
-                                            <p><span>型号：</span><span>XXX</span></p>
-                                            <p><span>时间：</span><span>${info.travel_time}</span></p>
-                                            <p><span>平均速度：</span><span>${info.average_velocity}</span></p>
-                                            <p><span>总里程：</span><span>${info.total_mileage}&nbsp;,</span>&nbsp;&nbsp;<span>当日里程：</span><span>${info.daily_mileage}</span></p>
+                                            <p><span>型号：</span><span>${info.model_number}</span></p>
+                                            <p><span>时间：</span><span>${info.gather_time}</span></p>
+                                            <p><span>当前速度：</span><span>${info.velocity}km/h</span></p>
+                                            <p><span>总里程：</span><span>${info.total_mileage}km&nbsp;,</span>&nbsp;&nbsp;<span>当日里程：</span><span>${info.daily_mileage}km</span></p>
                                             <p><span>状态：</span><span>${info.state==1?'空闲':info.state==2?'忙碌':'离线'}</span></p>`)
     		}else{
     			alert(json.head.status.message);
@@ -230,14 +230,24 @@ var trackData = [];
 
 //车辆轨迹查询事件
 function selectVehTrack(){
+    $(".play_text").text('正在查询，请稍后......')
+    $(".play_text").css({ display: 'block' })
     var vehicleId = $('input[name="vehicle_radio"]:checked').val()
     /*var startTime = '2018-11-06 14:30:01'
     var endTime = '2018-11-06 14:40:01'*/
-    var startTime = $('#one_guiji').val().substr(0,19).trim()
-    var endTime = $('#one_guiji').val().substr(21,40).trim()
+    var startTime = $('#one_guiji').val()//.substr(0,19).trim()
+    var endTime = $('#one_guiji1').val()//.substr(21,40).trim()
 
+    if(!vehicleId){
+        alert('请选择车辆...')
+        return false
+    }
     if(!$('#one_guiji').val()){
-        alert('请选择时间范围...')
+        alert('请选择起始时间...')
+        return false
+    }
+    if(!$('#one_guiji1').val()){
+        alert('请选择结束时间...')
         return false
     }
 
@@ -248,16 +258,19 @@ function selectVehTrack(){
 	var data = {'vehiclesId':vehicleId, 'startTime':startTime , 'endTime':endTime};
 	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
 		if(json.head.status.code == 200){
-		    if(json.body[0].packet_data.length < 1){
+		    if(json.body[0].data.length < 1){
 		        alert('当前时间范围内没有数据')
+                $(".play_text").text('')
                 return false
             }
             $(".play").css({ display: 'block' })
-			trackData = json.body[0].packet_data;
+            $(".play_text").text('模拟轨迹')
+            $(".play_text").css({ display: 'block' })
+			trackData = json.body[0].data;
 			// 折线
 	        var lineArray = [];
 	        for(var i=0; i<trackData.length; i++){
-	            lineArray.push(ol.proj.fromLonLat([trackData[i].data.longitude * 1, trackData[i].data.latitude * 1]));
+	            lineArray.push(ol.proj.fromLonLat([trackData[i].values.longitude * 1, trackData[i].values.latitude * 1]));
 	        }
 	        if (lineSources){
 	        	lineSources.clear()//清除
@@ -312,10 +325,10 @@ var carMove = function () {
     if (index > 0) {
         var ab = "A";
         var a90 = 0;
-        var v = getAngle(trackData[index-1].data, trackData[index].data)
-        if (trackData[index-1].data.longitude > trackData[index].data.longitude) {
+        var v = getAngle(trackData[index-1].values, trackData[index].values)
+        if (trackData[index-1].values.longitude > trackData[index].values.longitude) {
             ab = "A";
-            if (trackData[index-1].data.latitude > trackData[index].data.latitude) {
+            if (trackData[index-1].values.latitude > trackData[index].values.latitude) {
                 a90 = 90 * 2;
             } else {
                 ab = "B";
@@ -323,7 +336,7 @@ var carMove = function () {
             }
         } else {
             ab = "B";
-            if (trackData[index-1].data.latitude > trackData[index].data.latitude) {
+            if (trackData[index-1].values.latitude > trackData[index].values.latitude) {
                 a90 = 90 * 1;
             } else {
                 ab = "A";
@@ -352,7 +365,7 @@ var carMove = function () {
         	carSource.removeFeature(pos);
 
         pos = new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[index].data.longitude * 1, trackData[index].data.latitude * 1]))
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[index].values.longitude * 1, trackData[index].values.latitude * 1]))
         });
         carSource.addFeature(pos);
     }

@@ -859,7 +859,7 @@
                     </td>
                     <td>${i+1+getRoleListData["page.size"]*(json.body.number-1)}</td>
                     <td>${json.body.list[i].identity_name}</td>
-                    <td>${json.body.list[i].disable==0?'启用中':'已禁用'}</td>
+                    <td>${json.body.list[i].disable==0?'启用中':'<span style="color:#E4393C">已禁用</span>'}</td>
                     <td>${json.body.list[i].memo==''?'暂无描述':json.body.list[i].memo}</td>
                     <td>
                     <a class="update_role" href="javascript:;" value=${json.body.list[i].role_id}>编辑</a>

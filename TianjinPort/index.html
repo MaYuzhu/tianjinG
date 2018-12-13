@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>港口定位导航服务平台</title>
+
+    <link rel="icon" type="image/x-icon" href="./img/favicon.ico"/>
+
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/map_popup.css">
@@ -127,14 +130,18 @@
                         </div>
                         <p class="time_select">时间选择</p>
                         <div class="one_guiji">
-                            <input type="text" id="one_guiji" placeholder="请选择时间范围">
+                            <input type="text" id="one_guiji" placeholder="请选择起始时间">
                             <label for="one_guiji"></label>
+                        </div>
+                        <div class="one_guiji">
+                            <input type="text" id="one_guiji1" placeholder="请选择结束时间">
+                            <label for="one_guiji1"></label>
                         </div>
                         <div class="button_gui">
                             <div class="button_dao" style="visibility: hidden">导&nbsp;&nbsp;&nbsp;&nbsp;出</div>
                             <div class="button_cha">查&nbsp;&nbsp;&nbsp;&nbsp;询</div>
                         </div>
-                        <p class="time_select">模拟轨迹</p>
+                        <p class="time_select play_text" style="display:none">模拟轨迹</p>
                         <div class="play" style="display: none;">
                             <div style="display: none;">
                                 <span>00:00</span>
