@@ -282,10 +282,12 @@ function btnFlush() {
     }
 	if(bool){
 		bool = false;
-		tmp = setInterval(getCurData, 1000);
+		tmp = setInterval(getCurData, 500);
+		$('.button_gen').html('<p>暂&nbsp;&nbsp;&nbsp;&nbsp;停</p>');
 	}else{
 		bool = true;
 		clearInterval(tmp);
+        $('.button_gen').html('<p>跟&nbsp;&nbsp;&nbsp;&nbsp;踪</p>');
 	}
 }
 function getCurData(){

@@ -1,5 +1,14 @@
 
 $(function () {
+    laydate.render({
+        elem: '#add_in_time'
+        , type: 'datetime'
+    })
+    laydate.render({
+        elem: '#edit_in_time'
+        , type: 'datetime'
+    })
+
     //添加车辆拖动
     $(".show").mousedown(function(e){ //e鼠标事件
         $(this).css("cursor","move");//改变鼠标指针的形状

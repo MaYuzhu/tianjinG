@@ -126,10 +126,10 @@ map.on('click', function(e) {
     			console.log(info.department.identity_name)*/
     			msg = info.vehicle_id +"\n"+ info.plate_number +"\n"+ info.department.identity_name; 
     			//console.log(info)
-                //设置弹出框内容，可以HTML自定义
+                //设置弹出框内容，可以HTML自定义 //<p><span>型号：</span><span>${info.model_number}</span></p>
                 $('#popup-content').html(`<p><span>车辆：</span><span>${info.plate_number}</span></p>
                                             <p><span>部门：</span><span>${info.department.identity_name}</span></p>
-                                            <p><span>型号：</span><span>${info.model_number}</span></p>
+                                            
                                             <p><span>时间：</span><span>${info.gather_time}</span></p>
                                             <p><span>当前速度：</span><span>${info.velocity}km/h</span></p>
                                             <p><span>总里程：</span><span>${info.total_mileage}km&nbsp;,</span>&nbsp;&nbsp;<span>当日里程：</span><span>${info.daily_mileage}km</span></p>
