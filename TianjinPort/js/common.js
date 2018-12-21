@@ -59,6 +59,7 @@ function getAsyncAjaxRequest(type, url, data, async, succFunc, errFunc){
 function insertMapPoint(features, vdata, fid){
 	var feature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.fromLonLat([Number(vdata.longitude),Number(vdata.latitude)]))
+        //geometry: new ol.geom.Point(ol.proj.fromLonLat([Number(117.78341435166347),Number(38.98634291683676)]))
     });
 	feature.setId(fid);
 	feature.setStyle(

@@ -12,9 +12,139 @@ let pages = 0; //总页数
         location.href="./login.html"
     }*/
 
+    //时间范围选择
+    //日期
+    /*laydate.render({
+        elem: '#one_guiji'
+        , type: 'datetime'
+        //, format: 'M/d/H:m'
+    })
+    laydate.render({
+        elem: '#one_guiji1'
+        , type: 'datetime'
+    })*/
+    /*laydate.render({
+        elem: '#test16'
+        ,type: 'datetime'
+        ,range: '到'
+        ,format: 'yyyy年M月d日H时m分s秒'
+    });*/
+    //开始时间
+    var start
+    var end
+    start = laydate.render({
+        elem: '#one_guiji',
+        type: 'datetime',
+        btns: ['confirm'],
+        min: '1900-1-1 00:00:00',
+        max: 'nowTime',
+        trigger: 'click', //采用click弹出
+        done: function (value, date, endDate) {
+            //console.log(value)
+            if(value !== ''){
+                end.config.min = {
+                    year: date.year,
+                    month: date.month - 1,
+                    date: date.date,
+                    hours: date.hours,
+                    minutes: date.minutes,
+                    seconds: date.seconds
+                };//开始日选好后，重置结束日的最小日期
+                /*end.config.value = {
+                    year: date.year,
+                    month: date.month - 1,
+                    date: date.date,
+                    hours: date.hours,
+                    minutes: date.minutes,
+                    seconds: date.seconds
+                };*/ //将结束日的初始值设定为开始日
+                //console.log(value)
+                end.config.max = getDateArray(date)
+            }else {
+                alert(1)
+                end.config.max.year = '';
+                end.config.max.month = '';
+                end.config.max.date = '';
+            }
+
+        }
+    });
+    //结束时间
+    end = laydate.render({
+        elem: '#one_guiji1',
+        type: 'datetime',
+        btns: ['confirm'],
+        min: '1900-1-1 00:00:00',
+        max: 'nowTime',
+        trigger: 'click', //采用click弹出
+        done: function (value, date, endDate) {
+            if(value !== ''){
+                start.config.max = {
+                    year: date.year,
+                    month: date.month - 1,
+                    date: date.date,
+                    hours: date.hours,
+                    minutes: date.minutes,
+                    seconds: date.seconds
+                }; //结束日选好后，重置开始日的最大日期
+                start.config.min = getDateArrayBefore(date)
+            }else {
+                alert(2)
+                start.config.min.year = '';
+                start.config.min.month = '';
+                start.config.min.date = '';
+            }
+
+        }
+    });
+    function getDateArray(date){//获取时间数组
+        var darray={};
+        darray.year=date.year;
+        darray.month=date.month - 1;
+        var day = date.date;
+        /*if(date.hours == 0 && date.minutes == 0 && date.seconds == 0){
+            day = day + 1;
+        }else{
+            darray.hours = date.hours;
+            darray.minutes = date.minutes;
+            darray.seconds = date.seconds;
+        }*/
+        darray.date = day + 1;
+        darray.hours = date.hours;
+        darray.minutes = date.minutes;
+        darray.seconds = date.seconds;
+        return darray;
+    }
+    function getDateArrayBefore(date){//获取时间数组
+        var darray={};
+        darray.year=date.year;
+        darray.month=date.month - 1;
+        var day = date.date;
+        darray.date = day - 1;
+        darray.hours = date.hours;
+        darray.minutes = date.minutes;
+        darray.seconds = date.seconds;
+        return darray;
+    }
+    $('.button_dao').on("click",function(){
+        $('#one_guiji,#one_guiji1').prop("value","");
+        start.config.max = {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth(),
+            date: new Date().getDate(),
+        }
+        end.config.max = {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth(),
+            date: new Date().getDate(),
+        }
+        start.config.min = {}
+        end.config.min = {}
+    })
+
     //在线监测与轨迹切换
     let $tab = $('.right_content>:nth-child(1)>p')
-    $tab.on('click', (function () {
+    $tab.on('click', function () {
 	        var i = $(this).index();
 	        $(this).addClass('on').siblings().removeClass('on');
 	        $('.on img').css('display', 'block')
@@ -37,8 +167,7 @@ let pages = 0; //总页数
                 $('.play_text').css('display','none')
             }
 	    })
-    )
-    
+
     // 获取车辆实时状态
     var data = {'state': 2, 'page.number':pageNumber, 'page.size':pageSize}
     getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null)
@@ -141,22 +270,6 @@ let pages = 0; //总页数
     $('.right_hide').on('click', function () {
         $('.right_content').css('transform', 'translateX(230px)')
     })
-
-    laydate.render({
-        elem: '#one_guiji'
-        , type: 'datetime'
-        //, format: 'M/d/H:m'
-    })
-    laydate.render({
-        elem: '#one_guiji1'
-        , type: 'datetime'
-    })
-    /*laydate.render({
-        elem: '#test16'
-        ,type: 'datetime'
-        ,range: '到'
-        ,format: 'yyyy年M月d日H时m分s秒'
-    });*/
 
     //两个电子围栏同时选中 懒得改结构了
     $('.myCheck_dian').on('click',function() {
@@ -408,7 +521,6 @@ function eleFenceData(json){
 		alert(json.head.status.message);
 	}
 }
-
 
 $(function () {
     //查询历史轨迹时间选择点击

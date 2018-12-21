@@ -1,4 +1,7 @@
-var url = 'http://192.168.1.150:6080/arcgis/services/port_jt/port_tianj/MapServer/WMSServer';
+//var url = 'http://192.168.1.150:6080/arcgis/services/port_jt/port_tianj/MapServer/WMSServer';
+
+var url = 'https://geohey.com/s/dataviz/6c2d884bc36d5940300caa58a762167f/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
 var pos = [13110795.607205058,4719031.500290665];
 const container = document.getElementById('popup');
 const content = document.getElementById('popup-content');
@@ -32,6 +35,26 @@ var layers = [
         })
     })
 ];
+
+//ma 18.12.20
+var layers = [
+    //谷歌卫星底图
+    new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url:'http://mt2.google.cn/vt/lyrs=y&hl=zh-CN&gl=CN&src=app&x={x}&y={y}&z={z}&s=G'//谷歌卫星地图 混合
+        }),
+        projection: 'EPSG:3857'
+    }),
+    //极海
+    new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: url,//添加GeoHey地图
+            tilePixelRatio: 2,//表示加载高清图显示
+            crossOrigin:null
+        })
+    }),
+];
+//end
 
 //实例化 map
 var map = new ol.Map({
@@ -230,8 +253,6 @@ var trackData = [];
 
 //车辆轨迹查询事件
 function selectVehTrack(){
-    $(".play_text").text('正在查询，请稍后......')
-    $(".play_text").css({ display: 'block' })
     var vehicleId = $('input[name="vehicle_radio"]:checked').val()
     /*var startTime = '2018-11-06 14:30:01'
     var endTime = '2018-11-06 14:40:01'*/
@@ -251,10 +272,13 @@ function selectVehTrack(){
         return false
     }
 
+    $(".play_text").text('正在查询，请稍后......')
+    $(".play_text").css({ display: 'block' })
+
     /*setTimeout(function () {
         $(".play").css({ display: 'block' });
     }, 4000);*/
-
+    speedBar(startTime,endTime)
 	var data = {'vehiclesId':vehicleId, 'startTime':startTime , 'endTime':endTime};
 	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
 		if(json.head.status.code == 200){
@@ -295,6 +319,33 @@ function selectVehTrack(){
 			alert(json.head.status.message);
 		}
 	}, null);
+}
+
+//进度条组件
+function speedBar(start,end) {
+    console.log(start,end)
+    var date = new Date(start.replace(/-/g, '/'))
+    var start_time = Date.parse(date);
+    var date_end = new Date(end.replace(/-/g, '/'))
+    var end_time = Date.parse(date_end);
+    console.log(end_time - start_time)
+    var result = formatDuring(end_time - start_time)
+    console.log(result)
+    $('.speed_box>:last-child').text(result)
+}
+function formatDuring(mss) {
+    var days = parseInt(mss / (1000 * 60 * 60 * 24));
+    var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = (mss % (1000 * 60)) / 1000;
+    if(days == 1){
+        days = 0
+        hours = 23
+        minutes = 59
+        seconds = 59
+    }
+    return hours + ":" + minutes + ":" + seconds;
+    //return days + " 天 " + hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
 }
 
 //模拟轨迹
