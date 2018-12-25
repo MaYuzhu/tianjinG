@@ -549,6 +549,7 @@ $(function () {
             })
             run_carMove = true
             carMove()
+            speedBarMove()
 
             $('#play_1').on('click',function () {
                 if(setTimeoutFlag){

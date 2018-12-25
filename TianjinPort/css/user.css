@@ -472,7 +472,7 @@ footer div:last-child{
 /*添加角色弹窗*/ /*编辑角色同*/
 .tip_add_juese,.tip_update_juese{
     width: 300px;
-    height: 420px;
+    height: 430px;
     background: #2e3854;
     border: 2px solid #687289;
     background-size: 100%,100%;
@@ -487,8 +487,8 @@ footer div:last-child{
 }
 .tip_add_juese_right{
     width: 300px;
-    height: 210px;
-    overflow: auto;
+    height: 220px;
+    /*overflow: auto;*/
     margin-top: 10px;
 }
 .tip_add_juese_right>p{
@@ -508,7 +508,7 @@ footer div:last-child{
     line-height: 18px;
 }
 #tree ul li ul li ul,#update_role_tree ul li ul li ul{
-    padding-left: 48px;
+    padding-left: 64px;
 }
 #tree img,#update_role_tree img{
     display: block;
@@ -521,9 +521,6 @@ footer div:last-child{
 #tree input[type='checkbox'],#update_role_tree input[type='checkbox']{
     display: none;
 }
-/*.lv3Checks{
-    display: block; float: left; clear: left; width: 15px; height: 15px;
-}*/
 .lv1U label::before,.update_role_lv1U label::before{
     content: '';
     background-color: #181e3c;
@@ -563,3 +560,26 @@ footer div:last-child{
     color:#e4393c;
     margin-left:5px;
 }
+/*改进树结构*/
+#tree,#update_role_tree {
+    height: 224px;
+    overflow: auto;
+}
+#tree span,#tree label,#update_role_tree span,#update_role_tree label{
+    cursor: pointer;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px inset #313453;
+    background: #0e112c url("../img/tree_3.png") 0px 0px no-repeat;
+    transform: translate(-1px,4px);
+}
+#tree label,#update_role_tree label{
+    transform: translate(-72px,4px);
+}
+#tree img,#update_role_tree img{
+    transform: translate(2px,3px);
+}
+#tree .checked, #update_role_tree .checked{background-position-x: -38px;background-position-y:-2px}
+#tree .checkHalf, #update_role_tree .checkHalf{background-position-x: -17px;background-position-y:-2px}
+#tree .default, #update_role_tree .default{background-position-x: 0px;}

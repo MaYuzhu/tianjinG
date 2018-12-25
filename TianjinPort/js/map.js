@@ -2,7 +2,8 @@
 
 var url = 'https://geohey.com/s/dataviz/6c2d884bc36d5940300caa58a762167f/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
-var pos = [13110795.607205058,4719031.500290665];
+//var pos = [13110795.607205058,4719031.500290665];
+var pos = ol.proj.transform([117.78688073,38.98251417], 'EPSG:4326', 'EPSG:3857');
 const container = document.getElementById('popup');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
@@ -45,6 +46,7 @@ var layers = [
         }),
         projection: 'EPSG:3857'
     }),
+
     //极海
     new ol.layer.Tile({
         source: new ol.source.XYZ({
@@ -62,7 +64,7 @@ var map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: pos,
-        zoom: 17
+        zoom: 16
     }),
     overlays: [
         overlay
@@ -93,7 +95,7 @@ var mousePositionControl = new ol.control.MousePosition({
     //目标容器
     target:document.getElementById('myposition')
 });
-//map.addControl(mousePositionControl);
+//map.addControl(mousePositionControl);//鼠标点的经纬度
 
 // map 比例尺
 var scaleLineControl = new ol.control.ScaleLine({
@@ -315,6 +317,36 @@ function selectVehTrack(){
 	            })]
 	        });
 	        map.addLayer(lineLayer);
+            //点 测试
+            /*var lineSources1
+            if (lineSources1){
+                lineSources1.clear()//清除
+            }
+
+            lineSources1 = new ol.source.Vector();
+            for(var i=0; i<trackData.length; i++){
+                //lineArray.push(ol.proj.fromLonLat([trackData[i].values.longitude * 1, trackData[i].values.latitude * 1]));
+                lineSources1.addFeature(new ol.Feature({
+                    geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[i].values.longitude * 1, trackData[i].values.latitude * 1]))
+                }));
+            }
+
+
+            lineLayer1 = new ol.layer.Vector({
+                source: lineSources1,
+                style: [new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius:2,
+                        stroke:new ol.style.Stroke({
+                            color:'red',
+                            width:5
+                        })
+                    })
+                })]
+            });
+            map.addLayer(lineLayer1);*/
+
+
 		}else{
 			alert(json.head.status.message);
 		}
@@ -322,30 +354,66 @@ function selectVehTrack(){
 }
 
 //进度条组件
+var time_slot //时间范围毫秒
+
 function speedBar(start,end) {
-    console.log(start,end)
     var date = new Date(start.replace(/-/g, '/'))
     var start_time = Date.parse(date);
     var date_end = new Date(end.replace(/-/g, '/'))
     var end_time = Date.parse(date_end);
     console.log(end_time - start_time)
-    var result = formatDuring(end_time - start_time)
-    console.log(result)
+    time_slot = end_time - start_time
+    if(time_slot == 86400000){
+        time_slot = 86400000 -1000
+    }
+    var result = formatDuring(time_slot)
+    //console.log(result)
     $('.speed_box>:last-child').text(result)
 }
 function formatDuring(mss) {
-    var days = parseInt(mss / (1000 * 60 * 60 * 24));
+    //var days = parseInt(mss / (1000 * 60 * 60 * 24));
     var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = (mss % (1000 * 60)) / 1000;
-    if(days == 1){
-        days = 0
-        hours = 23
-        minutes = 59
-        seconds = 59
+    if(hours<10){
+        hours = '0' + hours
+    }
+    if(minutes<10){
+        minutes = '0' + minutes
+    }
+    if(seconds<10){
+        seconds = '0' + seconds
     }
     return hours + ":" + minutes + ":" + seconds;
     //return days + " 天 " + hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
+}
+
+function speedBarMove(){
+    //var maxtime = time_slot / 1000
+    var maxtime = 60
+    function CountDown() {
+         if (maxtime >= 0) {
+             var hour = Math.floor(maxtime / 60 / 60)
+             var minutes = Math.floor(maxtime / 60 % 60);
+             var seconds = Math.floor(maxtime % 60);
+             if(hour < 10){
+                 hour = '0' + hour
+             }
+             if(minutes < 10){
+                 minutes = '0' + minutes
+             }
+             if(seconds < 10){
+                 seconds = '0' + seconds
+             }
+             var msg = hour + ":" + minutes + ":" + seconds;
+             --maxtime;
+             $('.speed_box>:last-child').text(msg)
+         } else{
+               clearInterval(timer);
+               alert("时间到，结束!");
+                }
+         }
+    var timer = setInterval(CountDown, 1000);
 }
 
 //模拟轨迹

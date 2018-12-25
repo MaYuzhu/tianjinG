@@ -435,62 +435,6 @@
 
     });
 
-
-    //增加角色按钮
-    $('.content_footer_right4_top>:nth-child(3)').on('click',function () {
-        getAjaxRequest("GET", interface_url+'resource/list', null, resourceListFunc, errorFunc)
-        $('.tip_add_juese').css('display','block')
-        $('.show2 input[type="text"]').val('')
-        $('.show2 input[type="checkbox"]').attr("checked", false)
-    })
-    $('.add_juese_quxiao').on('click',function () {
-        $('.tip_add_juese').css('display','none')
-    })
-
-    //角色权限树结构
-    $(function() {
-        //新增角色的树
-        $("#lv1M").click(function() {
-            if($("#lv2U").is(":visible")) {
-                //                      alert("隐藏内容");
-                $("#lv1M").attr("src", "./images/user/plus_alt.png");
-            } else {
-                //                      alert("显示内容");
-                $("#lv1M").attr("src", "./images/user/minus_alt.png");
-            }
-            $("#lv2U").slideToggle(300);
-        });
-        //编辑角色的树
-        $("#update_role_lv1M").click(function() {
-            if($("#update_role_lv2U").is(":visible")) {
-                //                      alert("隐藏内容");
-                $("#update_role_lv1M").attr("src", "./images/user/plus_alt.png");
-            } else {
-                //                      alert("显示内容");
-                $("#update_role_lv1M").attr("src", "./images/user/minus_alt.png");
-            }
-            $("#update_role_lv2U").slideToggle(300);
-        });
-
-        $("#allCheck").click(function(){
-            $("#tree input[type=checkbox]").prop("checked",$("#allCheck").prop("checked"));
-        });
-        $("#update_role_all_check").click(function(){
-            $("#update_role_tree input[type=checkbox]").prop("checked",$("#update_role_all_check").prop("checked"));
-        });
-        /*$("#secondCheck1").click(function(){
-            $("input[name=lv3_1Check]").prop("checked",$("#secondCheck1").prop("checked"));
-        });
-
-        $("#secondCheck2").click(function(){
-            $("input[name=lv3_2Check]").prop("checked",$("#secondCheck2").prop("checked"));
-        });
-
-        $("#secondCheck3").click(function(){
-            $("input[name=lv3_3Check]").prop("checked",$("#secondCheck3").prop("checked"));
-        });*/
-    });
-
     function succFuncGetUserList(json){
         if(json.head.status.code == 200){
             // pageCount = Math.ceil(json.body.total/getUserListData["page.size"])
@@ -872,8 +816,9 @@
         $('.update_role').on('click',function () {
             $('.show3').css('display','block')
             roleId = $(this).attr('value')
-            $('.show3 input[type="checkbox"]').attr("checked", false)
+            $('.show3 input[type="checkbox"]').prop("checked", false)
             getAjaxRequest("GET", interface_url+"role/get", {roleId:roleId}, getRoleDisplay, errorFunc)
+            getAjaxRequest("GET", interface_url+'resource/list', null, resourceListFunc, errorFunc)
             function getRoleDisplay(json){
                 if(json.head.status.code == 200){
                     //console.log(json)
@@ -886,6 +831,10 @@
                             let id = arr_resources[i].resource_id
                             $(`.show3 input[value=${id}]`).prop("checked", true)
                         }
+                        updateBindCheckNode()
+                        updateBindCheckNodeTwo()
+                        $("#update_role_tree span[name$='lblCheck']").click(updateCheckBoxClick)
+                        $("#update_role_tree input[type=checkbox]").change(updateCheckBoxChange)
                     }
                 }else {
                     alert(json.head.status.message)
@@ -939,7 +888,7 @@
         updateRoleData.disable = $('#update_juese_select2').val()
         updateRoleData.memo = $('input[name="updateRemarks"]').val()
         updateRoleData.resourcesId = []
-        $.each($('.update_role_lv3Checks:checked'),function () {
+        $.each($('#update_role_tree input[type=checkbox]:checked'),function () {
             updateRoleData.resourcesId.push($(this).val())
         })
         if(updateRoleData.resourcesId<1){
@@ -974,7 +923,7 @@
         addRoleData.disable = $('#add_juese_select2').val()
         addRoleData.memo = $('input[name="remarks"]').val()
         addRoleData.resourcesId = []
-        $.each($('.lv3Checks:checked'),function () {
+        $.each($('#tree input[type=checkbox]:checked'),function () {
             //console.log(index + '个' + $(this).val())
             addRoleData.resourcesId.push($(this).val())
         })
@@ -1058,9 +1007,138 @@
             alert(`禁用失败！${json.head.status.message}`)
         }
     }
-    //获取资源列表树结构
-    getAjaxRequest("GET", interface_url+'resource/list', null, resourceListFunc, errorFunc)
-    function resourceListFunc(json){
+
+
+    //增加角色按钮
+    $('.content_footer_right4_top>:nth-child(3)').on('click',function () {
+        //console.log($('.tip_add_juese').is(":visible"))
+        if(!$('.tip_add_juese').is(":visible")){
+            $('.tip_add_juese').css('display','block')
+            $('.show2 input[type="text"]').val('')
+            $('.show2 input[type="checkbox"]').attr("checked", false)
+            getAjaxRequest("GET", interface_url+'resource/list', null, resourceAddListFunc, errorFunc)
+        }else {
+            return false
+        }
+
+    })
+    $('.add_juese_quxiao').on('click',function () {
+        $('.tip_add_juese').css('display','none')
+    })
+
+
+    //新增角色的树结构
+    function resourceAddListFunc(json) {
+        var tree = json.body
+        //新增角色结构树
+        $('#tree').html(`
+                            <ul class="one_1" level="1000">
+                                <li><img src="./images/user/minus_alt.png" id="img_one"/>
+                                    <span name="_lblCheck" class="default" num_children=${tree.length}></span>所有权限
+                                    <ul level="100" id="wrap_2" num_children=${tree.length}></ul>
+                                </li>
+                            </ul>`)
+        for(let i=0;i<tree.length;i++){
+            $('#wrap_2').append(`
+                        <li><img src="./images/user/plus_alt.png" id="img${i}"/>
+                            <span name="lblCheck"  num_children=${tree[i].children.length}></span>${tree[i].identity_name}
+                            <ul id=tree${i} level="10" class=small_ul${i} style="display: none">
+
+                            </ul>
+                        </li>`)
+            for(let j=0;j<tree[i].children.length;j++){
+                $(`.small_ul${i}`).append(`<li>
+
+                                <input id="thirdCheck${i+1}_${j+1}" value="${json.body[i].children[j].resource_id}" index="0" name="one_3_1" type="checkbox">
+                                    ${tree[i].children[j].identity_name}
+                                <label for="thirdCheck${i + 1}_${j + 1}" >
+                                </label>
+                                </li>`)
+            }
+
+            $(`#img${i}`).click(function() {
+                if($(`#tree${i}`).is(":visible")) {
+                    //                     alert("隐藏内容");
+                    $(`#img${i}`).attr("src", "./images/user/plus_alt.png");
+                } else {
+                    //                      alert("显示内容");
+                    $(`#img${i}`).attr("src", "./images/user/minus_alt.png");
+                }
+                $(`#tree${i}`).slideToggle(300);
+            })
+        }
+
+        $(`#img_one`).click(function() {
+            if($(`#wrap_2`).is(":visible")) {
+                //                     alert("隐藏内容");
+                $(`#img_one`).attr("src", "./images/user/plus_alt.png");
+            } else {
+                //                      alert("显示内容");
+                $(`#img_one`).attr("src", "./images/user/minus_alt.png");
+            }
+            $(`#wrap_2`).slideToggle(300);
+        })
+        BindCheckNode()
+        BindCheckNodeTwo()
+        $("#tree span[name$='lblCheck']").click(checkBoxClick)
+        $("#tree input[type=checkbox]").change(checkBoxChange)
+    }
+    //编辑角色的树结构
+    function resourceListFunc(json) {
+        //编辑角色结构树
+        var tree = json.body
+        $('#update_role_tree').html(`
+                            <ul class="one_1" level="1000">
+                                <li><img src="./images/user/minus_alt.png" id="update_role_img_one"/>
+                                    <span name="_lblCheck" class="default" update_role_num_children=${tree.length}></span>所有权限
+                                    <ul level="100" id="update_role_wrap_2" update_role_num_children=${tree.length}></ul>
+                                </li>
+                            </ul>`)
+        for(let i=0;i<tree.length;i++){
+            $('#update_role_wrap_2').append(`
+                        <li><img src="./images/user/plus_alt.png" id="update_role_img${i}"/>
+                            <span name="lblCheck" update_role_num_children=${tree[i].children.length}></span>${tree[i].identity_name}
+                            <ul id=update_role_tree${i} level="10" class=update_role_small_ul${i} style="display: none">
+
+                            </ul>
+                        </li>`)
+            for(let j=0;j<tree[i].children.length;j++){
+                $(`.update_role_small_ul${i}`).append(`<li>
+
+                                <input id="update_role_thirdCheck${i+1}_${j+1}" value="${json.body[i].children[j].resource_id}" index="0" name="one_3_1" type="checkbox">
+                                    ${tree[i].children[j].identity_name}
+                                <label for="update_role_thirdCheck${i + 1}_${j + 1}" >
+                                </label>
+                                </li>`)
+            }
+
+            $(`#update_role_img${i}`).click(function() {
+                if($(`#update_role_tree${i}`).is(":visible")) {
+                    //                     alert("隐藏内容");
+                    $(`#update_role_img${i}`).attr("src", "./images/user/plus_alt.png");
+                } else {
+                    //                      alert("显示内容");
+                    $(`#update_role_img${i}`).attr("src", "./images/user/minus_alt.png");
+                }
+                $(`#update_role_tree${i}`).slideToggle(300);
+            })
+        }
+
+        $(`#update_role_img_one`).click(function() {
+            if($(`#update_role_wrap_2`).is(":visible")) {
+                //                     alert("隐藏内容");
+                $(`#update_role_img_one`).attr("src", "./images/user/plus_alt.png");
+            } else {
+                //                      alert("显示内容");
+                $(`#update_role_img_one`).attr("src", "./images/user/minus_alt.png");
+            }
+            $(`#update_role_wrap_2`).slideToggle(300);
+        })
+
+        //updateBindCheckNode()
+        //updateBindCheckNodeTwo()
+    }
+    /*function resourceListFunc(json){
         $("#lv2U").html('')
         for(let i=0;i<json.body.length;i++){
             $("#lv2U").append(`<img src="./images/user/plus_alt.png" id="lv2M${i+1}" style="clear: left;"/>
@@ -1138,7 +1216,213 @@
             }
         }
 
+    }*/
+    //树结构
+    //默认的状态显示
+    function BindCheckNode() {
+        //判断选中状态的节点的子节点是否全部选中，
+        $("#tree span[name^='lblCheck']").each(function(){
+            var curNode = this.parentNode
+            //console.log(curNode)
+            if(CheckAll(curNode)=='checkHalf') {
+                $(this).attr("class","checkHalf");
+            }else if(CheckAll(curNode)=='checked'){
+                $(this).attr("class","checked");
+            }else {
+                $(this).attr("class","default");
+            }
+        });
     }
+    function updateBindCheckNode() {
+        //判断选中状态的节点的子节点是否全部选中，
+        $("#update_role_tree span[name^='lblCheck']").each(function(){
+            var curNode = this.parentNode
+            //console.log(curNode)
+            if(updateCheckAll(curNode)=='checkHalf') {
+                $(this).attr("class","checkHalf");
+            }else if(updateCheckAll(curNode)=='checked'){
+                $(this).attr("class","checked");
+            }else {
+                $(this).attr("class","default");
+            }
+        });
+    }
+    function BindCheckNodeTwo() {
+        $("#tree span[name^='_lblCheck']").each(function(){
+            var curNode = this.parentNode
+            var num1 = parseInt($(curNode).children('span').attr("num_children"))
+            var checked_num_1 = []
+            var new_checked_num_1 = []
+            var new_no_checked_num_1 = []
+            $($(curNode).children('ul').children().children('span')).each(function () {
+                checked_num_1.push($(this).attr('class'))
+            })
+            checked_num_1.forEach(function (item) {
+                if(item == 'checked'){
+                    new_checked_num_1.push('全选')
+                }else if(item == 'default'){
+                    new_no_checked_num_1.push('无')
+                }
+
+            })
+            if(new_checked_num_1.length == num1){
+                $(this).attr("class","checked")
+            }else if(new_no_checked_num_1.length == num1){
+                $(this).attr("class","default")
+            }else {
+                $(this).attr("class","checkHalf")
+            }
+        });
+    }
+    function updateBindCheckNodeTwo() {
+        $("#update_role_tree span[name^='_lblCheck']").each(function(){
+            var curNode = this.parentNode
+            var num1 = parseInt($(curNode).children('span').attr("update_role_num_children"))
+            var checked_num_1 = []
+            var new_checked_num_1 = []
+            var new_no_checked_num_1 = []
+            $($(curNode).children('ul').children().children('span')).each(function () {
+                checked_num_1.push($(this).attr('class'))
+            })
+            checked_num_1.forEach(function (item) {
+                if(item == 'checked'){
+                    new_checked_num_1.push('全选')
+                }else if(item == 'default'){
+                    new_no_checked_num_1.push('无')
+                }
+
+            })
+            //console.log(new_no_checked_num_1)
+            if(new_checked_num_1.length == num1){
+                $(this).attr("class","checked")
+            }else if(new_no_checked_num_1.length == num1){
+                $(this).attr("class","default")
+            }else {
+                $(this).attr("class","checkHalf")
+            }
+        });
+    }
+    //选中状态判断
+    function CheckAll(curNode) {
+        var checked_num = []
+        var num2 = parseInt($(curNode).children('span').attr("num_children"))
+        //var nextNode = $(curNode).children('ul').children().children().eq(0)
+        //console.log($(curNode).children('ul').children().children())
+        $($(curNode).children('ul').children().children()).each(function () {
+            if($(this).attr('checked') == 'checked'){
+                checked_num.push(1)
+                $(this).next().attr('class', 'checked')
+            }
+        })
+        //console.log(num2)
+        if(checked_num.length == num2){
+            return 'checked'
+        }else if(checked_num.length == 0){
+            return 'default'
+        }else {
+            return 'checkHalf'
+        }
+
+    }
+    //选中状态判断-编辑角色
+    function updateCheckAll(curNode) {
+        var checked_num = []
+        var num2 = parseInt($(curNode).children('span').attr("update_role_num_children"))
+        $($(curNode).children('ul').children().children('input')).each(function () {
+            if($(this).is(':checked')){
+                checked_num.push(1)
+                $(this).next().attr('class', 'checked')
+
+            }
+        })
+        if(checked_num.length == num2){
+            return 'checked'
+        }else if(checked_num.length == 0){
+            return 'default'
+        }else {
+            return 'checkHalf'
+        }
+
+    }
+    //一级 二级菜单的点击事件
+    function checkBoxClick() {
+        var isChecked = $(this).attr("class") == "default" ? "checked"  : "default";
+        $(this).attr("class",isChecked);
+        //同步checkbox
+        $(this).next().children().children().prop("checked", isChecked != "default");
+        $(this).next().children().children('ul').children().children('label').attr("class", isChecked);
+        $(this).next().children().children().children('label').attr("class", isChecked);
+        $(this).next().children().children().attr("class", isChecked);
+
+        var trNode = $(this).parent().parent();
+
+        var ul_1_class = $(trNode).attr('class')
+        if(ul_1_class){
+            $(`.${ul_1_class} input`).prop('checked',isChecked != "default")
+        }
+        //console.log(ul_1_class)
+        BindCheckNodeTwo()
+    }
+    function updateCheckBoxClick() {
+        var isChecked = $(this).attr("class") == "default" ? "checked"  : "default";
+        $(this).attr("class",isChecked);
+        //同步checkbox
+        $(this).next().children().children().prop("checked", isChecked != "default");
+        $(this).next().children().children('ul').children().children('label').attr("class", isChecked);
+        $(this).next().children().children().children('label').attr("class", isChecked);
+        $(this).next().children().children().attr("class", isChecked);
+
+        var trNode = $(this).parent().parent();
+
+        var ul_1_class = $(trNode).attr('class')
+        if(ul_1_class){
+            $(`.${ul_1_class} input`).prop('checked',isChecked != "default")
+        }
+        //console.log(ul_1_class)
+        updateBindCheckNodeTwo()
+    }
+    //三级菜单的点击事件
+    function checkBoxChange() {
+        var ul_3 = $(this).parent().parent().children()
+        var ul_3_class = $(ul_3).parent().attr('id')
+        //console.log(ul_3_class)
+        var checked_num = $(`#${ul_3_class} input:checked`).size()
+        if(ul_3.length > checked_num && checked_num > 0){
+            $(this).parent().parent().prev().attr("class", 'checkHalf')
+        }else if(ul_3.length == checked_num){
+            $(this).parent().parent().prev().attr("class", 'checked')
+        }else {
+            $(this).parent().parent().prev().attr("class", 'default')
+        }
+        if($(this).is(':checked')){
+            $(this).next().attr('class','checked')
+        }else {
+            $(this).next().attr('class','default')
+        }
+        //console.log(checked_num)
+        BindCheckNodeTwo()
+    }
+    function updateCheckBoxChange() {
+        var ul_3 = $(this).parent().parent().children()
+        var ul_3_class = $(ul_3).parent().attr('id')
+        //console.log(ul_3_class)
+        var checked_num = $(`#${ul_3_class} input:checked`).size()
+        if(ul_3.length > checked_num && checked_num > 0){
+            $(this).parent().parent().prev().attr("class", 'checkHalf')
+        }else if(ul_3.length == checked_num){
+            $(this).parent().parent().prev().attr("class", 'checked')
+        }else {
+            $(this).parent().parent().prev().attr("class", 'default')
+        }
+        if($(this).is(':checked')){
+            $(this).next().attr('class','checked')
+        }else {
+            $(this).next().attr('class','default')
+        }
+        //console.log(checked_num)
+        updateBindCheckNodeTwo()
+    }
+
 
     //所有请求失败的回调
     function errorFunc() {
