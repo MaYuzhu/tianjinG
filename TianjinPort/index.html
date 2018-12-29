@@ -83,7 +83,7 @@
                     <div class="zaixian">
                         <div>
                             <p>车辆列表</p>
-                            <p><input id="dianziweilan" type="checkbox" value="1" class="myCheck_dian myCheck">
+                            <p><input id="dianziweilan" checked type="checkbox" value="1" class="myCheck_dian myCheck">
                                 <label for="dianziweilan" class="dianzi"></label>电子围栏</p>
                         </div>
                         <select name="" id="state_car">
@@ -108,7 +108,7 @@
                     <div class="guiji" style="display: none">
                         <div>
                             <p>车辆选择</p>
-                            <p><input id="dianziweilan1" type="checkbox" value="1" class="myCheck_dian myCheck">
+                            <p><input id="dianziweilan1" checked type="checkbox" value="1" class="myCheck_dian myCheck">
                                 <label for="dianziweilan1" class="dianzi"></label>电子围栏</p>
                         </div>
                         <select name="index_department" id="a2">
@@ -145,13 +145,15 @@
                         </div>
 
                         <p class="time_select play_text" style="display:none">模拟轨迹</p>
+                        <p class="time_real"></p>
+                        <p class="tip_window"></p>
                         <div class="play" style="display: none;">
-                            <div class="speed_box">
+                            <div class="speed_box" style="display: none;">
                                 <span>00:00:00</span>
                                 <div>
                                     <img src="./images/jindu.gif" alt="">
                                 </div>
-                                <span>00:04:20</span>
+                                <span>00:00:00</span>
                             </div>
                             <div>
                                 <div class="play_before">
@@ -181,5 +183,6 @@
 <script type="text/javascript" src="./js/map.js"></script>
 
 <script type="text/babel" src="./js/index.js"></script>
+
 
 </html>

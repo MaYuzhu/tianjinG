@@ -327,13 +327,14 @@ footer div:last-child{
 }
 
 .user_list label span,.juese_list label span{
-    color:#e3e3e3;
+    /*color:#e3e3e3;
     background-color:#2b5f89;
     border:1px solid #848485;
     border-radius:3px;
     padding:1px 3px;
     font-weight:normal;
-    font-size:4px;
+    font-size:4px;*/
+    cursor: pointer;
 }
 .tip_add_user_right .check_juese{
     display: none;

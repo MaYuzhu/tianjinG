@@ -140,6 +140,9 @@ let pages = 0; //总页数
         }
         start.config.min = {}
         end.config.min = {}
+        mintime = 0
+        $ball.css('transform',`translate(0px,-6px)`)
+        $('#delete_mark').click()
     })
 
     //在线监测与轨迹切换
@@ -272,6 +275,7 @@ let pages = 0; //总页数
     })
 
     //两个电子围栏同时选中 懒得改结构了
+
     $('.myCheck_dian').on('click',function() {
         if (this.checked == true) {
             $('#dianziweilan1').prop('checked', true);
@@ -442,34 +446,48 @@ var fenceFeatures = [];
 var fenceSource;
 var fenceLayer;
 var flag_fence = true;
+//默认显示围栏
+fence_show()
 $(".dianzi").click(function () {
+    fence_show()
+});
+function fence_show() {
     if(flag_fence){
-        if($(".myCheck").is(':checked')){
             if(fenceLayer){
                 map.removeLayer(fenceLayer);
             }
-            var data = {'page.size':100};
+            var data = {
+                'page.size':100,
+                validTime:getNowFormatDate()
+            };
             getAjaxRequest("GET", interface_url+"electronic-fence/search", data, eleFenceData, null);
-        }
         flag_fence = false;
     }else {
         map.removeLayer(fenceLayer);
         flag_fence = true
     }
+}
 
-});
 
 
-$(".dianzi").click(function () {
-    if($(".myCheck").is(':checked')){
-        if(fenceLayer){
-            map.removeLayer(fenceLayer);
-        }
-        return true;
+
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
     }
-    var data = {'page.size':100};
-    getAjaxRequest("GET", interface_url+"electronic-fence/search", data, eleFenceData, null);
-});
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+        + " " + date.getHours() + seperator2 + date.getMinutes()
+        + seperator2 + date.getSeconds();
+    return currentdate;
+}
 //地图上加载电子围栏数据
 function eleFenceData(json){
 	if(json.head.status.code == 200){
@@ -550,41 +568,75 @@ $(function () {
             run_carMove = true
             carMove()
             speedBarMove()
-
-            $('#play_1').on('click',function () {
-                if(setTimeoutFlag){
-                    clearTimeout(setTimeoutEve);
-                }
-                speed = 120
-                run_carMove = true
-                carMove()
-            })
-            $('#play_3').on('click',function () {
-                if(setTimeoutFlag){
-                    clearTimeout(setTimeoutEve);
-                }
-                speed = 30
-                run_carMove = true
-                carMove()
-            })
-            $('#replay').off('click').on('click',function (){
-                if(setTimeoutFlag){
-                    clearTimeout(setTimeoutEve);
-                }
-                setTimeoutFlag = true
-                run_carMove = true
-                speed = 60
-                index = 0
-                carMove()
-            })
         } else if (run_carMove) {
             $('#play_2>span').css({
                 'background': 'url("./images/play_but.png") no-repeat left top',
                 'margin': '11px 15px'
             })
             run_carMove = false
+            clearInterval(timer)
         }
     })
+    $('#play_1').on('click',function () {
+        if(run_carMove){
+            if(setTimeoutFlag){
+                clearTimeout(setTimeoutEve);
+            }
+            speed = speed * 2
+            run_carMove = true
+            carMove()
+            if(speed > 240){
+                speed = 240
+                $('.tip_window').text(`最小${60/speed}倍播放`)
+                $('.tip_window').addClass('show_flash')
+            }else {
+                $('.tip_window').text(`当前${60/speed}倍播放`)
+                $('.tip_window').addClass('show_flash')
+            }
+
+            setTimeout(function () {
+                $('.tip_window').text('')
+                $('.tip_window').removeClass('show_flash')
+            },1800)
+        }
+
+    })
+    $('#play_3').on('click',function () {
+        if(run_carMove){
+            if(setTimeoutFlag){
+                clearTimeout(setTimeoutEve);
+            }
+            speed = speed / 2
+
+            run_carMove = true
+            carMove()
+            if(speed < 7.5){
+                speed = 7.5
+                $('.tip_window').text(`最大${60/speed}倍播放`)
+                $('.tip_window').addClass('show_flash')
+            }else {
+                $('.tip_window').text(`当前${60/speed}倍播放`)
+                $('.tip_window').addClass('show_flash')
+            }
+
+            setTimeout(function () {
+                $('.tip_window').text('')
+                $('.tip_window').removeClass('show_flash')
+            },1800)
+        }
+
+    })
+    $('#replay').off('click').on('click',function (){
+        if(setTimeoutFlag){
+            clearTimeout(setTimeoutEve);
+        }
+        setTimeoutFlag = true
+        run_carMove = true
+        speed = 60
+        index = 0
+        carMove()
+    })
+
     //删除轨迹按钮
     $('#delete_mark').on('click',function () {
         if(run_carMove){
@@ -592,10 +644,12 @@ $(function () {
             setTimeout(function () {
                 map.removeLayer(carLayer)
                 map.removeLayer(lineLayer)
+                $('.time_real').empty()
             },300)
         }else {
             map.removeLayer(carLayer)
             map.removeLayer(lineLayer)
+            $('.time_real').empty()
         }
         $('.play').css('display','none')
         $('.play_text').css('display','none')

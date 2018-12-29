@@ -104,7 +104,7 @@ Array.prototype.remove = function(val) {
                                 <label for=${cars[i].vehicle_id}+'' class="add_fence_car_label"></label>
                             </td>
                             <td>${cars[i].vehicle_id}</td>
-                            <td>拖车${cars[i].plate_number}</td>
+                            <td>${cars[i].plate_number}</td>
                             <td>${cars[i].state==2?"忙碌":cars[i].state==1?"空闲":"离线"}</td>
                             <td>XXX</td>
                             <td>李XX</td>
@@ -133,6 +133,10 @@ Array.prototype.remove = function(val) {
     //添加围栏按钮
     $('.add_wei').on('click',function () {
         if(flag){
+            $('.content input[type=text]').val('')
+            $('.content input[type=checkbox]').attr('checked',false)
+            arrAddCar = []
+            arrAddCarName = []
             $('.electronic_fence_list').css('display','none')
             $('.electronic_fence_add').css('display','block')
             $('.add_right').css('display','block')
@@ -301,6 +305,17 @@ Array.prototype.remove = function(val) {
         $('.add_right_3').css('display','none')
         $('.step span').removeClass('active')
         flag = true
+    })
+    $('.add_right_4_next_add').click(function () {
+        $('.electronic_fence_list').css('display','table')
+        $('.electronic_fence_add').css('display','none')
+        $('.add_right_2').css('display','none')
+        $('.add_right').css('display','none')
+        $('.add_right_4').css('display','none')
+        $('.add_right_3').css('display','none')
+        $('.step span').removeClass('active')
+        flag = true
+        $('.add_wei').click()
     })
     //拖动1
     $(".show").mousedown(function(e){ //e鼠标事件
@@ -637,6 +652,8 @@ Array.prototype.remove = function(val) {
             for(let i=0;i<json.body.vehicles.length;i++){
                 editFenceData.vehicleId.push(json.body.vehicles[i].vehicle_id)
             }
+        }else {
+            alert(json.head.status.message)
         }
     }
 
@@ -754,6 +771,51 @@ $(function () {
       });
 
     $(".add_right_4_next").click(function () {
+        /*var db = $.cookie('db');
+        if (!db || db == "null") {
+            db = {};
+        } else {
+            db = JSON.parse(db);
+        }
+
+        if (!db.coordinate) {
+            db.coordinate = [];
+        }
+        db.coordinate.push({
+            name: Math.random(),
+            coordinate: JSON.parse($.cookie('coordinate'))
+        })
+        $.cookie('db', JSON.stringify(db));
+
+        $.cookie('coordinate', null);
+
+        // location.reload();
+        source.clear();
+        source_res.clear();*/
+        saveBefore()
+        //最后保存围栏  18.11.6  ma
+        getAjaxRequest("POST", interface_url+"electronic-fence/add", fenceAddDate, commitFenceFun, null);
+
+        function commitFenceFun (json){
+            if(json.head.status.code == 200){
+                alert('添加围栏成功！')
+                window.location.href='./index.html'
+            }else {
+                alert(json.head.status.message)
+            }
+        }
+    });
+
+    $('.add_right_4_next_add').click(function () {
+        saveBefore()
+        getAjaxRequest("POST", interface_url+"electronic-fence/add", fenceAddDate, secretSave, null)
+    })
+    function secretSave(json) {
+        if(json.head.status.code != 200){
+            alert(json.head.status.message)
+        }
+    }
+    function saveBefore() {
         var db = $.cookie('db');
         if (!db || db == "null") {
             db = {};
@@ -775,17 +837,8 @@ $(function () {
         // location.reload();
         source.clear();
         source_res.clear();
-
-        //最后保存围栏  18.11.6  ma
-        getAjaxRequest("POST", interface_url+"electronic-fence/add", fenceAddDate, commitFenceFun, null);
-
-        function commitFenceFun (json){
-            if(json.head.status.code == 200){
-                alert('添加围栏成功！')
-                window.location.reload()
-            }
-        }
-    });
+    }
+    
 
     $(".clearImg").click(function () {
         source.clear();

@@ -116,7 +116,7 @@ $(function () {
                 <th style="width:41px;">
                         <label for="checkItems">
                             <input style="margin-top:4px;margin-left:-17px;display:none;"  type="checkbox" name="checkItems" id="checkItems" value="" >
-                            <span>全选</span>
+                            <span style="cursor: pointer">全选</span>
                         </label>
                 </th>
                 <th>序号</th>
@@ -161,7 +161,7 @@ $(function () {
                     if(disable_01==0){
                         $(`#quan_xian_${i+1}`).html("启用中");
                     }else{
-                        $(`#quan_xian_${i+1}`).html("禁用中").css('color','#e4393c');
+                        $(`#quan_xian_${i+1}`).html("已禁用").css('color','#e4393c');
 
                     }
 

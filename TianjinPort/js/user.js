@@ -12,7 +12,7 @@
     //拖动
     function _move(dom,e) {
         dom.css("cursor","move");//改变鼠标指针的形状
-
+        e.preventDefault()
         var offset = dom.offset();//DIV在页面的位置
         var x = e.pageX - offset.left;//获得鼠标指针离DIV元素左边界的距离
         var y = e.pageY - offset.top;//获得鼠标指针离DIV元素上边界的距离
@@ -481,7 +481,7 @@
                 if(disable_01==0){
                     $(`#quan_xian_${i+1}`).html("启用中");
                 }else{
-                    $(`#quan_xian_${i+1}`).html("禁用中").css('color','#e4393c');
+                    $(`#quan_xian_${i+1}`).html("已禁用").css('color','#e4393c');
 
                 }
             }
@@ -1135,88 +1135,7 @@
             $(`#update_role_wrap_2`).slideToggle(300);
         })
 
-        //updateBindCheckNode()
-        //updateBindCheckNodeTwo()
     }
-    /*function resourceListFunc(json){
-        $("#lv2U").html('')
-        for(let i=0;i<json.body.length;i++){
-            $("#lv2U").append(`<img src="./images/user/plus_alt.png" id="lv2M${i+1}" style="clear: left;"/>
-                            <input type="checkbox" class="secondCheck" id="secondCheck${i+1}" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
-                            <li id="lv2L${i+1}" class="lv2L">
-                                <label for="secondCheck${i+1}">${json.body[i].identity_name}</label>
-                                <ul id="lv3U${i+1}" class="lv3U" style="clear: left;">
-                                </ul>
-                            </li>
-                        `)
-            $(`#lv2M${i+1}`).click(function() {
-                if($(`#lv3U${i+1}`).is(":visible")) {
-                    //                     alert("隐藏内容");
-                    $(`#lv2M${i+1}`).attr("src", "./images/user/plus_alt.png");
-                } else {
-                    //                      alert("显示内容");
-                    $(`#lv2M${i+1}`).attr("src", "./images/user/minus_alt.png");
-                }
-                $(`#lv3U${i+1}`).slideToggle(300);
-            });
-            $(`#lv3U${i+1}`).html('')
-            if(json.body[i].children){
-                for(let j=0;j<json.body[i].children.length;j++){
-                    $(`#lv3U${i+1}`).append(`<input id="thirdCheck${i+1}_${j+1}" value="${json.body[i].children[j].resource_id}"
-                                            type="checkbox" name="lv3_${i+1}Check" class="lv3Checks"/>
-                                    <label for="thirdCheck${i+1}_${j+1}">
-                                        <li>${json.body[i].children[j].identity_name}</li>
-                                    </label>`)
-                    $(`#secondCheck${i+1}`).click(function(){
-                        $(`input[name=lv3_${i+1}Check]`).prop("checked",$(`#secondCheck${i+1}`).prop("checked"));
-                    })
-                }
-            } else {
-                $(`#lv2M${i+1}`).css("visibility", "hidden");
-            }
-        }
-
-        //将结构树添加至编辑角色弹窗
-        $("#update_role_lv2U").html('')
-        for(let i=0;i<json.body.length;i++){
-            $("#update_role_lv2U").append(`<img src="./images/user/plus_alt.png" id="update_role_lv2M${i+1}" style="clear: left;"/>
-                            <input type="checkbox" class="update_role_secondCheck" id="update_role_secondCheck${i+1}" style="display:none; float: left; width: 15px; height: 15px;margin-top: 3px"/>
-                            <li id="update_role_lv2L${i+1}" class="update_role_lv2L">
-                                <label for="update_role_secondCheck${i+1}">${json.body[i].identity_name}</label>
-                                <ul id="update_role_lv3U${i+1}" class="update_role_lv3U" style="clear: left;">
-                                    
-                                </ul>
-                            </li>
-                        `)
-
-            $(`#update_role_lv2M${i+1}`).click(function() {
-                if($(`#update_role_lv3U${i+1}`).is(":visible")) {
-                    //                     alert("隐藏内容");
-                    $(`#update_role_lv2M${i+1}`).attr("src", "./images/user/plus_alt.png");
-                } else {
-                    //                      alert("显示内容");
-                    $(`#update_role_lv2M${i+1}`).attr("src", "./images/user/minus_alt.png");
-                }
-                $(`#update_role_lv3U${i+1}`).slideToggle(300);
-            });
-            $(`#update_role_lv3U${i+1}`).html('')
-            if(json.body[i].children){
-                for(let j=0;j<json.body[i].children.length;j++){
-                    $(`#update_role_lv3U${i+1}`).append(`<input id="update_role_thirdCheck${i+1}_${j+1}" value="${json.body[i].children[j].resource_id}"
-                                            type="checkbox" name="update_role_lv3_${i+1}Check" class="update_role_lv3Checks"/>
-                                    <label for="update_role_thirdCheck${i+1}_${j+1}">
-                                        <li>${json.body[i].children[j].identity_name}</li>
-                                    </label>`)
-                    $(`#update_role_secondCheck${i+1}`).click(function(){
-                        $(`input[name=update_role_lv3_${i+1}Check]`).prop("checked",$(`#update_role_secondCheck${i+1}`).prop("checked"));
-                    })
-                }
-            } else {
-                $(`#update_role_lv2M${i+1}`).css("visibility", "hidden");
-            }
-        }
-
-    }*/
     //树结构
     //默认的状态显示
     function BindCheckNode() {

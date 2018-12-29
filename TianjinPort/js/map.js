@@ -1,7 +1,10 @@
 //var url = 'http://192.168.1.150:6080/arcgis/services/port_jt/port_tianj/MapServer/WMSServer';
 
-var url = 'https://geohey.com/s/dataviz/6c2d884bc36d5940300caa58a762167f/' +
+/*var url = 'https://geohey.com/s/dataviz/6c2d884bc36d5940300caa58a762167f/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';*/
+var url = 'https://geohey.com/s/dataviz/cca1897d38bb3b2c8523d48e5def0a69/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
+
 //var pos = [13110795.607205058,4719031.500290665];
 var pos = ol.proj.transform([117.78688073,38.98251417], 'EPSG:4326', 'EPSG:3857');
 const container = document.getElementById('popup');
@@ -292,7 +295,7 @@ function selectVehTrack(){
             $(".play").css({ display: 'block' })
             $(".play_text").text('模拟轨迹')
             $(".play_text").css({ display: 'block' })
-			trackData = json.body[0].data;
+			trackData = json.body[0].data.reverse();
 			// 折线
 	        var lineArray = [];
 	        for(var i=0; i<trackData.length; i++){
@@ -300,8 +303,7 @@ function selectVehTrack(){
 	        }
 	        if (lineSources){
 	        	lineSources.clear()//清除
-	        } 
-
+	        }
 	        lineSources = new ol.source.Vector();
 	        lineSources.addFeature(new ol.Feature({
 	            name: "line",
@@ -339,7 +341,7 @@ function selectVehTrack(){
                         radius:2,
                         stroke:new ol.style.Stroke({
                             color:'red',
-                            width:5
+                            width:2
                         })
                     })
                 })]
@@ -354,27 +356,105 @@ function selectVehTrack(){
 }
 
 //进度条组件
-var time_slot //时间范围毫秒
+var time_slot  = 30*1000 //时间范围 最后删值
+var timer  //定时器
+var $ball = $('.speed_box>:nth-child(2)>img') //进度条小球
+var bar_w = $('.speed_box>:nth-child(2)').width() - 16 //进度条长
 
+var mintime = 0
+var maxtime = 30 //测试 最后删值
+var ball_speed = 5.13333333334 //测试 最后删值
+
+var time_interval = 1000
+//显示总时长
 function speedBar(start,end) {
     var date = new Date(start.replace(/-/g, '/'))
-    var start_time = Date.parse(date);
+    var start_time = Date.parse(date)
     var date_end = new Date(end.replace(/-/g, '/'))
-    var end_time = Date.parse(date_end);
-    console.log(end_time - start_time)
+    var end_time = Date.parse(date_end)
     time_slot = end_time - start_time
-    if(time_slot == 86400000){
-        time_slot = 86400000 -1000
-    }
-    var result = formatDuring(time_slot)
-    //console.log(result)
+    var result = formatDuring(time_slot/1000)
     $('.speed_box>:last-child').text(result)
+    maxtime = time_slot / 1000
+    ball_speed = bar_w / maxtime //测试 最后删
 }
+
+//前后时间及进度条变化
+function speedBarMove(){
+    //console.log(maxtime)
+    function CountDown() {
+         if (maxtime >= 0) {
+             var ball_distance = Math.round(ball_speed * mintime)
+             $ball.css('transform',`translate(${ball_distance}px,-6px)`)
+             let msg = formatDuring(maxtime)
+             maxtime--
+
+             $('.speed_box>:last-child').text(msg)
+             let msg_before = formatDuring(mintime)
+             mintime++
+
+             $('.speed_box>:first-child').text(msg_before)
+         }else{
+               clearInterval(timer)
+               $ball.css('transform',`translate(0px,-6px)`)
+               //alert("时间到!")
+               mintime = 0
+               maxtime = time_slot / 1000
+               let msg = formatDuring(maxtime)
+               $('.speed_box>:last-child').text(msg)
+               let msg_before = formatDuring(mintime)
+               $('.speed_box>:first-child').text(msg_before)
+               run_carMove = false
+               index = 0
+               $('#play_2>span').css({
+                 'background': 'url("./images/play_but.png") no-repeat left top',
+                 'margin': '11px 15px'
+                 })
+               }
+         }
+    timer = setInterval(CountDown, time_interval)
+}
+//进度条拖动
+$(function () {
+    var tag = false,ox = 0, left = 0
+    $ball.mousedown(function(e) {
+        e.preventDefault()
+        left = $ball.css("transform").replace(/[^0-9\-,]/g,'').split(',')[4] *1
+        ox = e.pageX - left
+        tag = true
+    })
+    $(document).mouseup(function() {
+        tag = false
+    })
+    $('.speed_box').mousemove(function(e) {
+        var maxtime_fixed = time_slot / 1000
+        if (tag) {
+            e.preventDefault()
+            left = e.pageX - ox
+            if (left <= 0) {
+                left = 0
+            }else if (left > bar_w) {
+                left = bar_w
+            }
+            $ball.css('transform',`translate(${left}px,-6px)`)
+            var maxtime_change = Math.round((bar_w-left) * maxtime_fixed / bar_w)
+            maxtime = maxtime_change
+            var msg = formatDuring(maxtime_change)
+            $('.speed_box>:last-child').text(msg)
+            var mintime_change = Math.round(left * maxtime_fixed / bar_w)
+            mintime = mintime_change
+            var msg_before = formatDuring(mintime_change)
+            $('.speed_box>:first-child').text(msg_before)
+        }
+    })
+
+})
+//秒转成时间格式
 function formatDuring(mss) {
     //var days = parseInt(mss / (1000 * 60 * 60 * 24));
-    var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = (mss % (1000 * 60)) / 1000;
+    var hours = Math.floor(mss / 60 / 60);
+    var minutes = Math.floor(mss / 60 % 60);
+    var seconds = Math.floor(mss % 60);
     if(hours<10){
         hours = '0' + hours
     }
@@ -387,35 +467,6 @@ function formatDuring(mss) {
     return hours + ":" + minutes + ":" + seconds;
     //return days + " 天 " + hours + " 小时 " + minutes + " 分钟 " + seconds + " 秒 ";
 }
-
-function speedBarMove(){
-    //var maxtime = time_slot / 1000
-    var maxtime = 60
-    function CountDown() {
-         if (maxtime >= 0) {
-             var hour = Math.floor(maxtime / 60 / 60)
-             var minutes = Math.floor(maxtime / 60 % 60);
-             var seconds = Math.floor(maxtime % 60);
-             if(hour < 10){
-                 hour = '0' + hour
-             }
-             if(minutes < 10){
-                 minutes = '0' + minutes
-             }
-             if(seconds < 10){
-                 seconds = '0' + seconds
-             }
-             var msg = hour + ":" + minutes + ":" + seconds;
-             --maxtime;
-             $('.speed_box>:last-child').text(msg)
-         } else{
-               clearInterval(timer);
-               alert("时间到，结束!");
-                }
-         }
-    var timer = setInterval(CountDown, 1000);
-}
-
 //模拟轨迹
 var carLayer = null;
 var carSource = new ol.source.Vector();
@@ -436,8 +487,9 @@ var index = 0;
 var setTimeoutFlag = false;
 var setTimeoutEve
 var carMove = function () {
+    $('.time_real').text(trackData[index].time.substring(0,16))
     if (trackData.length < 1) {
-        alert("没有检测轨迹，请重试")
+        //alert("没有检测轨迹，请重试")
         return;
     }
 	//- 计算角度
