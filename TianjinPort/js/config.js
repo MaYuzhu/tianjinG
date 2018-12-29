@@ -1,6 +1,8 @@
 // const interface_url = 'http://192.168.20.18:8080/';
 //const interface_url = 'http://36.110.66.218:8080/';
-const interface_url = 'http://192.168.10.7:8080/';
+//const interface_url = 'http://192.168.10.7:8080/';
+const interface_url = 'http://36.110.66.216:50002/';
+
 
 
 

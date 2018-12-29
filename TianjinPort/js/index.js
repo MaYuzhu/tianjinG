@@ -37,8 +37,10 @@ let pages = 0; //总页数
         type: 'datetime',
         btns: ['confirm'],
         min: '1900-1-1 00:00:00',
-        max: 'nowTime',
-        trigger: 'click', //采用click弹出
+        //max: 'nowTime',
+        max:getNowFormatDate(),
+
+    trigger: 'click', //采用click弹出
         done: function (value, date, endDate) {
             //console.log(value)
             if(value !== ''){
@@ -50,18 +52,17 @@ let pages = 0; //总页数
                     minutes: date.minutes,
                     seconds: date.seconds
                 };//开始日选好后，重置结束日的最小日期
-                /*end.config.value = {
+                end.config.value = {
                     year: date.year,
                     month: date.month - 1,
                     date: date.date,
                     hours: date.hours,
                     minutes: date.minutes,
                     seconds: date.seconds
-                };*/ //将结束日的初始值设定为开始日
+                }; //将结束日的初始值设定为开始日
                 //console.log(value)
                 end.config.max = getDateArray(date)
             }else {
-                alert(1)
                 end.config.max.year = '';
                 end.config.max.month = '';
                 end.config.max.date = '';
@@ -75,7 +76,7 @@ let pages = 0; //总页数
         type: 'datetime',
         btns: ['confirm'],
         min: '1900-1-1 00:00:00',
-        max: 'nowTime',
+        max: getNowFormatDate(),
         trigger: 'click', //采用click弹出
         done: function (value, date, endDate) {
             if(value !== ''){
@@ -89,7 +90,6 @@ let pages = 0; //总页数
                 }; //结束日选好后，重置开始日的最大日期
                 start.config.min = getDateArrayBefore(date)
             }else {
-                alert(2)
                 start.config.min.year = '';
                 start.config.min.month = '';
                 start.config.min.date = '';
@@ -132,11 +132,17 @@ let pages = 0; //总页数
             year: new Date().getFullYear(),
             month: new Date().getMonth(),
             date: new Date().getDate(),
+            hours: new Date().getHours(),
+            minutes: new Date().getMinutes(),
+            seconds : new Date().getSeconds()
         }
         end.config.max = {
             year: new Date().getFullYear(),
             month: new Date().getMonth(),
             date: new Date().getDate(),
+            hours: new Date().getHours(),
+            minutes: new Date().getMinutes(),
+            seconds : new Date().getSeconds()
         }
         start.config.min = {}
         end.config.min = {}
@@ -536,7 +542,7 @@ function eleFenceData(json){
 		});
 	    map.addLayer(fenceLayer);
 	}else{
-		alert(json.head.status.message);
+		//alert(json.head.status.message);
 	}
 }
 
