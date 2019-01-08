@@ -4,13 +4,13 @@
     border-radius: 10px;*/
     -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
     filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-    padding: 15px 20px;
+    padding: 15px 20px 35px;
     border: 0px solid #013d55;
     bottom: 2px;
     left: -105px;
     min-width: 280px;
     width: 280px;
-    height: 200px;
+    /*height: 200px;*/
     background: url("../images/tip.png") no-repeat center center;
     background-size: 103% 105%;
     color: #eee;

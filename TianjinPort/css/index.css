@@ -356,6 +356,7 @@ html,body{
     position: absolute;
     width: 2px;
     height: 86%;
+    min-height: 630px;
     bottom:0;
     right:0;
     z-index: 20;
@@ -488,9 +489,13 @@ html,body{
     color: #ccc;
     background: #111443;
 }
-.list_che,.list_che2{
+.list_che{
     margin-top: 10px;
-    height: 230px;
+    height: 250px;
+}
+.list_che2{
+    margin-top: 10px;
+    height: 200px;
 }
 .list_che>li,.list_che2>li{
     display: flex;
@@ -520,9 +525,14 @@ html,body{
     text-align: center;
     vertical-align: middle;
     line-height: 14px;
+    box-shadow: 0px 0px 1px 0px rgba(255,255,255,.3);
 }
 .myCheck:checked + label{
     background-color: #181e3c;
+}
+.myCheck:checked ~ p{
+    color: #0c97b8;
+    font-size: 12px;
 }
 .myCheck:checked + label::after{
     content:"\2714";
@@ -677,6 +687,7 @@ html,body{
     margin: 8px auto;
     border: inset 1px #262d5b;
     border-radius: 3px;
+    position: relative;
 }
 .speed_box>:first-child{
     display: inline-block;
@@ -770,12 +781,12 @@ html,body{
     position: relative;
 }
 .time_real{
-    margin: 2px 0 0 108px;
+    margin: 2px 0 0 90px;
 }
 .tip_window{
     position: absolute;
-    bottom:110px;
-    left:30px;
+    top:-8px;
+    left:14px;
     z-index: 99;
 }
 .show_flash{
@@ -830,6 +841,157 @@ html,body{
 .page_on_not{
     cursor: not-allowed;
 }
+/*自定义弹窗*/
+/*.alert_w{
+    width: 100%;
+    height: 100%;
+    background: rgba(250,250,250,.2);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}*/
+
+/* 弹出框最外层 */
+.msg__wrap {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    transition: all .3s;
+    transform: translate(-50%, -50%) scale(0, 0);
+    max-width: 50%;
+    color: #fff;
+    background: url("../images/tanchuang.png") no-repeat;
+    background-size: 100% 100%;
+    /*box-shadow: 0 0 10px #eee;*/
+    font-size: 10px;
+}
+
+/* 弹出框头部 */
+.msg__wrap .msg-header {
+    padding: 10px 10px 0 10px;
+    font-size: 1.8em;
+}
+
+.msg__wrap .msg-header .msg-header-close-button {
+    float: right;
+    cursor: pointer;
+}
+
+/* 弹出框中部 */
+.msg__wrap .msg-body {
+    padding: 10px 20px 20px 20px;
+    display: flex;
+}
+
+/* 图标 */
+.msg__wrap .msg-body .msg-body-icon{
+    width: 80px;
+}
+
+.msg__wrap .msg-body .msg-body-icon div{
+    width: 45px;
+    height: 45px;
+    margin: 0 auto;
+    line-height: 45px;
+    color: #fff;
+    border-radius: 50% 50%;
+    font-size: 2em;
+}
+
+.msg__wrap .msg-body .msg-body-icon .msg-body-icon-success{
+    background: #32a323;
+    text-align: center;
+}
+
+.msg__wrap .msg-body .msg-body-icon .msg-body-icon-success::after{
+    content: "成";
+}
+
+.msg__wrap .msg-body .msg-body-icon .msg-body-icon-wrong{
+    background: #ff8080;
+    text-align: center;
+}
+
+.msg__wrap .msg-body .msg-body-icon .msg-body-icon-wrong::after{
+    content: "误";
+}
+
+.msg__wrap .msg-body .msg-body-icon .msg-body-icon-info{
+    background: #80b7ff;
+    text-align: center;
+}
+
+.msg__wrap .msg-body .msg-body-icon .msg-body-icon-info::after{
+    content: "注";
+}
+
+/* 内容 */
+.msg__wrap .msg-body .msg-body-content{
+    min-width: 200px;
+    font-size: 1.5em;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    box-sizing: border-box;
+}
+
+/* 弹出框底部 */
+.msg__wrap .msg-footer {
+    padding: 0 10px 10px 10px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+
+.msg__wrap .msg-footer .msg-footer-btn {
+    border: 0 none;
+    color: #fff;
+    outline: none;
+    /*font-size: 1em;*/
+    margin: 0 10px;
+    width: 90px;
+    height: 30px;
+    line-height: 28px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    background: url("../images/button.png") center;
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+/*.msg__wrap .msg-footer .msg-footer-cancel-button{
+    background-color: #ff3b3b;
+}
+
+.msg__wrap .msg-footer .msg-footer-cancel-button:active{
+    background-color: #ff6f6f;
+}
+
+.msg__wrap .msg-footer .msg-footer-confirm-button{
+    background-color: #4896f0;
+}
+
+.msg__wrap .msg-footer .msg-footer-confirm-button:active{
+    background-color: #1d5fac;
+}*/
+
+/* 遮罩层 */
+.msg__overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, .4);
+    transition: all .3s;
+    opacity: 0;
+}
+
 
 
 

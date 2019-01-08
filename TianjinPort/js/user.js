@@ -166,9 +166,28 @@
             getAjaxRequest("GET", interface_url+'user/edit', {userId:userId_re,username: username, fullName: xingming, password: password, mobilePhone: shouji, email: youxiang}, submitPassword, errorFunc);
             function submitPassword(json) {
                 if (json.head.status.code == 200) {
-                 alert('修改成功');
+                    new $Msg({
+                        content:"修改成功",
+                        type:"success",
+                        cancle:function(){
+
+                        },
+                        confirm:function(){
+
+                        }
+                    })
                 } else {
-                 alert(`${json.head.status.code}错误,${json.head.status.message}`);
+                   //alert(`${json.head.status.code}错误,${json.head.status.message}`);
+                    new $Msg({
+                        content:`${json.head.status.code}错误,${json.head.status.message}`,
+                        type:"success",
+                        cancle:function(){
+
+                        },
+                        confirm:function(){
+
+                        }
+                    })
                 }
             }
         }else{
@@ -394,15 +413,35 @@
             adduserData.rolesId.push($(this).val())
         });
         if(!adduserData.username){
-            alert("请填写用户名...")
+            //alert("请填写用户名...")
+            new $Msg({
+                content:"请填写用户名...",
+                type:"success",
+                /*cancle:function(){
+
+                },
+                confirm:function(){
+
+                }*/
+            })
             return
         }
         if(!adduserData.password){
-            alert("请填写密码...")
+            //alert("请填写密码...")
+            new $Msg({
+                content:"请填写密码...",
+                type:"success",
+
+            })
             return
         }
         if(adduserData.rolesId.length<1){
-            alert("请选择角色...")
+            //alert("请选择角色...")
+            new $Msg({
+                content:"请选择角色...",
+                type:"success",
+
+            })
             return
         }
         var p_add_user = $('.bianji_11 p').text();
@@ -422,9 +461,17 @@
                     };
                     getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData_1,
                         false, succFuncGetUserList, errorFunc)
-                    alert('新添加账户成功！');
+                    //alert('新添加账户成功！');
+                    new $Msg({
+                        content:"新添加账户成功！",
+                        type:"success",
+                    })
                 }else{
-                    alert("添加失败，"+json.head.status.message)
+                    //alert("添加失败，"+json.head.status.message)
+                    new $Msg({
+                        content:"添加失败，"+json.head.status.message,
+                        type:"success",
+                    })
                     $('.adduser_quxiao').click()
                 }
             }
@@ -531,7 +578,7 @@
             })
             //用户列表的删除按钮
             $('.del_user').on('click',function () {
-                var r = confirm("确定删除此账户？");
+                /*var r = confirm("确定删除此账户？");
                 if (r == true){
                     userId = $(this).attr('value')
                     getAjaxRequest("POST", interface_url+'user/remove', {usersId:userId}, removeUserFunc, errorFunc)
@@ -543,11 +590,41 @@
                             alert(`${json.head.status.message}`)
                         }
                     }
-                }
+                }*/
+                new $Msg({
+                    content:"确定删除此账户？",
+                    type:"success",
+                    cancle:function(){
 
+                    },
+                    confirm:()=>{
+                        userId = $(this).attr('value')
+                        getAjaxRequest("POST", interface_url+'user/remove', {usersId:userId}, removeUserFunc, errorFunc)
+                        function removeUserFunc(json){
+                            if(json.head.status.code == 200){
+                                //alert('删除成功!')
+                                new $Msg({
+                                    content:"删除成功!",
+                                    type:"success",
+                                })
+                                getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
+                            }else {
+                                new $Msg({
+                                    content:`${json.head.status.message}`,
+                                    type:"success",
+                                })
+                                //alert(`${json.head.status.message}`)
+                            }
+                        }
+                    }
+                })
             })
         }else {
-            alert(json.head.status.message);
+            //alert(json.head.status.message);
+            new $Msg({
+                content:json.head.status.message,
+                type:"success",
+            })
             location.href="./login.html";
         }
 
@@ -560,26 +637,35 @@
         });
         // console.log(qiyong_id.length);
         if(qiyong_id.length<1){
-            alert("您未勾选，请勾选！");
+            //alert("您未勾选，请勾选！");
+            new $Msg({
+                content:"您未勾选，请勾选！",
+                type:"success",
+            })
             return;
         }else{
-            if (confirm("确认要启用吗？")){
-                window.event.returnValue = true;
-            }else{
-                window.event.returnValue = false;
-            }
-        }
-        if(window.event.returnValue == true){
-            getAjaxRequest("POST", interface_url+"user/disable", {usersId:qiyong_id,
-                disable:0}, startUser, errorFunc)
-            function startUser(json){
-                if (json.head.status.code == 200) {
-                    getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
-                } else {
-                    alert(`启用失败！${json.head.status.code}错误`)
-                }
-            }
+            new $Msg({
+                content:"确认要启用吗？",
+                type:"success",
+                cancle:function(){
 
+                },
+                confirm:function(){
+                    getAjaxRequest("POST", interface_url+"user/disable", {usersId:qiyong_id,
+                        disable:0}, startUser, errorFunc)
+                    function startUser(json){
+                        if (json.head.status.code == 200) {
+                            getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
+                        } else {
+                            //alert(`启用失败！${json.head.status.code}错误`)
+                            new $Msg({
+                                content:`启用失败！${json.head.status.code}错误`,
+                                type:"success",
+                            })
+                        }
+                    }
+                }
+            })
         }
     });
 
@@ -590,28 +676,34 @@
         });
         // console.log(jinyong_id.length);
         if(jinyong_id.length<1){
-            alert("您未勾选，请勾选！");
+            //alert("您未勾选，请勾选！");
+            new $Msg({
+                content:"您未勾选，请勾选！",
+                type:"success",
+            })
             return;
         }else{
-            if (confirm("确认要禁用吗？")){
-                window.event.returnValue = true;
-            }else{
-                window.event.returnValue = false;
-            }
-        }
-        if(window.event.returnValue == true){
+            new $Msg({
+                content:"确认要禁用吗？",
+                type:"success",
+                cancle:function(){},
+                confirm:function(){
+                    getAjaxRequest("POST", interface_url+"user/disable", {usersId:jinyong_id,
+                        disable:1}, endUser, errorFunc)
 
-            getAjaxRequest("POST", interface_url+"user/disable", {usersId:jinyong_id,
-                disable:1}, endUser, errorFunc)
-
-            function endUser(json){
-                if (json.head.status.code == 200) {
-                    getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
-                } else {
-                    alert(`启用失败！${json.head.status.code}错误`)
+                    function endUser(json){
+                        if (json.head.status.code == 200) {
+                            getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData, false, succFuncGetUserList, errorFunc);
+                        } else {
+                            //alert(`启用失败！${json.head.status.code}错误`)
+                            new $Msg({
+                                content:`启用失败！${json.head.status.code}错误`,
+                                type:"success",
+                            })
+                        }
+                    }
                 }
-            }
-
+            })
         }
     });
 
@@ -664,11 +756,17 @@
         })
         //console.log(updateUserData)
         if(!updateUserData.fullName){
-            alert("请填写姓名...")
+            new $Msg({
+                content:"请填写姓名...",
+                type:"success",
+            })
             return
         }
         if(updateUserData.rolesId.length<1){
-            alert("请选择角色...")
+            new $Msg({
+                content:"请选择角色...",
+                type:"success",
+            })
             return
         }
         var p_edit_user = $('.bianji_11 p').text();
@@ -677,16 +775,25 @@
             getAjaxRequest("POST", interface_url+'user/edit', updateUserData, editUserFunc, errorFunc)
             function editUserFunc(json){
                 if(json.head.status.code == 200){
-                    alert('修改成功！')
+                    new $Msg({
+                        content:'修改成功！',
+                        type:"success",
+                    })
                     $('.show1').css('display','none')
                     getAsyncAjaxRequest("GET", interface_url+'user/search', getUserListData,
                         false, succFuncGetUserList, errorFunc)
                 }else {
                     // alert(`修改失败！${json.head.status.message}`)
                     if(json.head.status.message=="用户(userId[1])不允许编辑"){
-                        alert("不允许编辑");
+                        new $Msg({
+                            content:'不允许编辑！',
+                            type:"success",
+                        })
                     }else{
-                        alert("编辑失败");
+                        new $Msg({
+                            content:'编辑失败！',
+                            type:"success",
+                        })
                     }
                 }
             }
@@ -837,13 +944,16 @@
                         $("#update_role_tree input[type=checkbox]").change(updateCheckBoxChange)
                     }
                 }else {
-                    alert(json.head.status.message)
+                    new $Msg({
+                        content:json.head.status.message,
+                        type:"success",
+                    })
                 }
             }
         })
         //角色列表删除按钮
         $('.del_role').on('click',function () {
-            var r = confirm("确定删除此角色？");
+            /*var r = confirm("确定删除此角色？");
             if (r == true){
                 roleId = $(this).attr('value')
                 getAjaxRequest("POST", interface_url+'role/remove', {rolesId:roleId}, delRoleFunc, errorFunc)
@@ -857,8 +967,31 @@
                         alert(json.head.status.message)
                     }
                 }
-            }
-
+            }*/
+            new $Msg({
+                content:"确定删除此角色？",
+                type:"success",
+                cancle:function(){},
+                confirm:()=>{
+                    roleId = $(this).attr('value')
+                    getAjaxRequest("POST", interface_url+'role/remove', {rolesId:roleId}, delRoleFunc, errorFunc)
+                    function delRoleFunc(json) {
+                        if(json.head.status.code == 200){
+                            new $Msg({
+                                content:'删除成功！',
+                                type:"success",
+                            })
+                            getAjaxRequest("GET", interface_url+'role/search',
+                                getRoleListData, getRoleList, errorFunc)
+                        }else {
+                            new $Msg({
+                                content:json.head.status.message,
+                                type:"success",
+                            })
+                        }
+                    }
+                }
+            })
         })
 
         //角色禁用功能_全选
@@ -892,23 +1025,35 @@
             updateRoleData.resourcesId.push($(this).val())
         })
         if(updateRoleData.resourcesId<1){
-            alert("请选择角色权限...")
+            new $Msg({
+                content:"请选择角色权限...",
+                type:"success",
+            })
             return
         }
         if(!updateRoleData.identityName){
-            alert('请输入角色名称...')
+            new $Msg({
+                content:"请输入角色名称...",
+                type:"success",
+            })
             return
         }
         getAjaxRequest("POST", interface_url+'role/edit', updateRoleData, editRoleFunc, errorFunc)
         function editRoleFunc(json){
             if(json.head.status.code == 200){
-                alert('修改成功！')
+                new $Msg({
+                    content:'修改成功！',
+                    type:"success",
+                })
                 $('.show3').css('display','none')
                 //location.reload()
                 getAjaxRequest("GET", interface_url+'role/search',
                     getRoleListData, getRoleList, errorFunc)
             }else {
-                alert(`修改失败！${json.head.status.message}`)
+                new $Msg({
+                    content:`修改失败！${json.head.status.message}`,
+                    type:"success",
+                })
             }
         }
     })
@@ -929,23 +1074,35 @@
         })
         //console.log(addRoleData)
         if(!addRoleData.identityName){
-            alert('请输入角色名称...')
+            new $Msg({
+                content:'请输入角色名称...',
+                type:"success",
+            })
             return
         }
         if(addRoleData.resourcesId.length<1){
-            alert('请选择角色权限...')
+            new $Msg({
+                content:'请选择角色权限...',
+                type:"success",
+            })
             return
         }
         getAjaxRequest("POST", interface_url+'role/add', addRoleData, addRoleFunc, errorFunc)
         function addRoleFunc(json) {
             if(json.head.status.code == 200){
-                alert('新增成功！')
+                new $Msg({
+                    content:'新增成功！',
+                    type:"success",
+                })
                 $('.show2').css('display','none')
                 // location.reload()
                 getAjaxRequest("GET", interface_url+'role/search', getRoleListData,
                     getRoleList, errorFunc)
             }else {
-                alert(`提交失败！${json.head.status.message}`)
+                new $Msg({
+                    content:`提交失败！${json.head.status.message}`,
+                    type:"success",
+                })
             }
         }
     })
@@ -958,18 +1115,21 @@
             start_using_id.push($(this).val());
         });
         if(start_using_id.length<1){
-            alert("您未勾选，请勾选！");
+            new $Msg({
+                content:"您未勾选，请勾选！",
+                type:"success",
+            })
             return;
         }else{
-            if (confirm("确认要启用吗？")){
-                window.event.returnValue = true;
-            }else{
-                window.event.returnValue = false;
-            }
-        }
-        if(window.event.returnValue == true){
-            getAjaxRequest("POST", interface_url+"role/disable", {rolesId:start_using_id,
-                disable:0}, roleStart, errorFunc)
+            new $Msg({
+                content:"确认要启用吗？",
+                type:"success",
+                cancle:function(){},
+                confirm:function(){
+                    getAjaxRequest("POST", interface_url+"role/disable", {rolesId:start_using_id,
+                        disable:0}, roleStart, errorFunc)
+                }
+            })
         }
     })
     //禁用按钮
@@ -979,32 +1139,41 @@
             start_using_id.push($(this).val());
         });
         if(start_using_id.length<1){
-            alert("您未勾选，请勾选！");
+            new $Msg({
+                content:"您未勾选，请勾选！",
+                type:"success",
+            })
             return;
         }else{
-            if (confirm("确认要禁用吗？")){
-                window.event.returnValue = true;
-            }else{
-                window.event.returnValue = false;
-            }
-        }
-        if(window.event.returnValue == true){
-            getAjaxRequest("POST", interface_url+"role/disable", {rolesId:start_using_id,
-                disable:1}, roleDisable, errorFunc)
+            new $Msg({
+                content:"确认要禁用吗？",
+                type:"success",
+                cancle:function(){},
+                confirm:function(){
+                    getAjaxRequest("POST", interface_url+"role/disable", {rolesId:start_using_id,
+                        disable:1}, roleDisable, errorFunc)
+                }
+            })
         }
     })
     function roleStart(json){
         if (json.head.status.code == 200) {
             $_roleManagement.click()
         } else {
-            alert(`启用失败！${json.head.status.message}`)
+            new $Msg({
+                content:`启用失败！${json.head.status.message}`,
+                type:"success",
+            })
         }
     }
     function roleDisable(json){
         if (json.head.status.code == 200) {
             $_roleManagement.click()
             } else {
-            alert(`禁用失败！${json.head.status.message}`)
+            new $Msg({
+                content:`禁用失败！${json.head.status.message}`,
+                type:"success",
+            })
         }
     }
 

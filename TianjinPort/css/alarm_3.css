@@ -206,7 +206,7 @@ footer .trailer_on_not{
     position: absolute;
     top:20%;
     left: 50%;
-    z-index: 20;
+    z-index: 150;
     box-shadow: 0px 0px 18px 4px #0c0c19;
     cursor: move;
     color: #eee;
@@ -302,11 +302,11 @@ footer .trailer_on_not{
     width: 90px;
     height: 42px;
     line-height: 40px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     text-align: center;
     background: url(../images/button.png) no-repeat center;
-    background-size: 81% 55%;
+    background-size: 90% 75%;
     cursor: pointer;
     color: #e3e3e3;
     margin: auto 10px;
@@ -316,11 +316,11 @@ footer .trailer_on_not{
     width: 90px;
     height: 42px;
     line-height: 40px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     text-align: center;
     background: url(../images/button.png) no-repeat center;
-    background-size: 81% 55%;
+    background-size: 90% 75%;
     cursor: pointer;
     color: #e3e3e3;
     margin: auto 10px;

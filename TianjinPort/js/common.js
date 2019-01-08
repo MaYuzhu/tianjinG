@@ -9,6 +9,7 @@
  */
 
 function getAjaxRequest(type, url, data, succFunc, errFunc){
+    data ? data['_v_time'] = new Date().getTime() : data = {'_v_time':new Date().getTime()}   //兼容IE cookies 失效的问题
 	$.ajax({
 	    type: type,
 	    url: url,

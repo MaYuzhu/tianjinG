@@ -10,33 +10,40 @@ $(function () {
     })
 
     //添加车辆拖动
-    $(".show").mousedown(function(e){ //e鼠标事件
-        $(this).css("cursor","move");//改变鼠标指针的形状
-
-        var offset = $(this).offset();//DIV在页面的位置
+    function _move(dom,e) {
+        dom.css("cursor","move");//改变鼠标指针的形状
+        e.preventDefault()
+        var offset = dom.offset();//DIV在页面的位置
         var x = e.pageX - offset.left;//获得鼠标指针离DIV元素左边界的距离
         var y = e.pageY - offset.top;//获得鼠标指针离DIV元素上边界的距离
         $(document).bind("mousemove",function(ev){ //绑定鼠标的移动事件，因为光标在DIV元素外面也要有效果，所以要用doucment的事件，而不用DIV元素的事件
-            $(".show").stop();//加上这个之后
+            dom.stop();//加上这个之后
 
             var _x = ev.pageX - x;//获得X轴方向移动的值
             var _y = ev.pageY - y;//获得Y轴方向移动的值
             if(_x<0){
                 _x = 0
-            }else if(_x > $(document).width() - ($('.show').width() + 4)){
-                _x = $(document).width() - ($('.show').width() + 4)
+            }else if(_x > $(document).width() - (dom.width() + 4)){
+                _x = $(document).width() - (dom.width() + 4)
             }
             if(_y<0){
                 _y = 0
-            }else if(_y > $(document).height() - ($('.show').height() + 4)){
-                _y = $(document).height() - ($('.show').height() + 4)
+            }else if(_y > $(document).height() - (dom.height() + 4)){
+                _y = $(document).height() - (dom.height() + 4)
             }
-            $(".show").animate({left:_x+"px",top:_y+"px"},5);
+            dom.animate({left:_x+"px",top:_y+"px"},5);
         });
-    });
+    }
+    $('.show').mousedown(function (e) {
+        _move($('.show'),e)
+    })
+    $('.show_01').mousedown(function (e) {
+        _move($('.show_01'),e)
+    })
     $(document).mouseup(function(){
         //$(".show").css("cursor","default");
         $(".show").css("cursor","move");
+        $(".show1").css("cursor","move");
         $(this).unbind("mousemove");
     });
     //输入框可以拖动选择内容
@@ -75,7 +82,6 @@ $(function () {
 
     //点击上一页
     $('.trailer_footer>:nth-child(1)').on('click',function () {
-        // alert(123);
         if(pageNumber>1){
             pageNumber--;
             getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
@@ -105,8 +111,7 @@ $(function () {
 
     //车辆数据
     function getVehicleList(json){
-        console.log(json);
-
+        //console.log(json);
         if(json.head.status.code == 200){
             pageCount = json.body.pages;
             if(pageCount==1){
@@ -204,8 +209,7 @@ $(function () {
             });
             //删除
             $(".delete_car").on('click',function(){
-                // alert(123);
-                var r = confirm("确定删除此车辆？");
+                /*var r = confirm("确定删除此车辆？");
                 if (r == true){
                     let deleteCar_id = $(this).attr('value');
                     getAjaxRequest("POST", interface_url+'vehicle/remove', {vehiclesId:deleteCar_id}, delCarFunc, errorFunc)
@@ -217,7 +221,30 @@ $(function () {
                             alert(json.head.status.message)
                         }
                     }
-                }
+                }*/
+                new $Msg({
+                    content:"确定删除此车辆？",
+                    type:"success",
+                    cancle:function(){},
+                    confirm:()=>{
+                        let deleteCar_id = $(this).attr('value');
+                        getAjaxRequest("POST", interface_url+'vehicle/remove', {vehiclesId:deleteCar_id}, delCarFunc, errorFunc)
+                        function delCarFunc(json) {
+                            if(json.head.status.code == 200){
+                                new $Msg({
+                                    content:"删除成功！",
+                                    type:"success",
+                                })
+                                getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
+                            }else {
+                                new $Msg({
+                                    content:json.head.status.message,
+                                    type:"success",
+                                })
+                            }
+                        }
+                    }
+                })
             });
         }
 
@@ -231,66 +258,67 @@ $(function () {
             qiyong_id.push($(this).val());
         });
 
-
-        // var qiyong_id = $('.css:checked').val();
-
-        console.log(qiyong_id);
-        // console.log(qiyong_id.length);
         if(qiyong_id.length<1){
-            alert("您未勾选，请勾选！");
+            new $Msg({
+                content:"您未勾选，请勾选！",
+                type:"success",
+            })
             return;
         }else{
-            if (confirm("确认要启用吗？")){
-                window.event.returnValue = true;
-            }else{
-                window.event.returnValue = false;
-            }
-        }
-        if(window.event.returnValue == true){
-            getAjaxRequest("POST", interface_url+"vehicle/disable", {vehiclesId:qiyong_id,
-                disable:0}, startCar, errorFunc)
-            function startCar(json){
-                if (json.head.status.code == 200) {
-                    getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
-                } else {
-                    alert(`启用失败！${json.head.status.code}错误`)
+            new $Msg({
+                content:"确认要启用吗？",
+                type:"success",
+                cancle:function(){},
+                confirm:function(){
+                        getAjaxRequest("POST", interface_url+"vehicle/disable", {vehiclesId:qiyong_id,
+                            disable:0}, startCar, errorFunc)
+                        function startCar(json){
+                            if (json.head.status.code == 200) {
+                                getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
+                            } else {
+                                new $Msg({
+                                    content:json.head.status.message,
+                                    type:"success",
+                                })
+                            }
+                        }
                 }
-            }
-
+            })
         }
+
     });
     //禁用
     $('.car_forbid').on('click',function (jinyong_id) {
         var jinyong_id = [];
         $.each($('.ccc:checked'),function () {
             jinyong_id.push($(this).val());
-            console.log($(this).val());
         });
-        console.log(jinyong_id);
-        // console.log(jinyong_id.length);
         if(jinyong_id.length<1){
-            alert("您未勾选，请勾选！");
+            new $Msg({
+                content:"您未勾选，请勾选！",
+                type:"success",
+            })
             return;
         }else{
-            if (confirm("确认要禁用吗？")){
-                window.event.returnValue = true;
-            }else{
-                window.event.returnValue = false;
-            }
-        }
-        if(window.event.returnValue == true){
-
-            getAjaxRequest("POST", interface_url+"vehicle/disable", {vehiclesId:jinyong_id,
-                disable:1}, endUser, errorFunc)
-
-            function endUser(json){
-                if (json.head.status.code == 200) {
-                    getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
-                } else {
-                    alert(`启用失败！${json.head.status.code}错误`)
+            new $Msg({
+                content:"确认要禁用吗？",
+                type:"success",
+                cancle:function(){},
+                confirm:function(){
+                    getAjaxRequest("POST", interface_url+"vehicle/disable", {vehiclesId:jinyong_id,
+                        disable:1}, endUser, errorFunc)
+                    function endUser(json){
+                        if (json.head.status.code == 200) {
+                            getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
+                        } else {
+                            new $Msg({
+                                content:json.head.status.message,
+                                type:"success",
+                            })
+                        }
+                    }
                 }
-            }
-
+            })
         }
     });
 
@@ -362,7 +390,10 @@ $(function () {
         addcarData.departmentId = $('.add_option_department').val();
         if(!addcarData.plateNumber){
             // $('.add_truck_licence + h6').text("请填写车牌号");
-            alert("请填写车牌号");
+            new $Msg({
+                content:"请填写车牌号",
+                type:"success",
+            })
             return
         }
         var h6_add_car = $('.show h6').text();
@@ -370,11 +401,17 @@ $(function () {
             getAjaxRequest("POST", interface_url + "vehicle/add", addcarData, addCar, errorFunc);
             function addCar(json) {
                 if (json.head.status.code == 200) {
-                    alert("新增车辆成功！");
+                    new $Msg({
+                        content:"新增车辆成功！",
+                        type:"success",
+                    })
                     $('.show').css('display','none');
                     getAjaxRequest("GET", interface_url + 'vehicle/search', {'page.number': pageNumber, 'page.size': pageSize}, getVehicleList, errorFunc);
                 } else {
-                    alert("添加失败，" + json.head.status.message);
+                    new $Msg({
+                        content:"添加失败，" + json.head.status.message,
+                        type:"success",
+                    })
                 }
             }
         }else{
@@ -442,11 +479,17 @@ $(function () {
             function editCarFunc(json){
                 // console.log(json);
                 if(json.head.status.code == 200){
-                    alert('修改成功！');
+                    new $Msg({
+                        content:"修改成功！",
+                        type:"success",
+                    })
                     $('.show_01').css('display','none')
                     getAsyncAjaxRequest("GET", interface_url+'vehicle/search', {'page.number':pageNumber,'page.size':pageSize}, false, getVehicleList, errorFunc);
                 }else {
-                    alert(`修改失败！${json.head.status.message}`)
+                    new $Msg({
+                        content:`修改失败！${json.head.status.message}`,
+                        type:"success",
+                    })
                 }
             }
         }else{

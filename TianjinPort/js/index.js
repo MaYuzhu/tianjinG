@@ -113,6 +113,18 @@ let pages = 0; //总页数
         darray.hours = date.hours;
         darray.minutes = date.minutes;
         darray.seconds = date.seconds;
+        var darrayMsS = `${darray.year}/${darray.month+1}/${darray.date} ${darray.hours}:${darray.minutes}:${darray.seconds}`
+        var darrayMs = (new Date(darrayMsS)).getTime();
+        if(darrayMs>new Date().getTime()){
+            darray = {
+                year:new Date().getFullYear(),
+                month:new Date().getMonth(),
+                date:new Date().getDate(),
+                hours:new Date().getHours(),
+                minutes:new Date().getMinutes(),
+                seconds:new Date().getSeconds()
+            }
+        }
         return darray;
     }
     function getDateArrayBefore(date){//获取时间数组
@@ -178,9 +190,9 @@ let pages = 0; //总页数
 	    })
 
     // 获取车辆实时状态
-    var data = {'state': 2, 'page.number':pageNumber, 'page.size':pageSize}
+    var data = {'state': 2, 'page.number':pageNumber, 'page.size':pageSize,'v':new Date().getTime()}
     getAjaxRequest("GET", interface_url+"vehicle/search", data, rltCarState, null)
-    
+
     // 获取车辆实时位置信息
     var vehiclesId = []
     getAjaxRequest("GET", interface_url+"vehicle/search", {state:2}, getVehicleBusy, null)
@@ -293,9 +305,9 @@ let pages = 0; //总页数
         }
     })
     //播放一些按钮移入文字提示mouseover
-    textTip($('#play_1'),'0.5X播放')
-    textTip($('#play_2'),'播放')
-    textTip($('#play_3'),'2X播放')
+    //textTip($('#play_1'),'0.5X播放')
+    //textTip($('#play_2'),'播放')
+    //textTip($('#play_3'),'2X播放')
     textTip($('#replay'),'重新播放')
     textTip($('#delete_mark'),'删除轨迹')
     function textTip(dom,string) {
@@ -321,6 +333,11 @@ $("#state_car").change(function () {
     $('.fst').addClass('page_on_not').removeClass('page_on')
     var vehicleData = {state: $("#state_car").val(), 'page.number':1, 'page.size':pageSize} ;
 	getAjaxRequest("GET", interface_url+"vehicle/search", vehicleData, rltCarState, null);
+	if($("#state_car").val()!=2){
+	    $('.button_gen').hide()
+    }else {
+        $('.button_gen').show()
+    }
 });
 
 //车辆列表展示， 成功回调函数
@@ -358,8 +375,18 @@ function rltCarState(json){
             }
         })
 	}else{
-		alert(json.head.status.message);
-        location.href="./login.html";
+        new $Msg({
+            content:json.head.status.message,
+            type:"success",
+            cancle:function(){
+                location.href="./login.html";
+            },
+            confirm:function(){
+                location.href="./login.html";
+            }
+        })
+		//alert(json.head.status.message);
+        //location.href="./login.html";
 	}
 }
 
@@ -400,7 +427,19 @@ function btnFlush() {
         data.vehiclesId.push($(this).val())
     })
     if(data.vehiclesId.length<1){
-        alert('请选择车辆...')
+        //alert('请选择车辆...')
+        new $Msg({
+            content:"请选择车辆...",
+            type:"success",
+            cancle:function(){
+                /*let cancle = new $Msg({
+                    content:"我是取消后的回调"
+                })*/
+            },
+            confirm:function(){
+                //new $Msg({content:"我是确定后的回调"})
+            }
+        })
         return false
     }
 	if(bool){
@@ -471,6 +510,7 @@ function fence_show() {
     }else {
         map.removeLayer(fenceLayer);
         flag_fence = true
+
     }
 }
 
@@ -496,6 +536,7 @@ function getNowFormatDate() {
 }
 //地图上加载电子围栏数据
 function eleFenceData(json){
+    fenceFeatures = []
 	if(json.head.status.code == 200){
 		var wkt = 'POLYGON((';
 	    var db = json.body.list;
@@ -526,7 +567,7 @@ function eleFenceData(json){
 	    	source: fenceSource,
 		    style: new ol.style.Style({
 		        fill: new ol.style.Fill({
-		            color: 'rgba(217, 220, 0, 0.3)'
+		            color: 'rgba(217, 220, 0, 0.2)'
 		        }),
 		        stroke: new ol.style.Stroke({
 		            color: '#fff',
@@ -551,8 +592,6 @@ $(function () {
     /*$('#one_guiji').on('click',function () {
         $(".play").css({ display: 'none' })
     })*/
-
-
     $(".button_cha").click(function () {
         selectVehTrack();
         /*setTimeout(function () {
@@ -574,6 +613,7 @@ $(function () {
             run_carMove = true
             carMove()
             speedBarMove()
+            TimeTextChage()
         } else if (run_carMove) {
             $('#play_2>span').css({
                 'background': 'url("./images/play_but.png") no-repeat left top',
@@ -613,7 +653,6 @@ $(function () {
                 clearTimeout(setTimeoutEve);
             }
             speed = speed / 2
-
             run_carMove = true
             carMove()
             if(speed < 7.5){
@@ -681,4 +720,18 @@ function infoJumpTo() {
     var $info = $("#info");
     jumpTo($info, "./user.html");
 }
-
+//自定义弹窗
+$('.alert_c').on("click",()=>{
+    new $Msg({
+        content:"我的自定义弹窗好了",
+        type:"success",
+        cancle:function(){
+            let cancle = new $Msg({
+                content:"我是取消后的回调"
+            })
+        },
+        confirm:function(){
+            new $Msg({content:"我是确定后的回调"})
+        }
+    })
+})

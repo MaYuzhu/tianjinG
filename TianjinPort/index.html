@@ -26,7 +26,7 @@
 <body>
     <div class="bg"></div>
     <div id="popup" class="ol-popup">
-        <a href="javascript:;" id="popup-closer" class="ol-popup-closer"></a>
+        <span style="cursor:pointer;" id="popup-closer" class="ol-popup-closer"></span>
         <div id="popup-content"></div>
     </div>
     <div class="wrap" id="map">
@@ -117,12 +117,12 @@
                             <option value=""></option>
                         </select>
                         <ul class="list_che2">
-                            <!--<li>
-                                <input type="checkbox" value="" class="myCheck">
-                                <label for="myCheck"></label>
+                            <li>
+                                <input id="myChecka" type="checkbox" value="" class="myCheck">
+                                <label for="myChecka"></label>
                                 <p>拖车A1233451</p>
                                 <div></div>
-                            </li>-->
+                            </li>
                         </ul>
                         <div class="next_wrap3">
                             <li></li>
@@ -146,7 +146,7 @@
 
                         <p class="time_select play_text" style="display:none">模拟轨迹</p>
                         <p class="time_real"></p>
-                        <p class="tip_window"></p>
+
                         <div class="play" style="display: none;">
                             <div class="speed_box" style="display: none;">
                                 <span>00:00:00</span>
@@ -166,6 +166,7 @@
                                     <div id="delete_mark"></div>
                                 </div>
                             </div>
+                            <p class="tip_window"></p>
                         </div>
                     </div>
                 </div>
@@ -180,9 +181,13 @@
 <script src="./js/browser.js"></script> <!--不同浏览器兼容es6-->
 <script type="text/javascript" src="./js/common.js"></script>
 <script type="text/javascript" src="./js/config.js"></script>
+
+<script type="text/babel" src="./js/car_info.js"></script>
 <script type="text/javascript" src="./js/map.js"></script>
+<!--<script type="text/javascript" src="./js/map.js"></script>-->
 
 <script type="text/babel" src="./js/index.js"></script>
+<script type="text/babel" src="./js/popup.js"></script>
 
 
 </html>

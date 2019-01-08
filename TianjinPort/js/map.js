@@ -2,7 +2,7 @@
 
 /*var url = 'https://geohey.com/s/dataviz/6c2d884bc36d5940300caa58a762167f/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';*/
-var url = 'https://geohey.com/s/dataviz/cca1897d38bb3b2c8523d48e5def0a69/' +
+var url = 'https://geohey.com/s/dataviz/e42d88bb76df542e86a9d2eea4789071/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
 
 //var pos = [13110795.607205058,4719031.500290665];
@@ -137,43 +137,28 @@ map.addLayer(vector);
 // source.clear();
 
 //矢量图层鼠标点击事件
+var car_tip_message_flag = true
 map.on('click', function(e) {
-    //在点击时获取像素区域
-    var pixel = map.getEventPixel(e.originalEvent);
-    var msg ;
-    map.forEachFeatureAtPixel(pixel, function(feature) {
-    	if(feature.getId() == null){
-    		return;
-    	}
-    	var data = {'vehicleId': feature.getId()} ;
-    	getAjaxRequest("GET", interface_url+"vehicle/get", data, function(json){
-    		if(json.head.status.code == 200){
-    			var info = json.body;
-    			/*console.log(info.vehicle_id)
-    			console.log(info.plate_number)
-    			console.log(info.department.identity_name)*/
-    			msg = info.vehicle_id +"\n"+ info.plate_number +"\n"+ info.department.identity_name; 
-    			//console.log(info)
-                //设置弹出框内容，可以HTML自定义 //<p><span>型号：</span><span>${info.model_number}</span></p>
-                $('#popup-content').html(`<p><span>车辆：</span><span>${info.plate_number}</span></p>
-                                            <p><span>部门：</span><span>${info.department.identity_name}</span></p>
-                                            
-                                            <p><span>时间：</span><span>${info.gather_time}</span></p>
-                                            <p><span>当前速度：</span><span>${info.velocity}km/h</span></p>
-                                            <p><span>总里程：</span><span>${info.total_mileage}km&nbsp;,</span>&nbsp;&nbsp;<span>当日里程：</span><span>${info.daily_mileage}km</span></p>
-                                            <p><span>状态：</span><span>${info.state==1?'空闲':info.state==2?'忙碌':'离线'}</span></p>`)
-    		}else{
-    			alert(json.head.status.message);
-    		}
-    	}, null);
-        //coodinate存放了点击时的坐标信息
-        var coodinate = e.coordinate;
+    if(car_tip_message_flag){
+        //在点击时获取像素区域
+        var pixel = map.getEventPixel(e.originalEvent);
+        var msg ;
+        map.forEachFeatureAtPixel(pixel, function(feature) {
+            if(feature.getId() == null){
+                return;
+            }
+            var data = {'vehicleId': feature.getId()} ;
+            getAjaxRequest("GET", interface_url+"vehicle/get", data, window.car_info, null);
+            //coodinate存放了点击时的坐标信息
+            var coodinate = e.coordinate;
 
-        //设置overlay的显示位置
-        overlay.setPosition(coodinate);
-        //显示overlay
-        map.addOverlay(overlay);
-    });
+            //设置overlay的显示位置
+            overlay.setPosition(coodinate);
+            //显示overlay
+            map.addOverlay(overlay);
+            car_tip_message_flag = false
+        });
+    }
 });
 
 //popup关闭事件
@@ -182,8 +167,16 @@ closer.addEventListener('click', function() {
     closer.blur();
     return false;
 });
+document.addEventListener('click', function() {
+    if(car_tip_message_flag){
+        overlay.setPosition(undefined);
+        closer.blur();
+        return false;
+    }
+    car_tip_message_flag = true
+});
 
-////为map添加鼠标移动事件监听，当指向标注时改变鼠标光标状态
+//为map添加鼠标移动事件监听，当指向标注时改变鼠标光标状态
 //map.on('pointermove', function (e) {
 //    var pixel = map.getEventPixel(e.originalEvent);
 //    var hit = map.hasFeatureAtPixel(pixel);
@@ -265,15 +258,39 @@ function selectVehTrack(){
     var endTime = $('#one_guiji1').val()//.substr(21,40).trim()
 
     if(!vehicleId){
-        alert('请选择车辆...')
+        //alert('请选择车辆...')
+        new $Msg({
+            content:'请选择车辆...',
+            type:"success",
+            cancle:function(){
+            },
+            confirm:function(){
+            }
+        })
         return false
     }
     if(!$('#one_guiji').val()){
-        alert('请选择起始时间...')
+        //alert('请选择起始时间...')
+        new $Msg({
+            content:'请选择起始时间...',
+            type:"success",
+            cancle:function(){
+            },
+            confirm:function(){
+            }
+        })
         return false
     }
     if(!$('#one_guiji1').val()){
-        alert('请选择结束时间...')
+        //alert('请选择结束时间...')
+        new $Msg({
+            content:'请选择结束时间...',
+            type:"success",
+            cancle:function(){
+            },
+            confirm:function(){
+            }
+        })
         return false
     }
 
@@ -283,12 +300,21 @@ function selectVehTrack(){
     /*setTimeout(function () {
         $(".play").css({ display: 'block' });
     }, 4000);*/
-    speedBar(startTime,endTime)
 	var data = {'vehiclesId':vehicleId, 'startTime':startTime , 'endTime':endTime};
 	getAjaxRequest("GET", interface_url+"location/history", data, function(json){
 		if(json.head.status.code == 200){
 		    if(json.body[0].data.length < 1){
-		        alert('当前时间范围内没有数据')
+		        //alert('当前时间范围内没有数据')
+                new $Msg({
+                    content:'当前时间范围内没有数据',
+                    type:"success",
+                    cancle:function(){
+
+                    },
+                    confirm:function(){
+
+                    }
+                })
                 $(".play_text").text('')
                 return false
             }
@@ -333,7 +359,6 @@ function selectVehTrack(){
                 }));
             }
 
-
             lineLayer1 = new ol.layer.Vector({
                 source: lineSources1,
                 style: [new ol.style.Style({
@@ -348,58 +373,90 @@ function selectVehTrack(){
             });
             map.addLayer(lineLayer1);*/
 
+//2019.1.2ma 轨迹点的 点击事件
+           /* var selectClick = new ol.interaction.Select({
+                condition: ol.events.condition.click,
+                style:changeStyle
+            });
+            var changeStyle = function(feature){
+                var ftype=feature.get("featuretype");
+                if(ftype=='line'){
+                    return new ol.style.Style({
+                        stroke:new ol.style.Stroke({
+                            width:5,
+                            color:'#9400D3'
+                        })
+                    });
+                }
+            };
+            map.addInteraction(selectClick);
+            selectClick.on("select",ClickEvent);
+            function ClickEvent(e){
+                var arr=e.target;//获取事件对象，即产生这个事件的元素-->ol.interaction.Select
+                var collection = arr.getFeatures();//获取这个事件绑定的features-->返回值是一个ol.Collection对象
+                var features = collection.getArray();//获取这个集合的第一个元素-->真正的feature
+                if(features.length>0){
+                    var obj = features[0].getId();//获取之前绑定的ID,返回是一个json字符串
+                    var jsonobj=eval("("+obj+")");//转成json对象
+                    console.log(obj);//获取ID
 
-		}else{
-			alert(json.head.status.message);
+                }
+            }
+*/
+
+//2019.1.2end
+            //根据点的数量确定一个时间长度
+            time_slot = Math.round(trackData.length*(speed))
+            console.log(trackData.length,trackData.length*(speed))
+            var result = formatDuring(time_slot)
+            $('.speed_box>:last-child').text(result)
+            maxtime = time_slot
+        }else{
+			//alert(json.head.status.message);
+            new $Msg({
+                content:json.head.status.message?json.head.status.message:'暂无数据',
+                type:"success",
+                cancle:function(){
+                },
+                confirm:function(){
+                }
+            })
+            $('.time_select').hide()
 		}
 	}, null);
 }
 
 //进度条组件
-var time_slot  = 30*1000 //时间范围 最后删值
+var time_slot    //时间范围
 var timer  //定时器
 var $ball = $('.speed_box>:nth-child(2)>img') //进度条小球
 var bar_w = $('.speed_box>:nth-child(2)').width() - 16 //进度条长
 
 var mintime = 0
-var maxtime = 30 //测试 最后删值
-var ball_speed = 5.13333333334 //测试 最后删值
-
-var time_interval = 1000
-//显示总时长
-function speedBar(start,end) {
-    var date = new Date(start.replace(/-/g, '/'))
-    var start_time = Date.parse(date)
-    var date_end = new Date(end.replace(/-/g, '/'))
-    var end_time = Date.parse(date_end)
-    time_slot = end_time - start_time
-    var result = formatDuring(time_slot/1000)
-    $('.speed_box>:last-child').text(result)
-    maxtime = time_slot / 1000
-    ball_speed = bar_w / maxtime //测试 最后删
-}
+var maxtime
+var ball_speed
+var time_interval = 60
 
 //前后时间及进度条变化
-function speedBarMove(){
+var speedBarMove =  function (){
     //console.log(maxtime)
+    ball_speed = bar_w / time_slot
     function CountDown() {
          if (maxtime >= 0) {
              var ball_distance = Math.round(ball_speed * mintime)
-             $ball.css('transform',`translate(${ball_distance}px,-6px)`)
+             $ball.css('transform','translate('+ball_distance+'px,-6px)')
              let msg = formatDuring(maxtime)
-             maxtime--
-
-             $('.speed_box>:last-child').text(msg)
              let msg_before = formatDuring(mintime)
-             mintime++
-
+             maxtime -= speed
+             mintime += speed
+             $('.speed_box>:last-child').text(msg)
              $('.speed_box>:first-child').text(msg_before)
          }else{
-               clearInterval(timer)
-               $ball.css('transform',`translate(0px,-6px)`)
+               clearTimeout(timer)
+               $ball.css('transform','translate(0px,-6px)')
                //alert("时间到!")
                mintime = 0
-               maxtime = time_slot / 1000
+               maxtime = time_slot
                let msg = formatDuring(maxtime)
                $('.speed_box>:last-child').text(msg)
                let msg_before = formatDuring(mintime)
@@ -410,9 +467,9 @@ function speedBarMove(){
                  'background': 'url("./images/play_but.png") no-repeat left top',
                  'margin': '11px 15px'
                  })
-               }
          }
-    timer = setInterval(CountDown, time_interval)
+    }
+    timer = setTimeout(CountDown, time_interval)
 }
 //进度条拖动
 $(function () {
@@ -436,7 +493,7 @@ $(function () {
             }else if (left > bar_w) {
                 left = bar_w
             }
-            $ball.css('transform',`translate(${left}px,-6px)`)
+            $ball.css('transform','translate('+left+'px,-6px)')
             var maxtime_change = Math.round((bar_w-left) * maxtime_fixed / bar_w)
             maxtime = maxtime_change
             var msg = formatDuring(maxtime_change)
@@ -451,10 +508,9 @@ $(function () {
 })
 //秒转成时间格式
 function formatDuring(mss) {
-    //var days = parseInt(mss / (1000 * 60 * 60 * 24));
-    var hours = Math.floor(mss / 60 / 60);
-    var minutes = Math.floor(mss / 60 % 60);
-    var seconds = Math.floor(mss % 60);
+    var hours = Math.floor(mss / 1000 / 60 / 60);
+    var minutes = Math.floor(mss / 1000 / 60 % 60);
+    var seconds = Math.floor(mss / 1000 % 60);
     if(hours<10){
         hours = '0' + hours
     }
@@ -479,17 +535,30 @@ var carStyle = new ol.style.Style({
     })
 });
 
-var pos = null;
+pos = null;
 var run_carMove = false;
 //- 速度
 var speed = 60;
 var index = 0;
 var setTimeoutFlag = false;
-var setTimeoutEve
+var setTimeoutEve;
+var setTimeoutTimeText;
+var TimeTextChage = function () {
+    if (run_carMove) {
+        $('.time_real').text(trackData[index].time)
+        setTimeoutTimeText = setTimeout(TimeTextChage, 1000);
+    }
+
+}
+
 var carMove = function () {
-    $('.time_real').text(trackData[index].time.substring(0,16))
+    //$('.time_real').text(trackData[index].time.substring(0,16))
     if (trackData.length < 1) {
         //alert("没有检测轨迹，请重试")
+        new $Msg({
+            content:"没有检测轨迹，请重试",
+            type:"success",
+        })
         return;
     }
 	//- 计算角度
@@ -546,7 +615,7 @@ var carMove = function () {
     }
     if (run_carMove) {
         setTimeoutEve = setTimeout(carMove, speed);
-        setTimeoutFlag = true
+        setTimeoutFlag = true;
     }
 }
 
@@ -564,7 +633,7 @@ var getAngle = function (A, B) {
             A: 0,
             B: 0,
             C: 0,
-            ab: { A, B }
+            ab: { A:A, B:B }
         }
     }
     var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
@@ -579,6 +648,6 @@ var getAngle = function (A, B) {
         A: angleA,
         B: angleB,
         C: 90,
-        ab: { A, B }
+        ab: { A:A, B:B }
     }
 }

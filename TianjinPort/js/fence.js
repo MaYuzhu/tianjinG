@@ -125,8 +125,17 @@ Array.prototype.remove = function(val) {
                 }
             })
         }else{
-            alert(json.head.status.message);
-            location.href="./login.html";
+            //alert(json.head.status.message);
+            new $Msg({
+                content:json.head.status.message,
+                type:"success",
+                cancle:function(){
+                    location.href="./login.html";
+                },
+                confirm:function(){
+                    location.href="./login.html";
+                }
+            })
         }
     }
     var flag = true
@@ -166,15 +175,45 @@ Array.prototype.remove = function(val) {
         fenceAddDate.memo = $('textarea[name=memo]').val()
         $.cookie('coordinate',null)
         if(!fenceAddDate.areaName){
-            alert("请填写围栏名称...")
+            //alert("请填写围栏名称...")
+            new $Msg({
+                content:"请填写围栏名称...",
+                type:"success",
+                cancle:function(){
+
+                },
+                confirm:function(){
+
+                }
+            })
             return
         }
         if(!fenceAddDate.startTime){
-            alert("请填写开始时间...")
+            //alert("请填写开始时间...")
+            new $Msg({
+                content:"请填写开始时间...",
+                type:"success",
+                cancle:function(){
+
+                },
+                confirm:function(){
+
+                }
+            })
             return
         }
         if(!fenceAddDate.endTime){
-            alert("请填写结束时间...")
+            //alert("请填写结束时间...")
+            new $Msg({
+                content:"请填写结束时间...",
+                type:"success",
+                cancle:function(){
+
+                },
+                confirm:function(){
+
+                }
+            })
             return
         }
         $('.add_right').css('display','none')
@@ -211,7 +250,17 @@ Array.prototype.remove = function(val) {
     $(".add_right_2_next").on('click',function () {
         var getCoordinate = $.cookie('coordinate')
         if (!getCoordinate || getCoordinate == null || getCoordinate == "null") {
-            alert("请先绘制围栏!!!");
+            //alert("请先绘制围栏!!!");
+            new $Msg({
+                content:"请先绘制围栏...",
+                type:"success",
+                cancle:function(){
+
+                },
+                confirm:function(){
+
+                }
+            })
             return false;
         }
         getCoordinate = JSON.parse(getCoordinate);
@@ -256,7 +305,17 @@ Array.prototype.remove = function(val) {
         //给新增的围栏添加车辆  18.11.6  ma
         $('#add_car_message').empty()
         if(arrAddCar.length<1){
-            alert('请选择车辆...')
+            //alert('请选择车辆...')
+            new $Msg({
+                content:"请选择车辆...",
+                type:"success",
+                cancle:function(){
+
+                },
+                confirm:function(){
+
+                }
+            })
             return
         }
         for(let i=0;i<arrAddCarName.length;i++){
@@ -449,7 +508,17 @@ Array.prototype.remove = function(val) {
     $('.time_find').on('click',function () {
         let queryTime = $('#weilan_add').val()
         if(!queryTime){
-            alert('请选择查询时间')
+            //alert('请选择查询时间')
+            new $Msg({
+                content:"请选择查询时间",
+                type:"success",
+                cancle:function(){
+
+                },
+                confirm:function(){
+
+                }
+            })
             return false
         }
         getFenceListData.validTime = queryTime
@@ -468,7 +537,17 @@ Array.prototype.remove = function(val) {
         if(json.head.status.code == 200){
             fencePageCount = Math.ceil(json.body.total/getFenceListData["page.size"])
             if(json.body.results<1){
-                alert('没有围栏符合该时间...')
+                //alert('没有围栏符合该时间...')
+                new $Msg({
+                    content:'没有围栏符合该时间...',
+                    type:"success",
+                    cancle:function(){
+
+                    },
+                    confirm:function(){
+
+                    }
+                })
                 return
             }
             if(fencePageCount<2){
@@ -592,28 +671,50 @@ Array.prototype.remove = function(val) {
                 }
 
             }else{
-                alert(json.head.status.message);
+                //alert(json.head.status.message);
+                new $Msg({
+                    content:json.head.status.message,
+                    type:"success",
+                    cancle:function(){
+
+                    },
+                    confirm:function(){
+
+                    }
+                })
             }
         }
 
         //围栏列表删除按钮
         $('.del_fence').on('click',function () {
-            var r = confirm("确定删除此围栏？");
-            if (r == true){
-                areaId = $(this).attr('value')
-                getAjaxRequest("GET",interface_url+'electronic-fence/remove',
-                    {areasId:areaId},succDelFence,errorFunc)
-            }
+            new $Msg({
+                content:"确定删除此围栏？",
+                type:"success",
+                cancle:function(){
+
+                },
+                confirm:()=>{
+                    areaId = $(this).attr('value')
+                    getAjaxRequest("GET",interface_url+'electronic-fence/remove',
+                        {areasId:areaId},succDelFence,errorFunc)
+                }
+            })
 
         })
         function succDelFence(json){
             if(json.head.status.code == 200){
-                alert('删除成功!')
+                new $Msg({
+                    content:"删除成功!",
+                    type:"success",
+                })
                 //location.reload()
                 getAsyncAjaxRequest("GET", interface_url+"electronic-fence/search", getFenceListData,
                     false, succGetFenceList, null)
             }else {
-                alert(`删除失败${json.head.status.message}`)
+                new $Msg({
+                    content:`删除失败${json.head.status.message}`,
+                    type:"success",
+                })
             }
         }
 
@@ -653,19 +754,30 @@ Array.prototype.remove = function(val) {
                 editFenceData.vehicleId.push(json.body.vehicles[i].vehicle_id)
             }
         }else {
-            alert(json.head.status.message)
+            //alert(json.head.status.message)
+            new $Msg({
+                content:json.head.status.message,
+                type:"success",
+            })
         }
     }
 
     function editFenceFunc(json) {
         if(json.head.status.code == 200){
-            alert('修改围栏成功！')
+            //alert('修改围栏成功！')
+            new $Msg({
+                content:"修改围栏成功！",
+                type:"success",
+            })
             $('.fence_edit').css('display','none')
             //location.reload()
             getAsyncAjaxRequest("GET", interface_url+"electronic-fence/search", getFenceListData,
                 false, succGetFenceList, null)
         }else{
-            alert(json.head.status.message);
+            new $Msg({
+                content:json.head.status.message,
+                type:"success",
+            })
         }
     }
 
@@ -798,10 +910,16 @@ $(function () {
 
         function commitFenceFun (json){
             if(json.head.status.code == 200){
-                alert('添加围栏成功！')
+                new $Msg({
+                    content:"'添加围栏成功！'",
+                    type:"success",
+                })
                 window.location.href='./index.html'
             }else {
-                alert(json.head.status.message)
+                new $Msg({
+                    content:json.head.status.message,
+                    type:"success",
+                })
             }
         }
     });
@@ -812,7 +930,10 @@ $(function () {
     })
     function secretSave(json) {
         if(json.head.status.code != 200){
-            alert(json.head.status.message)
+            new $Msg({
+                content:json.head.status.message,
+                type:"success",
+            })
         }
     }
     function saveBefore() {
@@ -846,3 +967,18 @@ $(function () {
         return false;
     });
 });
+
+/*
+new $Msg({
+    content:"我的自定义弹窗好了",
+    type:"success",
+    cancle:function(){
+        let cancle = new $Msg({
+            content:"我是取消后的回调"
+        })
+    },
+    confirm:function(){
+        new $Msg({content:"我是确定后的回调"})
+    }
+})
+*/
