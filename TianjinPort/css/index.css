@@ -682,7 +682,8 @@ html,body{
 .play{
     width: 190px;
     /*height: 96px;*/
-    height: 50px;
+    /*height: 50px;*/
+    padding: 4px 2px;
     background: #0e112c;
     margin: 8px auto;
     border: inset 1px #262d5b;

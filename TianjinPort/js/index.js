@@ -98,9 +98,9 @@ let pages = 0; //总页数
         }
     });
     function getDateArray(date){//获取时间数组
-        var darray={};
-        darray.year=date.year;
-        darray.month=date.month - 1;
+        var darray = {};
+        darray.year = date.year;
+        darray.month = date.month - 1;
         var day = date.date;
         /*if(date.hours == 0 && date.minutes == 0 && date.seconds == 0){
             day = day + 1;
@@ -128,11 +128,22 @@ let pages = 0; //总页数
         return darray;
     }
     function getDateArrayBefore(date){//获取时间数组
-        var darray={};
-        darray.year=date.year;
-        darray.month=date.month - 1;
+        var darray = {};
+        darray.year = date.year;
+        darray.month = date.month - 1;
         var day = date.date;
         darray.date = day - 1;
+        if(day==1){
+            darray.month = date.month - 2;
+            if(darray.month==3||darray.month==7||darray.month==8||darray.month==10){
+                darray.date = 30;
+            }else if(darray.month==1){
+                darray.year%4==0?darray.date = 29:darray.date = 28
+            }else {
+                darray.date = 31;
+            }
+
+        }
         darray.hours = date.hours;
         darray.minutes = date.minutes;
         darray.seconds = date.seconds;
@@ -160,6 +171,7 @@ let pages = 0; //总页数
         end.config.min = {}
         mintime = 0
         $ball.css('transform',`translate(0px,-6px)`)
+        speed = 60
         $('#delete_mark').click()
     })
 
@@ -179,10 +191,12 @@ let pages = 0; //总页数
                     setTimeout(function () {
                         map.removeLayer(carLayer)
                         map.removeLayer(lineLayer)
+                        map.removeLayer(lineLayer1)
                     },300)
                 }else {
                     map.removeLayer(carLayer)
                     map.removeLayer(lineLayer)
+                    map.removeLayer(lineLayer1)
                 }
                 $('.play').css('display','none')
                 $('.play_text').css('display','none')
@@ -567,7 +581,7 @@ function eleFenceData(json){
 	    	source: fenceSource,
 		    style: new ol.style.Style({
 		        fill: new ol.style.Fill({
-		            color: 'rgba(217, 220, 0, 0.2)'
+		            color: 'rgba(0, 0, 255, 0.2)'
 		        }),
 		        stroke: new ol.style.Stroke({
 		            color: '#fff',
@@ -593,6 +607,9 @@ $(function () {
         $(".play").css({ display: 'none' })
     })*/
     $(".button_cha").click(function () {
+        if(!$('.play').is(':hidden')){
+            return false
+        }
         selectVehTrack();
         /*setTimeout(function () {
             $(".play").css({ display: 'block' });
@@ -610,17 +627,18 @@ $(function () {
                 'background-size': '100% 100%',
                 'margin': '11px 10px'
             })
+            clearTimeout(setTimeoutEve)
+            clearTimeout(timer)
             run_carMove = true
             carMove()
-            speedBarMove()
-            TimeTextChage()
+            //speedBarMove()
+            TimeTextChange()
         } else if (run_carMove) {
             $('#play_2>span').css({
                 'background': 'url("./images/play_but.png") no-repeat left top',
                 'margin': '11px 15px'
             })
             run_carMove = false
-            clearInterval(timer)
         }
     })
     $('#play_1').on('click',function () {
@@ -680,6 +698,12 @@ $(function () {
         speed = 60
         index = 0
         carMove()
+        TimeTextChange()
+        $('#play_2>span').css({
+            'background': 'url("./images/zanting.png") no-repeat left top',
+            'background-size': '100% 100%',
+            'margin': '11px 10px'
+        })
     })
 
     //删除轨迹按钮
@@ -689,11 +713,13 @@ $(function () {
             setTimeout(function () {
                 map.removeLayer(carLayer)
                 map.removeLayer(lineLayer)
+                map.removeLayer(lineLayer1)
                 $('.time_real').empty()
             },300)
         }else {
             map.removeLayer(carLayer)
             map.removeLayer(lineLayer)
+            map.removeLayer(lineLayer1)
             $('.time_real').empty()
         }
         $('.play').css('display','none')

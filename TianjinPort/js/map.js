@@ -4,7 +4,24 @@
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';*/
 var url = 'https://geohey.com/s/dataviz/e42d88bb76df542e86a9d2eea4789071/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
-
+//Request URL:https://s5.geohey.com/s/dataviz/0bc0b551c2fc33f431c315df5b537611/16/54208/25052.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
+//Request URL:https://s2.geohey.com/s/dataviz/829db1eef85d731f4c179eb632d5dc26/16/54208/25049.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
+//Request URL:https://s4.geohey.com/s/dataviz/202f1bdfeebf58c27ded7f355be689fe/11/1693/782.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
+//Request URL:https://s4.geohey.com/s/dataviz/0a2518d90fb52073f44ba2c270a3006b/18/216839/100196.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
+//Request URL:https://s1.geohey.com/s/dataviz/18e8d56132e3d9fbf1c7ac8505bf4a8b/16/54212/25052.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
+//Request URL:https://s8.geohey.com/s/dataviz/cb5212900e319b640c3734aa6667d268/16/54212/25051.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
+var url1 = 'https://geohey.com/s/dataviz/0bc0b551c2fc33f431c315df5b537611/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
+var url2 = 'https://geohey.com/s/dataviz/829db1eef85d731f4c179eb632d5dc26/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
+var url3 = 'https://geohey.com/s/dataviz/202f1bdfeebf58c27ded7f355be689fe/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
+var url4 = 'https://geohey.com/s/dataviz/0a2518d90fb52073f44ba2c270a3006b/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
+var url5 = 'https://geohey.com/s/dataviz/18e8d56132e3d9fbf1c7ac8505bf4a8b/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
+var url6 = 'https://geohey.com/s/dataviz/cb5212900e319b640c3734aa6667d268/' +
+    '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
 //var pos = [13110795.607205058,4719031.500290665];
 var pos = ol.proj.transform([117.78688073,38.98251417], 'EPSG:4326', 'EPSG:3857');
 const container = document.getElementById('popup');
@@ -50,10 +67,55 @@ var layers = [
         projection: 'EPSG:3857'
     }),
 
+    //极海 原
+   new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: url,//添加GeoHey地图
+            tilePixelRatio: 2,//表示加载高清图显示
+            crossOrigin:null
+        })
+    }),
+
     //极海
     new ol.layer.Tile({
         source: new ol.source.XYZ({
-            url: url,//添加GeoHey地图
+            url: url1,//添加GeoHey地图
+            tilePixelRatio: 2,//表示加载高清图显示
+            crossOrigin:null
+        })
+    }),
+    new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: url2,//添加GeoHey地图
+            tilePixelRatio: 2,//表示加载高清图显示
+            crossOrigin:null
+        })
+    }),
+    new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: url3,//添加GeoHey地图
+            tilePixelRatio: 2,//表示加载高清图显示
+            crossOrigin:null
+        })
+    }),
+
+    new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: url5,//添加GeoHey地图
+            tilePixelRatio: 2,//表示加载高清图显示
+            crossOrigin:null
+        })
+    }),
+    new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: url6,//添加GeoHey地图
+            tilePixelRatio: 2,//表示加载高清图显示
+            crossOrigin:null
+        })
+    }),
+    new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: url4,//添加GeoHey地图
             tilePixelRatio: 2,//表示加载高清图显示
             crossOrigin:null
         })
@@ -247,6 +309,7 @@ $(".outrail").click(function () {
 //轨迹
 var lineSources = null;
 var lineLayer = null;
+var lineLayer1 = null;
 var trackData = [];
 
 //车辆轨迹查询事件
@@ -258,7 +321,6 @@ function selectVehTrack(){
     var endTime = $('#one_guiji1').val()//.substr(21,40).trim()
 
     if(!vehicleId){
-        //alert('请选择车辆...')
         new $Msg({
             content:'请选择车辆...',
             type:"success",
@@ -308,12 +370,6 @@ function selectVehTrack(){
                 new $Msg({
                     content:'当前时间范围内没有数据',
                     type:"success",
-                    cancle:function(){
-
-                    },
-                    confirm:function(){
-
-                    }
                 })
                 $(".play_text").text('')
                 return false
@@ -406,20 +462,20 @@ function selectVehTrack(){
 
 //2019.1.2end
             //根据点的数量确定一个时间长度
-            time_slot = Math.round(trackData.length*(speed))
-            console.log(trackData.length,trackData.length*(speed))
-            var result = formatDuring(time_slot)
+            index = 0
+            mintime = 0
+            time_slot = trackData.length * speed
+            //console.log(trackData.length,trackData.length*(speed))
+            var result = formatDuring(time_slot/1000)
+            $('.speed_box>:first-child').text(formatDuring(mintime))
             $('.speed_box>:last-child').text(result)
-            maxtime = time_slot
+            $('.time_real').text(trackData[0].time)
+            $ball.css('transform','translate(0px,-6px)')
         }else{
 			//alert(json.head.status.message);
             new $Msg({
                 content:json.head.status.message?json.head.status.message:'暂无数据',
                 type:"success",
-                cancle:function(){
-                },
-                confirm:function(){
-                }
             })
             $('.time_select').hide()
 		}
@@ -439,52 +495,56 @@ var time_interval = 60
 
 //前后时间及进度条变化
 var speedBarMove =  function (){
-    //console.log(maxtime)
-    ball_speed = bar_w / time_slot
-    function CountDown() {
-         if (maxtime >= 0) {
-             var ball_distance = Math.round(ball_speed * mintime)
-             $ball.css('transform','translate('+ball_distance+'px,-6px)')
-             let msg = formatDuring(maxtime)
-             let msg_before = formatDuring(mintime)
-             maxtime -= speed
-             mintime += speed
-             $('.speed_box>:last-child').text(msg)
-             $('.speed_box>:first-child').text(msg_before)
-         }else{
-               clearTimeout(timer)
-               $ball.css('transform','translate(0px,-6px)')
-               //alert("时间到!")
-               mintime = 0
-               maxtime = time_slot
-               let msg = formatDuring(maxtime)
-               $('.speed_box>:last-child').text(msg)
-               let msg_before = formatDuring(mintime)
-               $('.speed_box>:first-child').text(msg_before)
-               run_carMove = false
-               index = 0
-               $('#play_2>span').css({
-                 'background': 'url("./images/play_but.png") no-repeat left top',
-                 'margin': '11px 15px'
-                 })
-         }
+    if(run_carMove){
+        ball_speed = bar_w / time_slot
+        //function CountDown() {
+        if (trackData[index]) {
+            //var ball_distance = Math.round(ball_speed * mintime)
+            var ball_distance = index / trackData.length * bar_w
+            $ball.css('transform','translate('+ball_distance+'px,-6px)')
+            let msg = formatDuring(maxtime)
+            let msg_before = formatDuring(mintime)
+            maxtime -= speed
+            mintime += speed
+            $('.speed_box>:last-child').text(msg)
+            $('.speed_box>:first-child').text(msg_before)
+        }else{
+            clearTimeout(timer)
+            $ball.css('transform','translate(0px,-6px)')
+            run_carMove = false
+            mintime = 0
+            maxtime = time_slot
+            let msg = formatDuring(maxtime)
+            $('.speed_box>:last-child').text(msg)
+            let msg_before = formatDuring(mintime)
+            $('.speed_box>:first-child').text(msg_before)
+            index = 0
+            $('#play_2>span').css({
+                'background': 'url("./images/play_but.png") no-repeat left top',
+                'margin': '11px 15px'
+            })
+        }
+        //}
     }
-    timer = setTimeout(CountDown, time_interval)
+
+    timer = setTimeout(speedBarMove, time_interval)
 }
 //进度条拖动
 $(function () {
     var tag = false,ox = 0, left = 0
     $ball.mousedown(function(e) {
         e.preventDefault()
-        left = $ball.css("transform").replace(/[^0-9\-,]/g,'').split(',')[4] *1
+        //left = $ball.css("transform").replace(/[^0-9\-,]/g,'').split(',')[4]
+        left = $ball.css("transform").replace('').split(',')[4] *1
         ox = e.pageX - left
         tag = true
+        //console.log($ball.css("transform").replace(/^[0-9]{1,}[.][0-9]/g,'').split(','))
+        //console.log(left)
     })
     $(document).mouseup(function() {
         tag = false
     })
     $('.speed_box').mousemove(function(e) {
-        var maxtime_fixed = time_slot / 1000
         if (tag) {
             e.preventDefault()
             left = e.pageX - ox
@@ -494,23 +554,29 @@ $(function () {
                 left = bar_w
             }
             $ball.css('transform','translate('+left+'px,-6px)')
-            var maxtime_change = Math.round((bar_w-left) * maxtime_fixed / bar_w)
-            maxtime = maxtime_change
-            var msg = formatDuring(maxtime_change)
-            $('.speed_box>:last-child').text(msg)
-            var mintime_change = Math.round(left * maxtime_fixed / bar_w)
-            mintime = mintime_change
-            var msg_before = formatDuring(mintime_change)
+            //前后时间的变化
+            mintime = Math.round(left/bar_w * time_slot/1000)
+            maxtime = Math.round(time_slot/1000 - mintime)
+            var msg_before = formatDuring(mintime)
+            var msg = formatDuring(maxtime)
             $('.speed_box>:first-child').text(msg_before)
+            $('.speed_box>:last-child').text(msg)
+            //车的位置变化
+            index = Math.floor(left/bar_w * trackData.length)
+            //console.log(index,trackData.length)
+            if(index == 0){index = 1}
+            if(index == trackData.length){index = trackData.length-1}
+            $('.time_real').text(trackData[index].time)
+            car_map_move()
         }
     })
 
 })
 //秒转成时间格式
 function formatDuring(mss) {
-    var hours = Math.floor(mss / 1000 / 60 / 60);
-    var minutes = Math.floor(mss / 1000 / 60 % 60);
-    var seconds = Math.floor(mss / 1000 % 60);
+    var hours = Math.floor(mss  / 60 / 60);
+    var minutes = Math.floor(mss  / 60 % 60);
+    var seconds = Math.floor(mss  % 60);
     if(hours<10){
         hours = '0' + hours
     }
@@ -543,10 +609,19 @@ var index = 0;
 var setTimeoutFlag = false;
 var setTimeoutEve;
 var setTimeoutTimeText;
-var TimeTextChage = function () {
+var angle_start;
+
+var TimeTextChange = function () {
     if (run_carMove) {
-        $('.time_real').text(trackData[index].time)
-        setTimeoutTimeText = setTimeout(TimeTextChage, 1000);
+        $('.time_real').text(trackData[index].time) //车辆当前位置的时间
+        //进度条前后的时间
+        mintime = Math.round((index / trackData.length * time_slot)/1000)
+        maxtime = time_slot/1000 - mintime
+        let msg = formatDuring(maxtime)
+        let msg_before = formatDuring(mintime)
+        $('.speed_box>:last-child').text(msg)
+        $('.speed_box>:first-child').text(msg_before)
+        setTimeoutTimeText = setTimeout(TimeTextChange, 1000);
     }
 
 }
@@ -563,62 +638,109 @@ var carMove = function () {
     }
 	//- 计算角度
     if (index > 0) {
-        var ab = "A";
-        var a90 = 0;
-        var v = getAngle(trackData[index-1].values, trackData[index].values)
-        if (trackData[index-1].values.longitude > trackData[index].values.longitude) {
-            ab = "A";
-            if (trackData[index-1].values.latitude > trackData[index].values.latitude) {
-                a90 = 90 * 2;
-            } else {
-                ab = "B";
-                a90 = 90 * 3;
-            }
-        } else {
-            ab = "B";
-            if (trackData[index-1].values.latitude > trackData[index].values.latitude) {
-                a90 = 90 * 1;
-            } else {
-                ab = "A";
-                a90 = 0;
-            }
-        }
-        var Av = a90 + v[ab];
-        if (v.A != 0 && v.B != 0) {
-        	carStyle = new ol.style.Style({
-                image: new ol.style.Icon({
-                    color: "white",
-                    src: "/img/icon/1.png",
-                    rotation: Math.PI / 180 * Av
-                })
-            });
-        }
+        car_map_move()
+    }
+    index += 1 ;
+
+    if (!trackData[index]) {
+    	index = 0;
+    	//车回到起始位置
+        carSource.removeFeature(pos)
+        pos = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[index].values.longitude * 1, trackData[index].values.latitude * 1]))
+        })
+        carSource.addFeature(pos);
+        carStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                color: "white",
+                src: "/img/icon/1.png",
+                rotation: angle_start
+            })
+        })
         map.removeLayer(carLayer);
         carLayer = new ol.layer.Vector({
             name: "图标",
             source: carSource,
             style: [carStyle]
         });
-        map.addLayer(carLayer);
+        map.addLayer(carLayer)
 
-        if (pos)
-        	carSource.removeFeature(pos);
+        clearTimeout(timer)
+        $ball.css('transform','translate(0px,-6px)')
+        run_carMove = false
+        mintime = 0
+        maxtime = time_slot/1000
+        let msg = formatDuring(maxtime)
+        $('.speed_box>:last-child').text(msg)
+        let msg_before = formatDuring(mintime)
+        $('.speed_box>:first-child').text(msg_before)
+        $('#play_2>span').css({
+            'background': 'url("./images/play_but.png") no-repeat left top',
+            'margin': '11px 15px'
+        })
 
-        pos = new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[index].values.longitude * 1, trackData[index].values.latitude * 1]))
-        });
-        carSource.addFeature(pos);
     }
-    index += 1 ;
-    if (!trackData[index]) {
-    	index = 0;
-    }
+    ball_speed = bar_w / time_slot
+    var ball_distance = index / trackData.length * bar_w
+    $ball.css('transform','translate(' + ball_distance + 'px,-6px)')
+    if(index == trackData.length){index = 1}
     if (run_carMove) {
         setTimeoutEve = setTimeout(carMove, speed);
         setTimeoutFlag = true;
     }
 }
+function car_map_move() {
+    var ab = "A";
+    var a90 = 0;
+    var v = getAngle(trackData[index-1].values, trackData[index].values)
+    if (trackData[index-1].values.longitude > trackData[index].values.longitude) {
+        ab = "A";
+        if (trackData[index-1].values.latitude > trackData[index].values.latitude) {
+            a90 = 90 * 2;
+        } else {
+            ab = "B";
+            a90 = 90 * 3;
+        }
+    } else {
+        ab = "B";
+        if (trackData[index-1].values.latitude > trackData[index].values.latitude) {
+            a90 = 90 * 1;
+        } else {
+            ab = "A";
+            a90 = 0;
+        }
+    }
+    var Av = a90 + v[ab];
+    if (v.A != 0 && v.B != 0) {
+        carStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                color: "white",
+                src: "/img/icon/1.png",
+                rotation: Math.PI / 180 * Av
+            })
+        });
 
+    }
+    if(index == 1){ //记录最开始的角度
+        angle_start = Math.PI / 180 * Av
+    }
+
+    map.removeLayer(carLayer);
+    carLayer = new ol.layer.Vector({
+        name: "图标",
+        source: carSource,
+        style: [carStyle]
+    });
+    map.addLayer(carLayer);
+
+    if (pos)
+        carSource.removeFeature(pos);
+
+    pos = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat([trackData[index].values.longitude * 1, trackData[index].values.latitude * 1]))
+    });
+    carSource.addFeature(pos);
+}
 //func.js 亮点坐标计算
 var getAngle = function (A, B) {
     var x1 = A.longitude;

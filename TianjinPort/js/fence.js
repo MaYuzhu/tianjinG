@@ -179,12 +179,6 @@ Array.prototype.remove = function(val) {
             new $Msg({
                 content:"请填写围栏名称...",
                 type:"success",
-                cancle:function(){
-
-                },
-                confirm:function(){
-
-                }
             })
             return
         }
@@ -193,12 +187,6 @@ Array.prototype.remove = function(val) {
             new $Msg({
                 content:"请填写开始时间...",
                 type:"success",
-                cancle:function(){
-
-                },
-                confirm:function(){
-
-                }
             })
             return
         }
@@ -207,12 +195,6 @@ Array.prototype.remove = function(val) {
             new $Msg({
                 content:"请填写结束时间...",
                 type:"success",
-                cancle:function(){
-
-                },
-                confirm:function(){
-
-                }
             })
             return
         }
@@ -254,12 +236,6 @@ Array.prototype.remove = function(val) {
             new $Msg({
                 content:"请先绘制围栏...",
                 type:"success",
-                cancle:function(){
-
-                },
-                confirm:function(){
-
-                }
             })
             return false;
         }
