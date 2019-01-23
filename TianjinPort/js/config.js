@@ -4,8 +4,6 @@
 const interface_url = 'http://36.110.66.216:50002/';
 
 
-
-
 //退出登录
 $('.avatar').on('click',function () {
     /*var r = confirm("确定退出此次登陆吗？");

@@ -10,17 +10,17 @@ var url = 'https://geohey.com/s/dataviz/e42d88bb76df542e86a9d2eea4789071/' +
 //Request URL:https://s4.geohey.com/s/dataviz/0a2518d90fb52073f44ba2c270a3006b/18/216839/100196.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
 //Request URL:https://s1.geohey.com/s/dataviz/18e8d56132e3d9fbf1c7ac8505bf4a8b/16/54212/25052.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
 //Request URL:https://s8.geohey.com/s/dataviz/cb5212900e319b640c3734aa6667d268/16/54212/25051.png?retina=&ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc
-var url1 = 'https://geohey.com/s/dataviz/0bc0b551c2fc33f431c315df5b537611/' +
+var url1 = 'https://geohey.com/s/dataviz/cebf8b019093606fe6191264cc6af5d5/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
-var url2 = 'https://geohey.com/s/dataviz/829db1eef85d731f4c179eb632d5dc26/' +
+var url2 = 'https://geohey.com/s/dataviz/d621ce86de8d9e7a5621a58b387f6fed/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
-var url3 = 'https://geohey.com/s/dataviz/202f1bdfeebf58c27ded7f355be689fe/' +
+var url3 = 'https://geohey.com/s/dataviz/caf58d1ee1ebf353f2981c8daf10104c/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
-var url4 = 'https://geohey.com/s/dataviz/0a2518d90fb52073f44ba2c270a3006b/' +
+var url4 = 'https://geohey.com/s/dataviz/700fe5cdfdb215b48d8e8e27fa108308/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
-var url5 = 'https://geohey.com/s/dataviz/18e8d56132e3d9fbf1c7ac8505bf4a8b/' +
+var url5 = 'https://geohey.com/s/dataviz/bc83de70d2a9e13e996104f05a3c208c/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
-var url6 = 'https://geohey.com/s/dataviz/cb5212900e319b640c3734aa6667d268/' +
+var url6 = 'https://geohey.com/s/dataviz/13eabf588acdfebe3655ad9857e02d89/' +
     '{z}/{x}/{y}.png?ak=OGJkMGQwNTVlNzYzNDA0NmIwNDYxZDY4YjQwYmJlYzc&retina=@2x';
 //var pos = [13110795.607205058,4719031.500290665];
 var pos = ol.proj.transform([117.78688073,38.98251417], 'EPSG:4326', 'EPSG:3857');
